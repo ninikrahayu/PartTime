@@ -1,0 +1,1427 @@
+{
+  "meta": {
+    "project_name": "Partimeku - Website Part Time Mahasiswa",
+    "data_purpose": "Dummy data untuk frontend Laravel Blade, controller, chart, table, card, detail page, review, dan laporan.",
+    "version": "1.0.0",
+    "scope": "frontend-only",
+    "currency": "IDR",
+    "locale": "id-ID"
+  },
+  "theme": {
+    "primary": "#1E3A8A",
+    "secondary": "#FBBF24",
+    "accent": "#FBBF24",
+    "background": "#FFFFFF",
+    "surface": "#F9FAFB",
+    "text_dark": "#111827",
+    "text_gray": "#6B7280",
+    "border": "#E5E7EB",
+    "font": "Inter",
+    "icon": "FontAwesome",
+    "rounded": "rounded-md"
+  },
+  "status_options": {
+    "verification": [
+      {
+        "value": "belum_upload_dokumen",
+        "label": "Belum Upload Dokumen",
+        "color": "gray"
+      },
+      {
+        "value": "menunggu_verifikasi",
+        "label": "Menunggu Verifikasi",
+        "color": "yellow"
+      },
+      {
+        "value": "terverifikasi",
+        "label": "Terverifikasi",
+        "color": "green"
+      },
+      {
+        "value": "ditolak",
+        "label": "Ditolak",
+        "color": "red"
+      }
+    ],
+    "job": [
+      {
+        "value": "draft",
+        "label": "Draft",
+        "color": "gray"
+      },
+      {
+        "value": "menunggu_review",
+        "label": "Menunggu Review",
+        "color": "yellow"
+      },
+      {
+        "value": "aktif",
+        "label": "Aktif",
+        "color": "green"
+      },
+      {
+        "value": "ditolak",
+        "label": "Ditolak",
+        "color": "red"
+      },
+      {
+        "value": "ditutup",
+        "label": "Ditutup",
+        "color": "gray"
+      },
+      {
+        "value": "selesai",
+        "label": "Selesai",
+        "color": "blue"
+      }
+    ],
+    "application": [
+      {
+        "value": "menunggu",
+        "label": "Menunggu",
+        "color": "yellow"
+      },
+      {
+        "value": "diproses",
+        "label": "Diproses",
+        "color": "blue"
+      },
+      {
+        "value": "diterima",
+        "label": "Diterima",
+        "color": "green"
+      },
+      {
+        "value": "ditolak",
+        "label": "Ditolak",
+        "color": "red"
+      },
+      {
+        "value": "selesai",
+        "label": "Selesai",
+        "color": "indigo"
+      },
+      {
+        "value": "dibatalkan",
+        "label": "Dibatalkan",
+        "color": "gray"
+      }
+    ],
+    "review": [
+      {
+        "value": "belum_bisa_review",
+        "label": "Belum Bisa Review",
+        "color": "gray"
+      },
+      {
+        "value": "menunggu_review",
+        "label": "Menunggu Review",
+        "color": "yellow"
+      },
+      {
+        "value": "sudah_direview",
+        "label": "Sudah Direview",
+        "color": "green"
+      }
+    ],
+    "account": [
+      {
+        "value": "aktif",
+        "label": "Aktif",
+        "color": "green"
+      },
+      {
+        "value": "nonaktif",
+        "label": "Nonaktif",
+        "color": "gray"
+      },
+      {
+        "value": "suspend",
+        "label": "Suspend",
+        "color": "red"
+      }
+    ]
+  },
+  "categories": [
+    {
+      "id": "cat-001",
+      "name": "F&B",
+      "description": "Pekerjaan di bidang makanan dan minuman",
+      "is_active": true,
+      "jobs_count": 12
+    },
+    {
+      "id": "cat-002",
+      "name": "Retail",
+      "description": "Pekerjaan toko, kasir, dan pelayanan pelanggan",
+      "is_active": true,
+      "jobs_count": 9
+    },
+    {
+      "id": "cat-003",
+      "name": "Event",
+      "description": "Crew event, usher, dan promotor",
+      "is_active": true,
+      "jobs_count": 7
+    },
+    {
+      "id": "cat-004",
+      "name": "Admin",
+      "description": "Administrasi kantor dan input data",
+      "is_active": true,
+      "jobs_count": 6
+    },
+    {
+      "id": "cat-005",
+      "name": "Tutor",
+      "description": "Pengajar privat dan bimbingan belajar",
+      "is_active": true,
+      "jobs_count": 5
+    },
+    {
+      "id": "cat-006",
+      "name": "Design",
+      "description": "Desain grafis, konten, dan social media",
+      "is_active": true,
+      "jobs_count": 4
+    },
+    {
+      "id": "cat-007",
+      "name": "Cleaning",
+      "description": "Cleaning service dan helper operasional",
+      "is_active": true,
+      "jobs_count": 3
+    },
+    {
+      "id": "cat-008",
+      "name": "Barista",
+      "description": "Barista cafe dan kedai kopi",
+      "is_active": true,
+      "jobs_count": 8
+    },
+    {
+      "id": "cat-009",
+      "name": "Kasir",
+      "description": "Kasir toko dan restoran",
+      "is_active": true,
+      "jobs_count": 10
+    },
+    {
+      "id": "cat-010",
+      "name": "Kurir",
+      "description": "Pengantaran barang dan dokumen",
+      "is_active": false,
+      "jobs_count": 2
+    },
+    {
+      "id": "cat-011",
+      "name": "Customer Service",
+      "description": "Layanan pelanggan online dan offline",
+      "is_active": true,
+      "jobs_count": 4
+    },
+    {
+      "id": "cat-012",
+      "name": "Warehouse",
+      "description": "Packing, sortir barang, dan gudang",
+      "is_active": true,
+      "jobs_count": 5
+    }
+  ],
+  "users": [
+    {
+      "id": "usr-admin-001",
+      "role": "admin",
+      "name": "Admin Utama",
+      "username": "admin",
+      "email": "admin@parttime.test",
+      "phone": "081200000001",
+      "avatar": "/images/dummy/avatar-admin.jpg",
+      "account_status": "aktif",
+      "verification_status": "terverifikasi",
+      "created_at": "2026-01-05"
+    },
+    {
+      "id": "usr-student-001",
+      "role": "mahasiswa",
+      "name": "Raka Pratama",
+      "username": "raka",
+      "email": "raka@student.test",
+      "phone": "081234567801",
+      "avatar": "/images/dummy/avatar-raka.jpg",
+      "account_status": "aktif",
+      "verification_status": "terverifikasi",
+      "created_at": "2026-02-10"
+    },
+    {
+      "id": "usr-student-002",
+      "role": "mahasiswa",
+      "name": "Alya Kirana",
+      "username": "alya",
+      "email": "alya@student.test",
+      "phone": "081234567802",
+      "avatar": "/images/dummy/avatar-alya.jpg",
+      "account_status": "aktif",
+      "verification_status": "menunggu_verifikasi",
+      "created_at": "2026-03-01"
+    },
+    {
+      "id": "usr-student-003",
+      "role": "mahasiswa",
+      "name": "Dimas Saputra",
+      "username": "dimas",
+      "email": "dimas@student.test",
+      "phone": "081234567803",
+      "avatar": "/images/dummy/avatar-dimas.jpg",
+      "account_status": "aktif",
+      "verification_status": "terverifikasi",
+      "created_at": "2026-03-12"
+    },
+    {
+      "id": "usr-student-004",
+      "role": "mahasiswa",
+      "name": "Nadya Putri",
+      "username": "nadya",
+      "email": "nadya@student.test",
+      "phone": "081234567804",
+      "avatar": "/images/dummy/avatar-nadya.jpg",
+      "account_status": "aktif",
+      "verification_status": "ditolak",
+      "created_at": "2026-04-02"
+    },
+    {
+      "id": "usr-student-005",
+      "role": "mahasiswa",
+      "name": "Fajar Ramadhan",
+      "username": "fajar",
+      "email": "fajar@student.test",
+      "phone": "081234567805",
+      "avatar": "/images/dummy/avatar-fajar.jpg",
+      "account_status": "aktif",
+      "verification_status": "terverifikasi",
+      "created_at": "2026-04-15"
+    },
+    {
+      "id": "usr-provider-001",
+      "role": "penyedia",
+      "name": "Sari Lestari",
+      "username": "kopisari",
+      "email": "owner@kopisari.test",
+      "phone": "081345678901",
+      "avatar": "/images/dummy/avatar-sari.jpg",
+      "account_status": "aktif",
+      "verification_status": "terverifikasi",
+      "created_at": "2026-01-20"
+    },
+    {
+      "id": "usr-provider-002",
+      "role": "penyedia",
+      "name": "Budi Santoso",
+      "username": "martbudi",
+      "email": "hr@martbudi.test",
+      "phone": "081345678902",
+      "avatar": "/images/dummy/avatar-budi.jpg",
+      "account_status": "aktif",
+      "verification_status": "menunggu_verifikasi",
+      "created_at": "2026-03-18"
+    },
+    {
+      "id": "usr-provider-003",
+      "role": "penyedia",
+      "name": "Maya Anggraini",
+      "username": "eventmaya",
+      "email": "team@eventmaya.test",
+      "phone": "081345678903",
+      "avatar": "/images/dummy/avatar-maya.jpg",
+      "account_status": "aktif",
+      "verification_status": "terverifikasi",
+      "created_at": "2026-02-28"
+    },
+    {
+      "id": "usr-provider-004",
+      "role": "penyedia",
+      "name": "Reno Aditya",
+      "username": "renostudio",
+      "email": "hello@renostudio.test",
+      "phone": "081345678904",
+      "avatar": "/images/dummy/avatar-reno.jpg",
+      "account_status": "suspend",
+      "verification_status": "ditolak",
+      "created_at": "2026-04-22"
+    }
+  ],
+  "student_profiles": [
+    {
+      "user_id": "usr-student-001",
+      "campus": "Universitas Sriwijaya",
+      "major": "Sistem Informasi",
+      "semester": 6,
+      "address": "Palembang, Sumatera Selatan",
+      "skills": [
+        "Customer Service",
+        "Microsoft Excel",
+        "Desain Canva"
+      ],
+      "experience": "Pernah menjadi panitia event kampus dan freelance admin online.",
+      "cv_file": "CV_Raka_Pratama.pdf",
+      "ktm_file": "KTM_Raka_Pratama.jpg",
+      "average_rating": 4.7,
+      "reviews_count": 6,
+      "rejection_reason": null
+    },
+    {
+      "user_id": "usr-student-002",
+      "campus": "Politeknik Negeri Sriwijaya",
+      "major": "Manajemen Informatika",
+      "semester": 4,
+      "address": "Palembang, Sumatera Selatan",
+      "skills": [
+        "Input Data",
+        "Komunikasi",
+        "Kasir"
+      ],
+      "experience": "Belum ada pengalaman formal.",
+      "cv_file": "CV_Alya_Kirana.pdf",
+      "ktm_file": "KTM_Alya_Kirana.jpg",
+      "average_rating": 0,
+      "reviews_count": 0,
+      "rejection_reason": null
+    },
+    {
+      "user_id": "usr-student-003",
+      "campus": "Universitas Bina Darma",
+      "major": "Teknik Informatika",
+      "semester": 5,
+      "address": "Plaju, Palembang",
+      "skills": [
+        "Desain Grafis",
+        "Social Media",
+        "Copywriting"
+      ],
+      "experience": "Mengelola akun media sosial organisasi kampus.",
+      "cv_file": "CV_Dimas_Saputra.pdf",
+      "ktm_file": "KTM_Dimas_Saputra.jpg",
+      "average_rating": 4.5,
+      "reviews_count": 4,
+      "rejection_reason": null
+    },
+    {
+      "user_id": "usr-student-004",
+      "campus": "Universitas Muhammadiyah Palembang",
+      "major": "Akuntansi",
+      "semester": 3,
+      "address": "Ilir Barat, Palembang",
+      "skills": [
+        "Akuntansi Dasar",
+        "Admin",
+        "Excel"
+      ],
+      "experience": "Magang singkat di koperasi kampus.",
+      "cv_file": "CV_Nadya_Putri.pdf",
+      "ktm_file": "KTM_Nadya_Putri_blur.jpg",
+      "average_rating": 0,
+      "reviews_count": 0,
+      "rejection_reason": "KTM tidak terlihat jelas. Silakan upload ulang dokumen dengan kualitas lebih baik."
+    },
+    {
+      "user_id": "usr-student-005",
+      "campus": "Universitas Sriwijaya",
+      "major": "Ilmu Komunikasi",
+      "semester": 7,
+      "address": "Bukit Besar, Palembang",
+      "skills": [
+        "Public Speaking",
+        "Event Crew",
+        "Promotor"
+      ],
+      "experience": "Sering menjadi MC dan crew event kampus.",
+      "cv_file": "CV_Fajar_Ramadhan.pdf",
+      "ktm_file": "KTM_Fajar_Ramadhan.jpg",
+      "average_rating": 4.8,
+      "reviews_count": 5,
+      "rejection_reason": null
+    }
+  ],
+  "provider_profiles": [
+    {
+      "user_id": "usr-provider-001",
+      "company_name": "Kopi Sari Nusantara",
+      "company_type": "UMKM Cafe",
+      "logo": "/images/dummy/logo-kopi-sari.png",
+      "business_email": "owner@kopisari.test",
+      "business_phone": "0711000001",
+      "address": "Jl. Merdeka No. 12, Palembang",
+      "description": "Cafe lokal yang membuka peluang part time untuk mahasiswa.",
+      "verification_document": "NIB_Kopi_Sari.pdf",
+      "average_rating": 4.8,
+      "reviews_count": 18,
+      "rejection_reason": null
+    },
+    {
+      "user_id": "usr-provider-002",
+      "company_name": "Budi Mart",
+      "company_type": "Retail",
+      "logo": "/images/dummy/logo-budi-mart.png",
+      "business_email": "hr@martbudi.test",
+      "business_phone": "0711000002",
+      "address": "Jl. Demang Lebar Daun No. 45, Palembang",
+      "description": "Mini market lokal dengan beberapa cabang di Palembang.",
+      "verification_document": "Dokumen_Budi_Mart.pdf",
+      "average_rating": 0,
+      "reviews_count": 0,
+      "rejection_reason": null
+    },
+    {
+      "user_id": "usr-provider-003",
+      "company_name": "Maya Event Organizer",
+      "company_type": "Event Organizer",
+      "logo": "/images/dummy/logo-maya-event.png",
+      "business_email": "team@eventmaya.test",
+      "business_phone": "0711000003",
+      "address": "Jl. Veteran No. 30, Palembang",
+      "description": "EO lokal untuk seminar, konser kecil, dan event kampus.",
+      "verification_document": "Surat_Maya_Event.pdf",
+      "average_rating": 4.6,
+      "reviews_count": 11,
+      "rejection_reason": null
+    },
+    {
+      "user_id": "usr-provider-004",
+      "company_name": "Reno Creative Studio",
+      "company_type": "Studio Kreatif",
+      "logo": "/images/dummy/logo-reno-studio.png",
+      "business_email": "hello@renostudio.test",
+      "business_phone": "0711000004",
+      "address": "Alamat belum lengkap",
+      "description": "Studio konten digital.",
+      "verification_document": "Dokumen_Reno_Studio.pdf",
+      "average_rating": 0,
+      "reviews_count": 0,
+      "rejection_reason": "Data usaha tidak lengkap dan dokumen verifikasi tidak valid."
+    }
+  ],
+  "jobs": [
+    {
+      "id": "job-001",
+      "provider_id": "usr-provider-001",
+      "provider_name": "Kopi Sari Nusantara",
+      "provider_logo": "/images/dummy/logo-kopi-sari.png",
+      "provider_rating": 4.8,
+      "title": "Barista Part Time Sore",
+      "category_id": "cat-008",
+      "category": "Barista",
+      "description": "Membantu operasional bar, membuat minuman, menjaga kebersihan area kerja, dan melayani pelanggan.",
+      "requirements": [
+        "Mahasiswa aktif",
+        "Ramah dan komunikatif",
+        "Bersedia kerja shift sore",
+        "Pengalaman barista menjadi nilai tambah"
+      ],
+      "location": "Jl. Merdeka, Palembang",
+      "salary": 45000,
+      "salary_type": "Per hari",
+      "schedule": "Senin - Jumat, 16.00 - 21.00",
+      "start_date": "2026-06-01",
+      "end_date": "2026-08-31",
+      "deadline": "2026-05-28",
+      "quota": 3,
+      "applicants_count": 12,
+      "accepted_count": 1,
+      "status": "aktif",
+      "review_note": null,
+      "created_at": "2026-05-01"
+    },
+    {
+      "id": "job-002",
+      "provider_id": "usr-provider-002",
+      "provider_name": "Budi Mart",
+      "provider_logo": "/images/dummy/logo-budi-mart.png",
+      "provider_rating": 0,
+      "title": "Kasir Weekend",
+      "category_id": "cat-009",
+      "category": "Kasir",
+      "description": "Melayani transaksi pelanggan dan membantu pengecekan stok produk di akhir shift.",
+      "requirements": [
+        "Teliti",
+        "Bisa menggunakan komputer dasar",
+        "Bersedia kerja Sabtu dan Minggu"
+      ],
+      "location": "Demang Lebar Daun, Palembang",
+      "salary": 60000,
+      "salary_type": "Per hari",
+      "schedule": "Sabtu - Minggu, 09.00 - 17.00",
+      "start_date": "2026-06-08",
+      "end_date": "2026-09-08",
+      "deadline": "2026-06-01",
+      "quota": 2,
+      "applicants_count": 0,
+      "accepted_count": 0,
+      "status": "menunggu_review",
+      "review_note": null,
+      "created_at": "2026-05-19"
+    },
+    {
+      "id": "job-003",
+      "provider_id": "usr-provider-003",
+      "provider_name": "Maya Event Organizer",
+      "provider_logo": "/images/dummy/logo-maya-event.png",
+      "provider_rating": 4.6,
+      "title": "Crew Event Seminar Kampus",
+      "category_id": "cat-003",
+      "category": "Event",
+      "description": "Membantu registrasi peserta, mengarahkan tamu, dan mendukung kebutuhan teknis event.",
+      "requirements": [
+        "Komunikatif",
+        "Datang tepat waktu",
+        "Berpakaian rapi",
+        "Berpengalaman event lebih disukai"
+      ],
+      "location": "Gedung Seminar Jakabaring",
+      "salary": 120000,
+      "salary_type": "Per event",
+      "schedule": "Sabtu, 08.00 - 16.00",
+      "start_date": "2026-06-15",
+      "end_date": "2026-06-15",
+      "deadline": "2026-06-10",
+      "quota": 8,
+      "applicants_count": 22,
+      "accepted_count": 5,
+      "status": "aktif",
+      "review_note": null,
+      "created_at": "2026-05-12"
+    },
+    {
+      "id": "job-004",
+      "provider_id": "usr-provider-001",
+      "provider_name": "Kopi Sari Nusantara",
+      "provider_logo": "/images/dummy/logo-kopi-sari.png",
+      "provider_rating": 4.8,
+      "title": "Content Creator Cafe",
+      "category_id": "cat-006",
+      "category": "Design",
+      "description": "Membuat konten sederhana untuk Instagram dan TikTok cafe, termasuk foto produk dan caption.",
+      "requirements": [
+        "Menguasai Canva",
+        "Paham basic foto/video",
+        "Kreatif",
+        "Memiliki portofolio lebih baik"
+      ],
+      "location": "Hybrid, Palembang",
+      "salary": 750000,
+      "salary_type": "Per bulan",
+      "schedule": "Fleksibel, 3 hari per minggu",
+      "start_date": "2026-06-03",
+      "end_date": "2026-09-03",
+      "deadline": "2026-05-30",
+      "quota": 1,
+      "applicants_count": 9,
+      "accepted_count": 0,
+      "status": "aktif",
+      "review_note": null,
+      "created_at": "2026-05-05"
+    },
+    {
+      "id": "job-005",
+      "provider_id": "usr-provider-003",
+      "provider_name": "Maya Event Organizer",
+      "provider_logo": "/images/dummy/logo-maya-event.png",
+      "provider_rating": 4.6,
+      "title": "Admin Data Peserta Event",
+      "category_id": "cat-004",
+      "category": "Admin",
+      "description": "Input dan validasi data peserta event menggunakan spreadsheet.",
+      "requirements": [
+        "Teliti",
+        "Menguasai Excel/Google Sheets",
+        "Bisa bekerja remote"
+      ],
+      "location": "Remote",
+      "salary": 350000,
+      "salary_type": "Per proyek",
+      "schedule": "Fleksibel",
+      "start_date": "2026-06-01",
+      "end_date": "2026-06-20",
+      "deadline": "2026-05-27",
+      "quota": 2,
+      "applicants_count": 11,
+      "accepted_count": 2,
+      "status": "selesai",
+      "review_note": null,
+      "created_at": "2026-04-15"
+    },
+    {
+      "id": "job-006",
+      "provider_id": "usr-provider-004",
+      "provider_name": "Reno Creative Studio",
+      "provider_logo": "/images/dummy/logo-reno-studio.png",
+      "provider_rating": 0,
+      "title": "Editor Video Short Form",
+      "category_id": "cat-006",
+      "category": "Design",
+      "description": "Mengedit video pendek untuk kebutuhan media sosial klien.",
+      "requirements": [
+        "Menguasai CapCut atau Premiere",
+        "Punya laptop sendiri",
+        "Bisa memenuhi deadline"
+      ],
+      "location": "Palembang",
+      "salary": 50000,
+      "salary_type": "Per video",
+      "schedule": "Fleksibel",
+      "start_date": "2026-06-05",
+      "end_date": "2026-08-05",
+      "deadline": "2026-05-29",
+      "quota": 2,
+      "applicants_count": 0,
+      "accepted_count": 0,
+      "status": "ditolak",
+      "review_note": "Penyedia belum terverifikasi dan deskripsi pekerjaan kurang lengkap.",
+      "created_at": "2026-05-16"
+    },
+    {
+      "id": "job-007",
+      "provider_id": "usr-provider-001",
+      "provider_name": "Kopi Sari Nusantara",
+      "provider_logo": "/images/dummy/logo-kopi-sari.png",
+      "provider_rating": 4.8,
+      "title": "Helper Kitchen Weekend",
+      "category_id": "cat-001",
+      "category": "F&B",
+      "description": "Membantu persiapan bahan, plating sederhana, dan kebersihan dapur.",
+      "requirements": [
+        "Bersih dan cekatan",
+        "Bersedia kerja weekend",
+        "Tidak harus berpengalaman"
+      ],
+      "location": "Jl. Merdeka, Palembang",
+      "salary": 55000,
+      "salary_type": "Per hari",
+      "schedule": "Sabtu - Minggu, 10.00 - 18.00",
+      "start_date": "2026-06-08",
+      "end_date": "2026-08-08",
+      "deadline": "2026-06-02",
+      "quota": 2,
+      "applicants_count": 6,
+      "accepted_count": 0,
+      "status": "aktif",
+      "review_note": null,
+      "created_at": "2026-05-17"
+    },
+    {
+      "id": "job-008",
+      "provider_id": "usr-provider-003",
+      "provider_name": "Maya Event Organizer",
+      "provider_logo": "/images/dummy/logo-maya-event.png",
+      "provider_rating": 4.6,
+      "title": "Promotor Booth Pameran",
+      "category_id": "cat-003",
+      "category": "Event",
+      "description": "Menjaga booth, membagikan brosur, dan menjelaskan produk kepada pengunjung pameran.",
+      "requirements": [
+        "Percaya diri",
+        "Komunikatif",
+        "Rapi",
+        "Bersedia berdiri dalam durasi event"
+      ],
+      "location": "Palembang Square",
+      "salary": 100000,
+      "salary_type": "Per hari",
+      "schedule": "Jumat - Minggu, 10.00 - 21.00",
+      "start_date": "2026-06-21",
+      "end_date": "2026-06-23",
+      "deadline": "2026-06-15",
+      "quota": 5,
+      "applicants_count": 14,
+      "accepted_count": 3,
+      "status": "aktif",
+      "review_note": null,
+      "created_at": "2026-05-18"
+    }
+  ],
+  "applications": [
+    {
+      "id": "app-001",
+      "job_id": "job-001",
+      "student_id": "usr-student-001",
+      "student_name": "Raka Pratama",
+      "provider_id": "usr-provider-001",
+      "provider_name": "Kopi Sari Nusantara",
+      "job_title": "Barista Part Time Sore",
+      "cv_file": "CV_Raka_Pratama.pdf",
+      "student_note": "Saya tertarik karena pernah membantu operasional cafe kecil.",
+      "provider_note": "Kandidat cukup sesuai, lanjut proses wawancara singkat.",
+      "status": "diproses",
+      "review_status": "belum_bisa_review",
+      "applied_at": "2026-05-20",
+      "timeline": [
+        {
+          "label": "Lamaran dikirim",
+          "date": "2026-05-20",
+          "is_done": true
+        },
+        {
+          "label": "Lamaran dilihat penyedia",
+          "date": "2026-05-21",
+          "is_done": true
+        },
+        {
+          "label": "Lamaran diproses",
+          "date": "2026-05-21",
+          "is_done": true
+        },
+        {
+          "label": "Pekerjaan selesai",
+          "date": null,
+          "is_done": false
+        }
+      ]
+    },
+    {
+      "id": "app-002",
+      "job_id": "job-003",
+      "student_id": "usr-student-005",
+      "student_name": "Fajar Ramadhan",
+      "provider_id": "usr-provider-003",
+      "provider_name": "Maya Event Organizer",
+      "job_title": "Crew Event Seminar Kampus",
+      "cv_file": "CV_Fajar_Ramadhan.pdf",
+      "student_note": "Saya sering menjadi crew event kampus dan siap hadir tepat waktu.",
+      "provider_note": "Diterima sebagai crew registrasi.",
+      "status": "diterima",
+      "review_status": "belum_bisa_review",
+      "applied_at": "2026-05-19",
+      "timeline": [
+        {
+          "label": "Lamaran dikirim",
+          "date": "2026-05-19",
+          "is_done": true
+        },
+        {
+          "label": "Lamaran diproses",
+          "date": "2026-05-20",
+          "is_done": true
+        },
+        {
+          "label": "Lamaran diterima",
+          "date": "2026-05-21",
+          "is_done": true
+        },
+        {
+          "label": "Pekerjaan selesai",
+          "date": null,
+          "is_done": false
+        }
+      ]
+    },
+    {
+      "id": "app-003",
+      "job_id": "job-005",
+      "student_id": "usr-student-003",
+      "student_name": "Dimas Saputra",
+      "provider_id": "usr-provider-003",
+      "provider_name": "Maya Event Organizer",
+      "job_title": "Admin Data Peserta Event",
+      "cv_file": "CV_Dimas_Saputra.pdf",
+      "student_note": "Saya terbiasa menggunakan spreadsheet dan bisa bekerja remote.",
+      "provider_note": "Pekerjaan selesai dengan baik.",
+      "status": "selesai",
+      "review_status": "sudah_direview",
+      "applied_at": "2026-04-20",
+      "timeline": [
+        {
+          "label": "Lamaran dikirim",
+          "date": "2026-04-20",
+          "is_done": true
+        },
+        {
+          "label": "Lamaran diterima",
+          "date": "2026-04-22",
+          "is_done": true
+        },
+        {
+          "label": "Pekerjaan selesai",
+          "date": "2026-05-05",
+          "is_done": true
+        },
+        {
+          "label": "Review diberikan",
+          "date": "2026-05-06",
+          "is_done": true
+        }
+      ]
+    },
+    {
+      "id": "app-004",
+      "job_id": "job-004",
+      "student_id": "usr-student-004",
+      "student_name": "Nadya Putri",
+      "provider_id": "usr-provider-001",
+      "provider_name": "Kopi Sari Nusantara",
+      "job_title": "Content Creator Cafe",
+      "cv_file": "CV_Nadya_Putri.pdf",
+      "student_note": "Saya bisa membuat konten sederhana memakai Canva.",
+      "provider_note": "Belum bisa diproses karena akun mahasiswa belum valid.",
+      "status": "ditolak",
+      "review_status": "belum_bisa_review",
+      "applied_at": "2026-05-13",
+      "timeline": [
+        {
+          "label": "Lamaran dikirim",
+          "date": "2026-05-13",
+          "is_done": true
+        },
+        {
+          "label": "Lamaran ditolak",
+          "date": "2026-05-14",
+          "is_done": true
+        }
+      ]
+    },
+    {
+      "id": "app-005",
+      "job_id": "job-007",
+      "student_id": "usr-student-002",
+      "student_name": "Alya Kirana",
+      "provider_id": "usr-provider-001",
+      "provider_name": "Kopi Sari Nusantara",
+      "job_title": "Helper Kitchen Weekend",
+      "cv_file": "CV_Alya_Kirana.pdf",
+      "student_note": "Saya siap bekerja weekend.",
+      "provider_note": null,
+      "status": "menunggu",
+      "review_status": "belum_bisa_review",
+      "applied_at": "2026-05-21",
+      "timeline": [
+        {
+          "label": "Lamaran dikirim",
+          "date": "2026-05-21",
+          "is_done": true
+        },
+        {
+          "label": "Lamaran diproses",
+          "date": null,
+          "is_done": false
+        }
+      ]
+    },
+    {
+      "id": "app-006",
+      "job_id": "job-005",
+      "student_id": "usr-student-001",
+      "student_name": "Raka Pratama",
+      "provider_id": "usr-provider-003",
+      "provider_name": "Maya Event Organizer",
+      "job_title": "Admin Data Peserta Event",
+      "cv_file": "CV_Raka_Pratama.pdf",
+      "student_note": "Saya menguasai Excel dan Google Sheets.",
+      "provider_note": "Pekerjaan selesai. Data rapi dan tepat waktu.",
+      "status": "selesai",
+      "review_status": "menunggu_review",
+      "applied_at": "2026-04-19",
+      "timeline": [
+        {
+          "label": "Lamaran dikirim",
+          "date": "2026-04-19",
+          "is_done": true
+        },
+        {
+          "label": "Lamaran diterima",
+          "date": "2026-04-21",
+          "is_done": true
+        },
+        {
+          "label": "Pekerjaan selesai",
+          "date": "2026-05-04",
+          "is_done": true
+        },
+        {
+          "label": "Review diberikan",
+          "date": null,
+          "is_done": false
+        }
+      ]
+    }
+  ],
+  "reviews": [
+    {
+      "id": "rev-001",
+      "application_id": "app-003",
+      "job_id": "job-005",
+      "job_title": "Admin Data Peserta Event",
+      "reviewer_id": "usr-provider-003",
+      "reviewer_name": "Maya Event Organizer",
+      "reviewer_role": "penyedia",
+      "reviewed_id": "usr-student-003",
+      "reviewed_name": "Dimas Saputra",
+      "reviewed_role": "mahasiswa",
+      "rating": 5,
+      "comment": "Dimas bekerja rapi, komunikatif, dan menyelesaikan data lebih cepat dari jadwal.",
+      "is_visible": true,
+      "created_at": "2026-05-06"
+    },
+    {
+      "id": "rev-002",
+      "application_id": "app-003",
+      "job_id": "job-005",
+      "job_title": "Admin Data Peserta Event",
+      "reviewer_id": "usr-student-003",
+      "reviewer_name": "Dimas Saputra",
+      "reviewer_role": "mahasiswa",
+      "reviewed_id": "usr-provider-003",
+      "reviewed_name": "Maya Event Organizer",
+      "reviewed_role": "penyedia",
+      "rating": 5,
+      "comment": "Brief pekerjaan jelas, komunikasi cepat, dan pembayaran sesuai kesepakatan.",
+      "is_visible": true,
+      "created_at": "2026-05-06"
+    },
+    {
+      "id": "rev-003",
+      "application_id": "app-006",
+      "job_id": "job-005",
+      "job_title": "Admin Data Peserta Event",
+      "reviewer_id": "usr-provider-003",
+      "reviewer_name": "Maya Event Organizer",
+      "reviewer_role": "penyedia",
+      "reviewed_id": "usr-student-001",
+      "reviewed_name": "Raka Pratama",
+      "reviewed_role": "mahasiswa",
+      "rating": 4,
+      "comment": "Raka teliti dan hasil pekerjaannya baik. Perlu sedikit lebih cepat dalam update progres.",
+      "is_visible": true,
+      "created_at": "2026-05-05"
+    },
+    {
+      "id": "rev-004",
+      "application_id": "app-006",
+      "job_id": "job-005",
+      "job_title": "Admin Data Peserta Event",
+      "reviewer_id": "usr-student-001",
+      "reviewer_name": "Raka Pratama",
+      "reviewer_role": "mahasiswa",
+      "reviewed_id": "usr-provider-003",
+      "reviewed_name": "Maya Event Organizer",
+      "reviewed_role": "penyedia",
+      "rating": 4,
+      "comment": "Pekerjaan sesuai deskripsi dan tim mudah dihubungi.",
+      "is_visible": true,
+      "created_at": "2026-05-06"
+    }
+  ],
+  "favorites": [
+    {
+      "id": "fav-001",
+      "student_id": "usr-student-001",
+      "job_id": "job-001",
+      "saved_at": "2026-05-18"
+    },
+    {
+      "id": "fav-002",
+      "student_id": "usr-student-001",
+      "job_id": "job-004",
+      "saved_at": "2026-05-19"
+    },
+    {
+      "id": "fav-003",
+      "student_id": "usr-student-002",
+      "job_id": "job-007",
+      "saved_at": "2026-05-20"
+    },
+    {
+      "id": "fav-004",
+      "student_id": "usr-student-005",
+      "job_id": "job-008",
+      "saved_at": "2026-05-21"
+    }
+  ],
+  "dashboard": {
+    "admin": {
+      "summary_cards": [
+        {
+          "label": "Total Mahasiswa",
+          "value": 128,
+          "icon": "fa-user-graduate",
+          "trend": "+12 bulan ini"
+        },
+        {
+          "label": "Total Penyedia",
+          "value": 36,
+          "icon": "fa-building",
+          "trend": "+4 bulan ini"
+        },
+        {
+          "label": "Lowongan Aktif",
+          "value": 54,
+          "icon": "fa-briefcase",
+          "trend": "+8 minggu ini"
+        },
+        {
+          "label": "Lamaran Masuk",
+          "value": 312,
+          "icon": "fa-file-signature",
+          "trend": "+31 minggu ini"
+        }
+      ],
+      "additional_stats": [
+        {
+          "label": "Mahasiswa Menunggu Verifikasi",
+          "value": 9
+        },
+        {
+          "label": "Penyedia Menunggu Verifikasi",
+          "value": 3
+        },
+        {
+          "label": "Lowongan Menunggu Review",
+          "value": 7
+        },
+        {
+          "label": "Lamaran Diterima Bulan Ini",
+          "value": 26
+        }
+      ]
+    },
+    "provider": {
+      "user_id": "usr-provider-001",
+      "summary_cards": [
+        {
+          "label": "Lowongan Aktif",
+          "value": 3,
+          "icon": "fa-briefcase"
+        },
+        {
+          "label": "Menunggu Review",
+          "value": 1,
+          "icon": "fa-clock"
+        },
+        {
+          "label": "Lamaran Masuk",
+          "value": 27,
+          "icon": "fa-file-signature"
+        },
+        {
+          "label": "Pelamar Diterima",
+          "value": 4,
+          "icon": "fa-user-check"
+        },
+        {
+          "label": "Rating Penyedia",
+          "value": 4.8,
+          "icon": "fa-star"
+        }
+      ]
+    },
+    "student": {
+      "user_id": "usr-student-001",
+      "summary_cards": [
+        {
+          "label": "Lowongan Tersedia",
+          "value": 54,
+          "icon": "fa-briefcase"
+        },
+        {
+          "label": "Total Lamaran",
+          "value": 5,
+          "icon": "fa-file-signature"
+        },
+        {
+          "label": "Lamaran Diproses",
+          "value": 1,
+          "icon": "fa-spinner"
+        },
+        {
+          "label": "Lamaran Diterima",
+          "value": 2,
+          "icon": "fa-circle-check"
+        },
+        {
+          "label": "Rating Saya",
+          "value": 4.7,
+          "icon": "fa-star"
+        }
+      ]
+    }
+  },
+  "charts": {
+    "admin_jobs_per_month": {
+      "labels": [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "Mei",
+        "Jun"
+      ],
+      "data": [
+        12,
+        18,
+        22,
+        28,
+        34,
+        30
+      ]
+    },
+    "admin_applicants_per_month": {
+      "labels": [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "Mei",
+        "Jun"
+      ],
+      "data": [
+        45,
+        61,
+        80,
+        94,
+        112,
+        105
+      ]
+    },
+    "provider_applications_per_month": {
+      "labels": [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "Mei",
+        "Jun"
+      ],
+      "data": [
+        6,
+        9,
+        12,
+        17,
+        21,
+        16
+      ]
+    }
+  },
+  "reports": {
+    "verification_summary": [
+      {
+        "type": "Mahasiswa",
+        "menunggu_verifikasi": 9,
+        "terverifikasi": 108,
+        "ditolak": 11
+      },
+      {
+        "type": "Penyedia",
+        "menunggu_verifikasi": 3,
+        "terverifikasi": 29,
+        "ditolak": 4
+      }
+    ],
+    "job_summary": [
+      {
+        "status": "Aktif",
+        "total": 54
+      },
+      {
+        "status": "Menunggu Review",
+        "total": 7
+      },
+      {
+        "status": "Ditolak",
+        "total": 5
+      },
+      {
+        "status": "Ditutup",
+        "total": 8
+      },
+      {
+        "status": "Selesai",
+        "total": 13
+      }
+    ],
+    "application_summary": [
+      {
+        "status": "Menunggu",
+        "total": 42
+      },
+      {
+        "status": "Diproses",
+        "total": 58
+      },
+      {
+        "status": "Diterima",
+        "total": 36
+      },
+      {
+        "status": "Ditolak",
+        "total": 24
+      },
+      {
+        "status": "Selesai",
+        "total": 18
+      }
+    ],
+    "review_summary": [
+      {
+        "type": "Review untuk Mahasiswa",
+        "total": 24,
+        "average_rating": 4.6
+      },
+      {
+        "type": "Review untuk Penyedia",
+        "total": 31,
+        "average_rating": 4.7
+      }
+    ]
+  },
+  "form_options": {
+    "salary_types": [
+      "Per jam",
+      "Per hari",
+      "Per minggu",
+      "Per bulan",
+      "Per proyek",
+      "Per event"
+    ],
+    "semesters": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14
+    ],
+    "provider_types": [
+      "UMKM",
+      "Cafe",
+      "Retail",
+      "Event Organizer",
+      "Perusahaan",
+      "Instansi",
+      "Studio Kreatif",
+      "Lainnya"
+    ],
+    "file_rules": {
+      "cv": {
+        "formats": [
+          "PDF",
+          "DOC",
+          "DOCX"
+        ],
+        "max_size": "5MB"
+      },
+      "ktm": {
+        "formats": [
+          "JPG",
+          "PNG",
+          "PDF"
+        ],
+        "max_size": "2MB"
+      },
+      "logo": {
+        "formats": [
+          "JPG",
+          "PNG"
+        ],
+        "max_size": "2MB"
+      },
+      "verification_document": {
+        "formats": [
+          "PDF",
+          "JPG",
+          "PNG"
+        ],
+        "max_size": "5MB"
+      }
+    }
+  },
+  "landing_page": {
+    "hero": {
+      "title": "Temukan Kerja Part Time yang Cocok untuk Mahasiswa",
+      "subtitle": "Cari lowongan part time terpercaya, lamar dengan mudah, dan bangun reputasi kerja melalui review dua arah.",
+      "primary_cta": "Cari Lowongan",
+      "secondary_cta": "Pasang Lowongan"
+    },
+    "stats": [
+      {
+        "label": "Lowongan Aktif",
+        "value": "54+"
+      },
+      {
+        "label": "Penyedia Terverifikasi",
+        "value": "29+"
+      },
+      {
+        "label": "Mahasiswa Terdaftar",
+        "value": "128+"
+      },
+      {
+        "label": "Lamaran Berhasil",
+        "value": "312+"
+      }
+    ],
+    "how_it_works": [
+      {
+        "title": "Daftar dan Verifikasi",
+        "description": "Mahasiswa dan penyedia melengkapi data agar platform lebih aman."
+      },
+      {
+        "title": "Cari atau Pasang Lowongan",
+        "description": "Mahasiswa mencari lowongan, penyedia membuat lowongan yang direview admin."
+      },
+      {
+        "title": "Lamar dan Proses Seleksi",
+        "description": "Mahasiswa melamar dan penyedia memproses lamaran masuk."
+      },
+      {
+        "title": "Selesai Kerja dan Review",
+        "description": "Setelah pekerjaan selesai, kedua pihak bisa saling memberi review."
+      }
+    ],
+    "features": [
+      {
+        "title": "Lowongan Tervefikasi",
+        "description": "Lowongan ditinjau sebelum tampil ke mahasiswa."
+      },
+      {
+        "title": "Review Dua Arah",
+        "description": "Mahasiswa dan penyedia bisa membangun reputasi."
+      },
+      {
+        "title": "Mobile First",
+        "description": "Tampilan mahasiswa nyaman digunakan lewat smartphone."
+      }
+    ]
+  },
+  "empty_states": {
+    "jobs": {
+      "title": "Belum ada lowongan",
+      "description": "Lowongan yang sesuai filter akan tampil di sini."
+    },
+    "applications": {
+      "title": "Belum ada lamaran",
+      "description": "Lamaran yang masuk atau diajukan akan tampil di sini."
+    },
+    "reviews": {
+      "title": "Belum ada review",
+      "description": "Review akan tersedia setelah pekerjaan selesai."
+    },
+    "favorites": {
+      "title": "Belum ada favorit",
+      "description": "Simpan lowongan yang menarik agar mudah ditemukan kembali."
+    }
+  },
+  "toast_messages": {
+    "login_success": "Berhasil masuk ke dashboard.",
+    "save_success": "Data berhasil disimpan.",
+    "delete_success": "Data berhasil dihapus.",
+    "review_success": "Review berhasil dikirim.",
+    "approve_success": "Data berhasil disetujui.",
+    "reject_success": "Data berhasil ditolak.",
+    "validation_error": "Periksa kembali data yang wajib diisi."
+  }
+}
