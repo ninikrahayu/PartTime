@@ -11,6 +11,6 @@
     ];
     $colorClass = $colors[$color] ?? $colors['primary'];
 @endphp
-<span {{ $attributes->merge(['class' => "inline-flex items-center px-2.5 py-0.5 rounded-md text-xs font-medium $colorClass"]) }}>
+<span {{ $attributes->merge(['class' => "inline-flex justify-center items-center text-center px-2.5 py-0.5 rounded-md text-xs font-medium $colorClass"]) }}>
     {{ $slot }}
 </span>

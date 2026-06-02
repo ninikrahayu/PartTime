@@ -18,9 +18,6 @@
             <button type="button" onclick="showToast('Export Excel berhasil diproses.', 'success')" class="inline-flex items-center rounded-md border border-border-color bg-white px-4 py-2 text-sm font-medium text-text-dark hover:bg-surface">
                 <i class="fa-solid fa-file-excel mr-2 text-success"></i>Export Excel
             </button>
-            <button type="button" onclick="showToast('Perintah print dummy diproses.', 'info')" class="inline-flex items-center rounded-md border border-border-color bg-white px-4 py-2 text-sm font-medium text-text-dark hover:bg-surface">
-                <i class="fa-solid fa-print mr-2 text-primary"></i>Print
-            </button>
         </div>
     </div>
 

@@ -7,11 +7,6 @@ use App\Services\DummyData;
 
 class AdminController extends Controller
 {
-    public function login()
-    {
-        return view('admin.auth.login');
-    }
-
     public function dashboard()
     {
         $summaryCards = DummyData::get('dashboard.admin.summary_cards', []);
@@ -71,10 +66,48 @@ class AdminController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
+    public function showUser($id)
+    {
+        $user = DummyData::findById('users', $id);
+        if (!$user) abort(404);
+        
+        $profile = null;
+        if ($user['role'] === 'mahasiswa') {
+            $profile = DummyData::getCollection('student_profiles')->firstWhere('user_id', $id);
+        } elseif ($user['role'] === 'penyedia') {
+            $profile = DummyData::getCollection('provider_profiles')->firstWhere('user_id', $id);
+        }
+
+        return view('admin.users.show', compact('user', 'profile'));
+    }
+
+    public function editUser($id)
+    {
+        $user = DummyData::findById('users', $id);
+        if (!$user) abort(404);
+        
+        $profile = null;
+        if ($user['role'] === 'mahasiswa') {
+            $profile = DummyData::getCollection('student_profiles')->firstWhere('user_id', $id);
+        } elseif ($user['role'] === 'penyedia') {
+            $profile = DummyData::getCollection('provider_profiles')->firstWhere('user_id', $id);
+        }
+
+        return view('admin.users.edit', compact('user', 'profile'));
+    }
+
     public function categories()
     {
         $categories = DummyData::get('categories', []);
         return view('admin.categories.index', compact('categories'));
+    }
+
+    public function editCategory($id)
+    {
+        $category = DummyData::findById('categories', $id);
+        if (!$category) abort(404);
+        
+        return view('admin.categories.edit', compact('category'));
     }
 
     public function jobs()
@@ -83,10 +116,30 @@ class AdminController extends Controller
         return view('admin.jobs.index', compact('jobs'));
     }
 
+    public function showJob($id)
+    {
+        $job = DummyData::findById('jobs', $id);
+        if (!$job) abort(404);
+        
+        return view('admin.jobs.show', compact('job'));
+    }
+
     public function applications()
     {
         $applications = DummyData::get('applications', []);
         return view('admin.applications.index', compact('applications'));
+    }
+
+    public function showApplication($id)
+    {
+        $application = DummyData::findById('applications', $id);
+        if (!$application) abort(404);
+        
+        // Coba cari data user / profile pelamar agar datanya lengkap (dummy fallback)
+        $studentProfile = DummyData::getCollection('student_profiles')->firstWhere('user_id', $application['student_id'] ?? 0);
+        $user = DummyData::findById('users', $application['student_id'] ?? 0);
+        
+        return view('admin.applications.show', compact('application', 'studentProfile', 'user'));
     }
 
     public function reports()

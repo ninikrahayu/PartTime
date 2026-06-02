@@ -55,9 +55,9 @@
                 </td>
                 <td class="px-6 py-4 text-right">
                     <div class="flex justify-end gap-2">
-                        <button onclick="showToast('Detail lowongan', 'info')" class="text-text-gray hover:text-primary transition-colors" title="Detail">
+                        <a href="{{ url('/admin/jobs/'.$job['id']) }}" class="text-text-gray hover:text-primary transition-colors" title="Detail">
                             <i class="fa-solid fa-eye"></i>
-                        </button>
+                        </a>
                         <button onclick="openModal('modal-status')" class="text-text-gray hover:text-info transition-colors" title="Ubah Status">
                             <i class="fa-solid fa-rotate"></i>
                         </button>

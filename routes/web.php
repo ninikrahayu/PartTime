@@ -19,14 +19,18 @@ Route::get('/reset-password', [PublicController::class, 'resetPassword']);
 
 // Admin Routes
 Route::prefix('admin')->group(function () {
-    Route::get('/login', [AdminController::class, 'login']);
     Route::get('/dashboard', [AdminController::class, 'dashboard']);
     Route::get('/verifikasi-akun', [AdminController::class, 'verifikasiAkun']);
     Route::get('/verifikasi-lowongan', [AdminController::class, 'verifikasiLowongan']);
     Route::get('/users', [AdminController::class, 'users']);
+    Route::get('/users/{id}', [AdminController::class, 'showUser']);
+    Route::get('/users/{id}/edit', [AdminController::class, 'editUser']);
     Route::get('/categories', [AdminController::class, 'categories']);
+    Route::get('/categories/{id}/edit', [AdminController::class, 'editCategory']);
     Route::get('/jobs', [AdminController::class, 'jobs']);
+    Route::get('/jobs/{id}', [AdminController::class, 'showJob']);
     Route::get('/applications', [AdminController::class, 'applications']);
+    Route::get('/applications/{id}', [AdminController::class, 'showApplication']);
     Route::get('/reports', [AdminController::class, 'reports']);
     Route::get('/profile', [AdminController::class, 'profile']);
 });

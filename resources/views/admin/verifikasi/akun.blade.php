@@ -83,8 +83,10 @@
                         <td>
                             <div class="flex justify-end gap-2">
                                 <button type="button" onclick="openModal('student-detail-{{ $student['id'] }}')" class="rounded-md border border-border-color bg-white px-3 py-1.5 text-xs font-medium text-text-dark hover:bg-surface">Detail</button>
-                                <button type="button" onclick="approveDummy('Akun mahasiswa berhasil disetujui.')" class="rounded-md bg-success px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700">Approve</button>
-                                <button type="button" onclick="openModal('student-reject-{{ $student['id'] }}')" class="rounded-md bg-danger px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700">Reject</button>
+                                @if($student['verification_status'] === 'menunggu_verifikasi')
+                                    <button type="button" onclick="approveDummy('Akun mahasiswa berhasil disetujui.')" class="rounded-md bg-success px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700">Approve</button>
+                                    <button type="button" onclick="openModal('student-reject-{{ $student['id'] }}')" class="rounded-md bg-danger px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700">Reject</button>
+                                @endif
                             </div>
                         </td>
                     </tr>
@@ -124,8 +126,10 @@
                         <td>
                             <div class="flex justify-end gap-2">
                                 <button type="button" onclick="openModal('provider-detail-{{ $provider['id'] }}')" class="rounded-md border border-border-color bg-white px-3 py-1.5 text-xs font-medium text-text-dark hover:bg-surface">Detail</button>
-                                <button type="button" onclick="approveDummy('Akun penyedia berhasil disetujui.')" class="rounded-md bg-success px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700">Approve</button>
-                                <button type="button" onclick="openModal('provider-reject-{{ $provider['id'] }}')" class="rounded-md bg-danger px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700">Reject</button>
+                                @if($provider['verification_status'] === 'menunggu_verifikasi')
+                                    <button type="button" onclick="approveDummy('Akun penyedia berhasil disetujui.')" class="rounded-md bg-success px-3 py-1.5 text-xs font-medium text-white hover:bg-green-700">Approve</button>
+                                    <button type="button" onclick="openModal('provider-reject-{{ $provider['id'] }}')" class="rounded-md bg-danger px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700">Reject</button>
+                                @endif
                             </div>
                         </td>
                     </tr>
@@ -154,10 +158,22 @@
                     <div class="rounded-md border border-border-color bg-white p-3">
                         <p class="text-xs text-text-gray">KTM</p>
                         <p class="mt-1 truncate text-sm font-medium text-text-dark">{{ $profile['ktm_file'] ?? '-' }}</p>
+                        @if(isset($profile['ktm_file']))
+                        <div class="mt-2 flex gap-3">
+                            <a href="#" target="_blank" class="text-xs text-primary hover:text-blue-900"><i class="fa-solid fa-eye mr-1"></i>Preview</a>
+                            <a href="#" download="{{ $profile['ktm_file'] }}" class="text-xs text-primary hover:text-blue-900"><i class="fa-solid fa-download mr-1"></i>Download</a>
+                        </div>
+                        @endif
                     </div>
                     <div class="rounded-md border border-border-color bg-white p-3">
                         <p class="text-xs text-text-gray">CV Opsional</p>
                         <p class="mt-1 truncate text-sm font-medium text-text-dark">{{ $profile['cv_file'] ?? '-' }}</p>
+                        @if(isset($profile['cv_file']))
+                        <div class="mt-2 flex gap-3">
+                            <a href="#" target="_blank" class="text-xs text-primary hover:text-blue-900"><i class="fa-solid fa-eye mr-1"></i>Preview</a>
+                            <a href="#" download="{{ $profile['cv_file'] }}" class="text-xs text-primary hover:text-blue-900"><i class="fa-solid fa-download mr-1"></i>Download</a>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -194,10 +210,22 @@
                     <div class="rounded-md border border-border-color bg-white p-3">
                         <p class="text-xs text-text-gray">Dokumen Usaha</p>
                         <p class="mt-1 truncate text-sm font-medium text-text-dark">{{ $profile['verification_document'] ?? '-' }}</p>
+                        @if(isset($profile['verification_document']))
+                        <div class="mt-2 flex gap-3">
+                            <a href="#" target="_blank" class="text-xs text-primary hover:text-blue-900"><i class="fa-solid fa-eye mr-1"></i>Preview</a>
+                            <a href="#" download="{{ $profile['verification_document'] }}" class="text-xs text-primary hover:text-blue-900"><i class="fa-solid fa-download mr-1"></i>Download</a>
+                        </div>
+                        @endif
                     </div>
                     <div class="rounded-md border border-border-color bg-white p-3">
                         <p class="text-xs text-text-gray">Logo Usaha</p>
                         <p class="mt-1 truncate text-sm font-medium text-text-dark">{{ $profile['logo'] ?? '-' }}</p>
+                        @if(isset($profile['logo']))
+                        <div class="mt-2 flex gap-3">
+                            <a href="#" target="_blank" class="text-xs text-primary hover:text-blue-900"><i class="fa-solid fa-eye mr-1"></i>Preview</a>
+                            <a href="#" download="{{ $profile['logo'] }}" class="text-xs text-primary hover:text-blue-900"><i class="fa-solid fa-download mr-1"></i>Download</a>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>

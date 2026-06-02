@@ -65,12 +65,12 @@
                 </td>
                 <td class="px-6 py-4 text-right">
                     <div class="flex justify-end gap-2">
-                        <button onclick="showToast('Buka detail {{ $user['name'] }}', 'info')" class="text-text-gray hover:text-primary transition-colors" title="Detail">
+                        <a href="{{ url('/admin/users/'.$user['id']) }}" class="text-text-gray hover:text-primary transition-colors" title="Detail">
                             <i class="fa-solid fa-eye"></i>
-                        </button>
-                        <button onclick="showToast('Edit {{ $user['name'] }}', 'info')" class="text-text-gray hover:text-warning transition-colors" title="Edit">
+                        </a>
+                        <a href="{{ url('/admin/users/'.$user['id'].'/edit') }}" class="text-text-gray hover:text-warning transition-colors" title="Edit">
                             <i class="fa-solid fa-pen-to-square"></i>
-                        </button>
+                        </a>
                         @if($user['account_status'] === 'aktif')
                             <button onclick="showToast('Nonaktifkan {{ $user['name'] }}', 'warning')" class="text-text-gray hover:text-warning transition-colors" title="Nonaktifkan">
                                 <i class="fa-solid fa-ban"></i>

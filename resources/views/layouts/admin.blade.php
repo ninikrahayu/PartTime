@@ -23,7 +23,7 @@
         <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden" onclick="toggleSidebar()"></div>
 
         <!-- Sidebar -->
-        <aside id="sidebar" class="bg-white border-r border-border-color w-64 flex-shrink-0 flex flex-col fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 z-50 transition-transform duration-300 ease-in-out">
+        <aside id="sidebar" class="bg-white border-r border-border-color w-64 flex-shrink-0 flex flex-col fixed inset-y-0 left-0 transform -translate-x-full md:sticky md:top-0 md:h-screen md:translate-x-0 z-50 transition-transform duration-300 ease-in-out">
             <!-- Sidebar Header -->
             <div class="h-16 flex items-center px-6 border-b border-border-color">
                 <a href="{{ url('/admin/dashboard') }}" class="text-xl font-bold text-primary flex items-center gap-2">

@@ -52,12 +52,9 @@
                 </td>
                 <td class="px-6 py-4 text-right">
                     <div class="flex justify-end gap-2">
-                        <button onclick="showToast('Detail lamaran', 'info')" class="text-text-gray hover:text-primary transition-colors" title="Detail & Timeline">
-                            <i class="fa-solid fa-list-check"></i>
-                        </button>
-                        <button onclick="showToast('Lihat Review Dua Arah', 'info')" class="text-text-gray hover:text-warning transition-colors" title="Review">
-                            <i class="fa-solid fa-star-half-stroke"></i>
-                        </button>
+                        <a href="{{ url('/admin/applications/'.$app['id']) }}" class="text-text-gray hover:text-primary transition-colors" title="Detail">
+                            <i class="fa-solid fa-eye"></i>
+                        </a>
                     </div>
                 </td>
             </tr>

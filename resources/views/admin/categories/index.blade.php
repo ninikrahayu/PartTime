@@ -40,9 +40,9 @@
                 </td>
                 <td class="px-6 py-4 text-right">
                     <div class="flex justify-end gap-2">
-                        <button onclick="showToast('Edit {{ $category['name'] }}', 'info')" class="text-text-gray hover:text-warning transition-colors" title="Edit">
+                        <a href="{{ url('/admin/categories/'.$category['id'].'/edit') }}" class="text-text-gray hover:text-warning transition-colors" title="Edit">
                             <i class="fa-solid fa-pen-to-square"></i>
-                        </button>
+                        </a>
                         <button onclick="showToast('Nonaktifkan {{ $category['name'] }}', 'warning')" class="text-text-gray hover:text-warning transition-colors" title="Nonaktifkan">
                             <i class="fa-solid fa-power-off"></i>
                         </button>

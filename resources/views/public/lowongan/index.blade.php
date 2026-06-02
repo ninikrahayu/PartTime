@@ -115,14 +115,14 @@
                             </div>
                             
                             <div class="space-y-2 mb-6 flex-grow">
-                                <div class="flex items-center text-sm text-text-gray">
-                                    <i class="fa-solid fa-location-dot w-5 text-center text-primary/70"></i> {{ $job['location'] }}
+                                <div class="flex items-center gap-2 text-sm text-text-gray">
+                                    <i class="fa-solid fa-location-dot w-5 text-center text-primary/70"></i> <span>{{ $job['location'] }}</span>
                                 </div>
-                                <div class="flex items-center text-sm text-text-gray">
-                                    <i class="fa-solid fa-clock w-5 text-center text-primary/70"></i> {{ $job['schedule'] }}
+                                <div class="flex items-center gap-2 text-sm text-text-gray">
+                                    <i class="fa-solid fa-clock w-5 text-center text-primary/70"></i> <span>{{ $job['schedule'] }}</span>
                                 </div>
-                                <div class="flex items-center text-sm text-text-gray">
-                                    <i class="fa-solid fa-money-bill-wave w-5 text-center text-primary/70"></i> Rp {{ number_format($job['salary'], 0, ',', '.') }} / {{ str_replace('Per ', '', $job['salary_type']) }}
+                                <div class="flex items-center gap-2 text-sm text-text-gray">
+                                    <i class="fa-solid fa-money-bill-wave w-5 text-center text-primary/70"></i> <span>Rp {{ number_format($job['salary'], 0, ',', '.') }} / {{ str_replace('Per ', '', $job['salary_type']) }}</span>
                                 </div>
                             </div>
                             

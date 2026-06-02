@@ -99,14 +99,14 @@
                     </div>
                     
                     <div class="space-y-2 mb-6 flex-grow">
-                        <div class="flex items-center text-sm text-text-gray">
-                            <i class="fa-solid fa-location-dot w-5 text-center text-primary/70"></i> {{ $job['location'] }}
+                        <div class="flex items-center gap-2 text-sm text-text-gray">
+                            <i class="fa-solid fa-location-dot w-5 text-center text-primary/70"></i> <span>{{ $job['location'] }}</span>
                         </div>
-                        <div class="flex items-center text-sm text-text-gray">
-                            <i class="fa-solid fa-clock w-5 text-center text-primary/70"></i> {{ $job['schedule'] }}
+                        <div class="flex items-center gap-2 text-sm text-text-gray">
+                            <i class="fa-solid fa-clock w-5 text-center text-primary/70"></i> <span>{{ $job['schedule'] }}</span>
                         </div>
-                        <div class="flex items-center text-sm text-text-gray">
-                            <i class="fa-solid fa-money-bill-wave w-5 text-center text-primary/70"></i> Rp {{ number_format($job['salary'], 0, ',', '.') }} / {{ str_replace('Per ', '', $job['salary_type']) }}
+                        <div class="flex items-center gap-2 text-sm text-text-gray">
+                            <i class="fa-solid fa-money-bill-wave w-5 text-center text-primary/70"></i> <span>Rp {{ number_format($job['salary'], 0, ',', '.') }} / {{ str_replace('Per ', '', $job['salary_type']) }}</span>
                         </div>
                     </div>
                     
@@ -219,7 +219,7 @@
         
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center max-w-3xl mx-auto">
-                <h2 class="text-3xl md:text-4xl font-bold mb-6">Siap Memulai Perjalananmu?</h2>
+                <h2 class="text-3xl md:text-4xl text-secondary font-bold mb-6">Siap Memulai Perjalananmu?</h2>
                 <p class="text-blue-100 text-lg mb-10">Bergabunglah dengan ribuan mahasiswa dan UMKM lainnya yang sudah merasakan manfaat dari Partimeku.</p>
                 <div class="flex flex-col sm:flex-row justify-center gap-4">
                     <a href="{{ url('/register/mahasiswa') }}" class="inline-flex justify-center items-center px-8 py-4 bg-white text-primary rounded-md font-bold hover:bg-gray-100 transition-colors shadow-lg text-lg">
