@@ -15,14 +15,14 @@ return new class extends Migration
         $table->id();
         $table->string('name');
         $table->string('email')->unique();
-        $table->string('no_hp')->nullable(); // Ditambahkan dari FR-002
+        $table->string('no_hp')->nullable(); // FR-002
         $table->timestamp('email_verified_at')->nullable();
         $table->string('password');
         
-        // Role pengguna sesuai SRS: admin, penyedia, pelamar
+        // Role pengguna: admin, penyedia, pelamar
         $table->enum('role', ['admin', 'penyedia', 'pelamar'])->default('pelamar');
         
-        // Status akun untuk proses verifikasi Admin (FR-003)
+        // Status verifikasi Akun (FR-003)
         $table->enum('status', ['pending', 'verified', 'rejected'])->default('pending');
         
         $table->rememberToken();
