@@ -64,6 +64,7 @@ Route::prefix('penyedia')->group(function () {
     Route::get('/profile', [PenyediaController::class, 'profile']);
 });
 
+<<<<<<< HEAD
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
@@ -76,3 +77,10 @@ Route::middleware(['auth'])->prefix('penyedia')->group(function () {
     Route::post('/lowongan', [LowonganController::class, 'store'])->name('penyedia.lowongan.store');
     Route::put('/lowongan/{id}', [LowonganController::class, 'update'])->name('penyedia.lowongan.update');
 });
+=======
+Route::middleware(['auth'])->prefix('mahasiswa')->group(function () {
+    Route::get('/lowongan', [MahasiswaController::class, 'cariLowongan'])->name('mahasiswa.lowongan.index');
+    Route::post('/lowongan/{lowongan_id}/lamar', [MahasiswaController::class, 'lamarPekerjaan'])->name('mahasiswa.lowongan.lamar');
+    Route::get('/lamaran-saya', [MahasiswaController::class, 'statusLamaran'])->name('mahasiswa.lamaran.status');
+});
+>>>>>>> feature/mahasiswa-lamaran
