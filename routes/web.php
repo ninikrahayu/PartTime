@@ -5,6 +5,7 @@ use App\Http\Controllers\PublicController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\PenyediaController;
+use App\Http\Controllers\LowonganController;
 
 // Public Routes
 Route::get('/', [PublicController::class, 'landing']);
@@ -59,4 +60,10 @@ Route::prefix('penyedia')->group(function () {
     Route::get('/applications/{id}', [PenyediaController::class, 'applicationDetail']);
     Route::get('/reviews', [PenyediaController::class, 'reviews']);
     Route::get('/profile', [PenyediaController::class, 'profile']);
+});
+
+Route::middleware(['auth'])->prefix('penyedia')->group(function () {
+    Route::get('/lowongan', [LowonganController::class, 'index'])->name('penyedia.lowongan.index');
+    Route::post('/lowongan', [LowonganController::class, 'store'])->name('penyedia.lowongan.store');
+    Route::put('/lowongan/{id}', [LowonganController::class, 'update'])->name('penyedia.lowongan.update');
 });
