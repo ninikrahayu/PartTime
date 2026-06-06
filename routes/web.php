@@ -5,6 +5,7 @@ use App\Http\Controllers\PublicController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\PenyediaController;
+use App\Http\Controllers\ProfilController;
 
 // Public Routes
 Route::get('/', [PublicController::class, 'landing']);
@@ -37,6 +38,7 @@ Route::prefix('admin')->group(function () {
 
 // Mahasiswa Routes
 Route::prefix('mahasiswa')->group(function () {
+    Route::put('/profil', [ProfilController::class, 'updateMahasiswa'])->name('mahasiswa.profil.update');
     Route::get('/dashboard', [MahasiswaController::class, 'dashboard']);
     Route::get('/jobs', [MahasiswaController::class, 'jobs']);
     Route::get('/jobs/{id}', [MahasiswaController::class, 'jobDetail']);
@@ -49,6 +51,9 @@ Route::prefix('mahasiswa')->group(function () {
 
 // Penyedia Routes
 Route::prefix('penyedia')->group(function () {
+    Route::put('/profil', [ProfilController::class, 'updatePenyedia'])->name('penyedia.profil.update');
+    Route::get('/lowongan/{id}/pelamar', [LowonganController::class, 'daftarPelamar'])->name('penyedia.lowongan.pelamar');
+    Route::put('/lamaran/{lamaran_id}/status', [LowonganController::class, 'ubahStatusLamaran'])->name('penyedia.lamaran.status');
     Route::get('/dashboard', [PenyediaController::class, 'dashboard']);
     Route::get('/profil-usaha', [PenyediaController::class, 'profilUsaha']);
     Route::get('/jobs', [PenyediaController::class, 'jobs']);
