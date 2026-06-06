@@ -63,6 +63,9 @@ Route::prefix('penyedia')->group(function () {
 });
 
 Route::middleware(['auth'])->prefix('penyedia')->group(function () {
+    Route::put('/profil', [ProfilController::class, 'updatePenyedia'])->name('penyedia.profil.update');
+    Route::get('/lowongan/{id}/pelamar', [LowonganController::class, 'daftarPelamar'])->name('penyedia.lowongan.pelamar');
+    Route::put('/lamaran/{lamaran_id}/status', [LowonganController::class, 'ubahStatusLamaran'])->name('penyedia.lamaran.status');
     Route::get('/lowongan', [LowonganController::class, 'index'])->name('penyedia.lowongan.index');
     Route::post('/lowongan', [LowonganController::class, 'store'])->name('penyedia.lowongan.store');
     Route::put('/lowongan/{id}', [LowonganController::class, 'update'])->name('penyedia.lowongan.update');
