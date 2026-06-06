@@ -62,6 +62,7 @@ Route::prefix('penyedia')->group(function () {
 });
 
 Route::middleware(['auth'])->prefix('mahasiswa')->group(function () {
+    Route::put('/profil', [ProfilController::class, 'updateMahasiswa'])->name('mahasiswa.profil.update');
     Route::get('/lowongan', [MahasiswaController::class, 'cariLowongan'])->name('mahasiswa.lowongan.index');
     Route::post('/lowongan/{lowongan_id}/lamar', [MahasiswaController::class, 'lamarPekerjaan'])->name('mahasiswa.lowongan.lamar');
     Route::get('/lamaran-saya', [MahasiswaController::class, 'statusLamaran'])->name('mahasiswa.lamaran.status');
