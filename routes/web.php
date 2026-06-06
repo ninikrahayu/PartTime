@@ -5,6 +5,7 @@ use App\Http\Controllers\PublicController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\PenyediaController;
+use App\Http\Controllers\ProfilController;
 
 // Public Routes
 Route::get('/', [PublicController::class, 'landing']);
