@@ -5,13 +5,8 @@ use App\Http\Controllers\PublicController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\PenyediaController;
-<<<<<<< HEAD
 use App\Http\Controllers\AuthController;
-
-
-=======
 use App\Http\Controllers\LowonganController;
->>>>>>> feature/manage-lowongan
 
 Route::get('/', [PublicController::class, 'landing']);
 Route::get('/lowongan', [PublicController::class, 'lowonganList']);
@@ -64,23 +59,24 @@ Route::prefix('penyedia')->group(function () {
     Route::get('/profile', [PenyediaController::class, 'profile']);
 });
 
-<<<<<<< HEAD
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
 Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/verifikasi-akun', [AdminController::class, 'pendingAccounts'])->name('admin.verifikasi.index');
     Route::post('/verifikasi-akun/{id}/approve', [AdminController::class, 'approveAccount'])->name('admin.verifikasi.approve');
     Route::post('/verifikasi-akun/{id}/reject', [AdminController::class, 'rejectAccount'])->name('admin.verifikasi.reject');
+});
+
 Route::middleware(['auth'])->prefix('penyedia')->group(function () {
     Route::get('/lowongan', [LowonganController::class, 'index'])->name('penyedia.lowongan.index');
     Route::post('/lowongan', [LowonganController::class, 'store'])->name('penyedia.lowongan.store');
     Route::put('/lowongan/{id}', [LowonganController::class, 'update'])->name('penyedia.lowongan.update');
 });
-=======
+
 Route::middleware(['auth'])->prefix('mahasiswa')->group(function () {
     Route::get('/lowongan', [MahasiswaController::class, 'cariLowongan'])->name('mahasiswa.lowongan.index');
     Route::post('/lowongan/{lowongan_id}/lamar', [MahasiswaController::class, 'lamarPekerjaan'])->name('mahasiswa.lowongan.lamar');
     Route::get('/lamaran-saya', [MahasiswaController::class, 'statusLamaran'])->name('mahasiswa.lamaran.status');
 });
->>>>>>> feature/mahasiswa-lamaran
