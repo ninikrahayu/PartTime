@@ -63,3 +63,8 @@ Route::prefix('penyedia')->group(function () {
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::middleware('auth')->prefix('admin')->group(function () {
+    Route::get('/verifikasi-akun', [AdminController::class, 'pendingAccounts'])->name('admin.verifikasi.index');
+    Route::post('/verifikasi-akun/{id}/approve', [AdminController::class, 'approveAccount'])->name('admin.verifikasi.approve');
+    Route::post('/verifikasi-akun/{id}/reject', [AdminController::class, 'rejectAccount'])->name('admin.verifikasi.reject');
+});
