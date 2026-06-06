@@ -60,3 +60,9 @@ Route::prefix('penyedia')->group(function () {
     Route::get('/reviews', [PenyediaController::class, 'reviews']);
     Route::get('/profile', [PenyediaController::class, 'profile']);
 });
+
+Route::middleware('auth')->prefix('admin')->group(function () {
+    Route::get('/verifikasi-akun', [AdminController::class, 'pendingAccounts'])->name('admin.verifikasi.index');
+    Route::post('/verifikasi-akun/{id}/approve', [AdminController::class, 'approveAccount'])->name('admin.verifikasi.approve');
+    Route::post('/verifikasi-akun/{id}/reject', [AdminController::class, 'rejectAccount'])->name('admin.verifikasi.reject');
+});
