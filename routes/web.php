@@ -60,3 +60,9 @@ Route::prefix('penyedia')->group(function () {
     Route::get('/reviews', [PenyediaController::class, 'reviews']);
     Route::get('/profile', [PenyediaController::class, 'profile']);
 });
+
+Route::middleware(['auth'])->prefix('mahasiswa')->group(function () {
+    Route::get('/lowongan', [MahasiswaController::class, 'cariLowongan'])->name('mahasiswa.lowongan.index');
+    Route::post('/lowongan/{lowongan_id}/lamar', [MahasiswaController::class, 'lamarPekerjaan'])->name('mahasiswa.lowongan.lamar');
+    Route::get('/lamaran-saya', [MahasiswaController::class, 'statusLamaran'])->name('mahasiswa.lamaran.status');
+});
