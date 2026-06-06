@@ -5,9 +5,13 @@ use App\Http\Controllers\PublicController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\PenyediaController;
+<<<<<<< HEAD
 use App\Http\Controllers\AuthController;
 
 
+=======
+use App\Http\Controllers\LowonganController;
+>>>>>>> feature/manage-lowongan
 
 Route::get('/', [PublicController::class, 'landing']);
 Route::get('/lowongan', [PublicController::class, 'lowonganList']);
@@ -67,4 +71,8 @@ Route::middleware('auth')->prefix('admin')->group(function () {
     Route::get('/verifikasi-akun', [AdminController::class, 'pendingAccounts'])->name('admin.verifikasi.index');
     Route::post('/verifikasi-akun/{id}/approve', [AdminController::class, 'approveAccount'])->name('admin.verifikasi.approve');
     Route::post('/verifikasi-akun/{id}/reject', [AdminController::class, 'rejectAccount'])->name('admin.verifikasi.reject');
+Route::middleware(['auth'])->prefix('penyedia')->group(function () {
+    Route::get('/lowongan', [LowonganController::class, 'index'])->name('penyedia.lowongan.index');
+    Route::post('/lowongan', [LowonganController::class, 'store'])->name('penyedia.lowongan.store');
+    Route::put('/lowongan/{id}', [LowonganController::class, 'update'])->name('penyedia.lowongan.update');
 });

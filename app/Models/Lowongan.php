@@ -14,13 +14,20 @@ class Lowongan extends Model
         'shift', 'gaji', 'lokasi', 'status'
     ];
 
+<<<<<<< HEAD
     // Relasi balik: Lowongan ini milik 1 Penyedia (User)
+=======
+
+>>>>>>> feature/manage-lowongan
     public function penyedia()
     {
         return $this->belongsTo(User::class, 'penyedia_id');
     }
 
+<<<<<<< HEAD
     // Relasi: 1 Lowongan bisa punya banyak Lamaran masuk
+=======
+>>>>>>> feature/manage-lowongan
     public function lamarans()
     {
         return $this->hasMany(Lamaran::class);
