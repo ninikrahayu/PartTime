@@ -9,13 +9,11 @@ class Profile extends Model
 {
     use HasFactory;
 
-    // Kolom apa saja yang boleh diisi (Mass Assignment)
     protected $fillable = [
         'user_id', 'universitas', 'semester', 'jurusan', 'cv_path',
         'nama_toko', 'deskripsi_usaha', 'alamat_lengkap', 'jam_operasional', 'foto_usaha_path'
     ];
 
-    // Relasi balik: Profil ini milik 1 User
     public function user()
     {
         return $this->belongsTo(User::class);
