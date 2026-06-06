@@ -37,6 +37,7 @@ Route::prefix('admin')->group(function () {
 });
 
 Route::prefix('mahasiswa')->group(function () {
+    Route::put('/profil', [ProfilController::class, 'updateMahasiswa'])->name('mahasiswa.profil.update');
     Route::get('/dashboard', [MahasiswaController::class, 'dashboard']);
     Route::get('/jobs', [MahasiswaController::class, 'jobs']);
     Route::get('/jobs/{id}', [MahasiswaController::class, 'jobDetail']);
@@ -48,6 +49,9 @@ Route::prefix('mahasiswa')->group(function () {
 });
 
 Route::prefix('penyedia')->group(function () {
+    Route::put('/profil', [ProfilController::class, 'updatePenyedia'])->name('penyedia.profil.update');
+    Route::get('/lowongan/{id}/pelamar', [LowonganController::class, 'daftarPelamar'])->name('penyedia.lowongan.pelamar');
+    Route::put('/lamaran/{lamaran_id}/status', [LowonganController::class, 'ubahStatusLamaran'])->name('penyedia.lamaran.status');
     Route::get('/dashboard', [PenyediaController::class, 'dashboard']);
     Route::get('/profil-usaha', [PenyediaController::class, 'profilUsaha']);
     Route::get('/jobs', [PenyediaController::class, 'jobs']);
