@@ -5,8 +5,10 @@ use App\Http\Controllers\PublicController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\PenyediaController;
+use App\Http\Controllers\AuthController;
 
-// Public Routes
+
+
 Route::get('/', [PublicController::class, 'landing']);
 Route::get('/lowongan', [PublicController::class, 'lowonganList']);
 Route::get('/lowongan/{id}', [PublicController::class, 'lowonganDetail']);
@@ -17,7 +19,6 @@ Route::get('/login', [PublicController::class, 'login']);
 Route::get('/forgot-password', [PublicController::class, 'forgotPassword']);
 Route::get('/reset-password', [PublicController::class, 'resetPassword']);
 
-// Admin Routes
 Route::prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard']);
     Route::get('/verifikasi-akun', [AdminController::class, 'verifikasiAkun']);
@@ -35,7 +36,6 @@ Route::prefix('admin')->group(function () {
     Route::get('/profile', [AdminController::class, 'profile']);
 });
 
-// Mahasiswa Routes
 Route::prefix('mahasiswa')->group(function () {
     Route::get('/dashboard', [MahasiswaController::class, 'dashboard']);
     Route::get('/jobs', [MahasiswaController::class, 'jobs']);
@@ -47,7 +47,6 @@ Route::prefix('mahasiswa')->group(function () {
     Route::get('/profile', [MahasiswaController::class, 'profile']);
 });
 
-// Penyedia Routes
 Route::prefix('penyedia')->group(function () {
     Route::get('/dashboard', [PenyediaController::class, 'dashboard']);
     Route::get('/profil-usaha', [PenyediaController::class, 'profilUsaha']);
@@ -60,3 +59,7 @@ Route::prefix('penyedia')->group(function () {
     Route::get('/reviews', [PenyediaController::class, 'reviews']);
     Route::get('/profile', [PenyediaController::class, 'profile']);
 });
+
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
+Route::post('/register', [AuthController::class, 'register'])->name('register.post');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
