@@ -14,7 +14,7 @@
         </div>
         <div class="flex flex-wrap gap-2">
             @if(($job['status'] ?? 'aktif') === 'aktif')
-                <button onclick="showToast('Lowongan berhasil dinonaktifkan', 'warning')" class="inline-flex items-center rounded-md bg-white border border-danger/30 text-danger px-4 py-2 text-sm font-medium hover:bg-danger/5 transition-colors">
+                <button onclick="openModal('modal-nonaktif')" class="inline-flex items-center rounded-md bg-white border border-danger/30 text-danger px-4 py-2 text-sm font-medium hover:bg-danger/5 transition-colors">
                     <i class="fa-solid fa-ban mr-2"></i> Nonaktifkan
                 </button>
             @else
@@ -289,4 +289,22 @@
         </div>
     </div>
 </div>
+
+<!-- Modal Nonaktif -->
+<x-confirm-modal id="modal-nonaktif" title="Nonaktifkan Lowongan" message="Apakah Anda yakin ingin menonaktifkan lowongan ini?" confirmText="Nonaktifkan" />
+
+@push('scripts')
+<script>
+    function openModal(id) {
+        document.getElementById(id).classList.remove('hidden');
+    }
+    function closeModal(id) {
+        document.getElementById(id).classList.add('hidden');
+    }
+    function confirmAction(id) {
+        closeModal(id);
+        if (id === 'modal-nonaktif') showToast('Lowongan berhasil dinonaktifkan', 'warning');
+    }
+</script>
+@endpush
 @endsection

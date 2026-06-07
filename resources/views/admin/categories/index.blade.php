@@ -43,7 +43,7 @@
                         <a href="{{ url('/admin/categories/'.$category['id'].'/edit') }}" class="text-text-gray hover:text-warning transition-colors" title="Edit">
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
-                        <button onclick="showToast('Nonaktifkan {{ $category['name'] }}', 'warning')" class="text-text-gray hover:text-warning transition-colors" title="Nonaktifkan">
+                        <button onclick="openModal('modal-nonaktif')" class="text-text-gray hover:text-warning transition-colors" title="Nonaktifkan">
                             <i class="fa-solid fa-power-off"></i>
                         </button>
                         <button onclick="openModal('modal-delete')" class="text-text-gray hover:text-danger transition-colors" title="Hapus">
@@ -82,6 +82,9 @@
 <!-- Modal Delete -->
 <x-confirm-modal id="modal-delete" title="Hapus Kategori" message="Apakah Anda yakin ingin menghapus kategori ini? Pastikan tidak ada lowongan yang terikat." confirmText="Hapus" />
 
+<!-- Modal Nonaktif -->
+<x-confirm-modal id="modal-nonaktif" title="Nonaktifkan Kategori" message="Apakah Anda yakin ingin menonaktifkan kategori ini?" confirmText="Nonaktifkan" />
+
 @push('scripts')
 <script>
     function openModal(id) {
@@ -92,7 +95,8 @@
     }
     function confirmAction(id) {
         closeModal(id);
-        showToast('Berhasil dihapus', 'success');
+        if (id === 'modal-delete') showToast('Berhasil dihapus', 'success');
+        else if (id === 'modal-nonaktif') showToast('Berhasil dinonaktifkan', 'warning');
     }
 </script>
 @endpush

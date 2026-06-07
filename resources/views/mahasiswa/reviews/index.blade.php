@@ -11,7 +11,7 @@
                 4.8
             </div>
             <div>
-                <h2 class="text-xl font-bold mb-1">Rating Rata-rata Anda</h2>
+                <h2 class="text-xl font-bold mb-1 text-white">Rating Rata-rata Anda</h2>
                 <div class="flex text-secondary text-lg mb-1">
                     <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
                 </div>

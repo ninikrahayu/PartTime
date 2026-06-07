@@ -78,12 +78,6 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <!-- Notification Bell (Dummy) -->
-                    <button class="text-text-gray hover:text-primary relative">
-                        <i class="fa-regular fa-bell text-xl"></i>
-                        <span class="absolute top-0 right-0 -mt-1 -mr-1 flex h-4 w-4 items-center justify-center rounded-full bg-danger text-[10px] text-white">3</span>
-                    </button>
-
                     <!-- User Profile Dropdown (Dummy) -->
                     <div class="flex items-center gap-2 cursor-pointer border-l border-border-color pl-4">
                         <img src="https://ui-avatars.com/api/?name=Admin+Utama&background=1E3A8A&color=fff" alt="Admin" class="w-8 h-8 rounded-full object-cover">

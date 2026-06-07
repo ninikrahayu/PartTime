@@ -21,9 +21,9 @@
             </x-select>
         </div>
         <div>
-            <x-button onclick="showToast('Form tambah pengguna dummy', 'info')">
+            <a href="{{ url('/admin/users/create') }}" class="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white shadow-sm hover:brightness-90 transition-all">
                 <i class="fa-solid fa-plus mr-2"></i> Tambah
-            </x-button>
+            </a>
         </div>
     </div>
 
@@ -72,7 +72,7 @@
                             <i class="fa-solid fa-pen-to-square"></i>
                         </a>
                         @if($user['account_status'] === 'aktif')
-                            <button onclick="showToast('Nonaktifkan {{ $user['name'] }}', 'warning')" class="text-text-gray hover:text-warning transition-colors" title="Nonaktifkan">
+                            <button onclick="openModal('modal-nonaktif')" class="text-text-gray hover:text-warning transition-colors" title="Nonaktifkan">
                                 <i class="fa-solid fa-ban"></i>
                             </button>
                         @else
@@ -95,6 +95,9 @@
 <!-- Modal Delete -->
 <x-confirm-modal id="modal-delete" title="Hapus Pengguna" message="Apakah Anda yakin ingin menghapus pengguna ini? Semua data terkait juga akan terhapus." confirmText="Hapus" />
 
+<!-- Modal Nonaktif -->
+<x-confirm-modal id="modal-nonaktif" title="Nonaktifkan Pengguna" message="Apakah Anda yakin ingin menonaktifkan pengguna ini?" confirmText="Nonaktifkan" />
+
 @push('scripts')
 <script>
     function openModal(id) {
@@ -105,7 +108,8 @@
     }
     function confirmAction(id) {
         closeModal(id);
-        showToast('Berhasil dihapus', 'success');
+        if (id === 'modal-delete') showToast('Berhasil dihapus', 'success');
+        else if (id === 'modal-nonaktif') showToast('Berhasil dinonaktifkan', 'warning');
     }
 </script>
 @endpush

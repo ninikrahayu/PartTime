@@ -8,7 +8,7 @@
     <!-- Header / Greeting -->
     <div class="bg-primary text-white rounded-md p-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 relative overflow-hidden">
         <div class="relative z-10">
-            <h2 class="text-2xl font-bold mb-1">Halo, {{ explode(' ', $user['name'])[0] }}!</h2>
+            <h2 class="text-2xl text-white font-bold mb-1">Halo, {{ explode(' ', $user['name'])[0] }}!</h2>
             <p class="text-blue-100 text-sm">Siap untuk mencari pengalaman kerja baru hari ini?</p>
         </div>
         <div class="relative z-10 flex items-center bg-white/10 rounded-md px-4 py-3 backdrop-blur-sm">
@@ -147,7 +147,7 @@
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 @foreach($recent_jobs as $job)
-                <x-card class="hover:shadow-md transition-shadow group flex flex-col h-full cursor-pointer relative" onclick="window.location.href='{{ url('/mahasiswa/jobs/'.$job['id']) }}'">
+                <x-card class="hover:shadow-md transition-shadow group flex flex-col  cursor-pointer relative" onclick="window.location.href='{{ url('/mahasiswa/jobs/'.$job['id']) }}'">
                     <!-- Favorit Button Overlay -->
                     <button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur border border-border-color flex items-center justify-center text-text-gray hover:text-danger hover:border-danger transition-colors z-10" onclick="event.stopPropagation(); this.classList.toggle('text-danger'); this.classList.toggle('text-text-gray'); this.querySelector('i').classList.toggle('fa-solid'); this.querySelector('i').classList.toggle('fa-regular'); showToast('Favorit diperbarui', 'success');">
                         <i class="fa-regular fa-heart"></i>
