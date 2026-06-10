@@ -15,7 +15,7 @@ Route::get('/lowongan/{id}', [PublicController::class, 'lowonganDetail']);
 Route::get('/register', [PublicController::class, 'registerRole']);
 Route::get('/register/mahasiswa', [PublicController::class, 'registerMahasiswa']);
 Route::get('/register/penyedia', [PublicController::class, 'registerPenyedia']);
-Route::get('/login', [PublicController::class, 'login']);
+Route::get('/login', [PublicController::class, 'login'])->name('login');
 Route::get('/forgot-password', [PublicController::class, 'forgotPassword']);
 Route::get('/reset-password', [PublicController::class, 'resetPassword']);
 
@@ -24,6 +24,7 @@ Route::prefix('admin')->group(function () {
     Route::get('/verifikasi-akun', [AdminController::class, 'verifikasiAkun']);
     Route::get('/verifikasi-lowongan', [AdminController::class, 'verifikasiLowongan']);
     Route::get('/users', [AdminController::class, 'users']);
+    Route::get('/users/create', [AdminController::class, 'createUser']);
     Route::get('/users/{id}', [AdminController::class, 'showUser']);
     Route::get('/users/{id}/edit', [AdminController::class, 'editUser']);
     Route::get('/categories', [AdminController::class, 'categories']);
@@ -68,11 +69,11 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::middleware('auth')->prefix('admin')->group(function () {
-    Route::get('/verifikasi-akun', [AdminController::class, 'pendingAccounts'])->name('admin.verifikasi.index');
-    Route::post('/verifikasi-akun/{id}/approve', [AdminController::class, 'approveAccount'])->name('admin.verifikasi.approve');
-    Route::post('/verifikasi-akun/{id}/reject', [AdminController::class, 'rejectAccount'])->name('admin.verifikasi.reject');
-});
+// Route::middleware('auth')->prefix('admin')->group(function () {
+//     Route::get('/verifikasi-akun', [AdminController::class, 'pendingAccounts'])->name('admin.verifikasi.index');
+//     Route::post('/verifikasi-akun/{id}/approve', [AdminController::class, 'approveAccount'])->name('admin.verifikasi.approve');
+//     Route::post('/verifikasi-akun/{id}/reject', [AdminController::class, 'rejectAccount'])->name('admin.verifikasi.reject');
+// });
 
 Route::middleware(['auth'])->prefix('penyedia')->group(function () {
     Route::put('/profil', [ProfilController::class, 'updatePenyedia'])->name('penyedia.profil.update');

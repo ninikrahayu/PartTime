@@ -30,15 +30,15 @@
             <x-card class="shadow-sm border-border-color">
                 <div class="flex flex-col items-center">
                     <div class="relative mb-4 group cursor-pointer" onclick="document.getElementById('logo-upload').click()">
-                        <img src="{{ asset('images/dummy/default-logo.png') }}" alt="{{ $provider['business_name'] }}" class="w-32 h-32 rounded-full object-cover border-4 border-surface shadow-sm" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($provider['business_name']) }}&background=1E3A8A&color=fff&size=128'">
+                        <img src="{{ asset('images/dummy/default-logo.png') }}" alt="{{ $provider['company_name'] ?? 'Perusahaan' }}" class="w-32 h-32 rounded-full object-cover border-4 border-surface shadow-sm" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($provider['company_name'] ?? 'Penyedia') }}&background=1E3A8A&color=fff&size=128'">
                         <div class="absolute inset-0 bg-black/50 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                             <i class="fa-solid fa-camera text-white text-xl"></i>
                         </div>
                         <input type="file" id="logo-upload" class="hidden" accept="image/*" onchange="showToast('Logo berhasil diubah (Dummy)', 'success')">
                     </div>
                     
-                    <h2 class="text-lg font-bold text-text-dark text-center">{{ $provider['business_name'] }}</h2>
-                    <p class="text-sm text-text-gray">{{ $provider['business_type'] }}</p>
+                    <h2 class="text-lg font-bold text-text-dark text-center">{{ $provider['company_name'] ?? '' }}</h2>
+                    <p class="text-sm text-text-gray">{{ $provider['company_type'] ?? '' }}</p>
                     
                     <div class="mt-3 flex items-center justify-center">
                         <x-status-badge :status="$user['verification_status']" />
@@ -47,7 +47,7 @@
                     <div class="mt-6 w-full space-y-3">
                         <div class="flex items-center gap-3 text-sm text-text-gray">
                             <i class="fa-solid fa-phone w-5 text-center text-primary"></i>
-                            <span>{{ $provider['phone'] }}</span>
+                            <span>{{ $provider['business_phone'] ?? '' }}</span>
                         </div>
                         <div class="flex items-center gap-3 text-sm text-text-gray">
                             <i class="fa-solid fa-envelope w-5 text-center text-primary"></i>
@@ -96,16 +96,16 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
                             <label class="block text-sm font-medium text-text-dark mb-1">Nama Usaha / Instansi <span class="text-danger">*</span></label>
-                            <x-input type="text" value="{{ $provider['business_name'] }}" required />
+                            <x-input type="text" value="{{ $provider['company_name'] }}" required />
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-text-dark mb-1">Jenis Usaha <span class="text-danger">*</span></label>
                             <x-select required>
-                                <option value="F&B" {{ $provider['business_type'] == 'F&B' ? 'selected' : '' }}>F&B (Kafe, Restoran)</option>
-                                <option value="Retail" {{ $provider['business_type'] == 'Retail' ? 'selected' : '' }}>Retail (Toko, Minimarket)</option>
-                                <option value="Jasa" {{ $provider['business_type'] == 'Jasa' ? 'selected' : '' }}>Jasa</option>
-                                <option value="Pendidikan" {{ $provider['business_type'] == 'Pendidikan' ? 'selected' : '' }}>Pendidikan</option>
-                                <option value="Lainnya" {{ $provider['business_type'] == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                                <option value="F&B" {{ $provider['company_type'] == 'F&B' ? 'selected' : '' }}>F&B (Kafe, Restoran)</option>
+                                <option value="Retail" {{ $provider['company_type'] == 'Retail' ? 'selected' : '' }}>Retail (Toko, Minimarket)</option>
+                                <option value="Jasa" {{ $provider['company_type'] == 'Jasa' ? 'selected' : '' }}>Jasa</option>
+                                <option value="Pendidikan" {{ $provider['company_type'] == 'Pendidikan' ? 'selected' : '' }}>Pendidikan</option>
+                                <option value="Lainnya" {{ $provider['company_type'] == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
                             </x-select>
                         </div>
                     </div>
@@ -113,7 +113,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div>
                             <label class="block text-sm font-medium text-text-dark mb-1">Nomor Telepon / WA <span class="text-danger">*</span></label>
-                            <x-input type="tel" value="{{ $provider['phone'] }}" required />
+                            <x-input type="tel" value="{{ $provider['business_phone'] }}" required />
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-text-dark mb-1">Email <span class="text-danger">*</span></label>

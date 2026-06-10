@@ -97,10 +97,6 @@
             <header class="h-16 bg-white border-b border-border-color flex items-center justify-between px-6 sticky top-0 z-30">
                 <h1 class="text-lg font-semibold text-text-dark truncate">@yield('page_title', 'Dashboard')</h1>
                 <div class="flex items-center gap-4">
-                    <button class="text-text-gray hover:text-primary relative p-1">
-                        <i class="fa-regular fa-bell text-xl"></i>
-                        <span class="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-danger text-[10px] text-white">1</span>
-                    </button>
                 </div>
             </header>
 

@@ -60,7 +60,7 @@
                     </div>
                     <div class="sm:col-span-2">
                         <p class="text-xs text-text-gray mb-1">Catatan dari Anda (Penyedia)</p>
-                        @if($application['notes_from_provider'])
+                        @if($application['notes_from_provider'] ?? false)
                             <p class="text-sm text-text-dark bg-surface p-3 rounded-md border border-border-color">{{ $application['notes_from_provider'] }}</p>
                         @else
                             <p class="text-sm text-text-gray italic">Tidak ada catatan untuk pelamar.</p>
@@ -77,7 +77,7 @@
                 <div class="space-y-6">
                     <div>
                         <p class="text-sm font-semibold text-text-dark mb-2">Surat Lamaran / Cover Letter</p>
-                        <div class="p-4 bg-surface rounded-md text-sm text-text-dark leading-relaxed whitespace-pre-wrap border border-border-color">{{ $application['cover_letter'] }}</div>
+                        <div class="p-4 bg-surface rounded-md text-sm text-text-dark leading-relaxed whitespace-pre-wrap border border-border-color">{{ $application['cover_letter'] ?? 'Tidak ada surat lamaran / cover letter.' }}</div>
                     </div>
                     
                     <div class="pt-4 border-t border-border-color">

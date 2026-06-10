@@ -67,18 +67,6 @@
         </x-card>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <a href="{{ url('/penyedia/jobs/create') }}" class="flex items-center justify-center gap-2 p-4 bg-primary text-white rounded-md font-semibold hover:bg-blue-900 transition-colors shadow-sm">
-            <i class="fa-solid fa-plus"></i> Pasang Lowongan Baru
-        </a>
-        <a href="{{ url('/penyedia/applications') }}" class="flex items-center justify-center gap-2 p-4 bg-white border border-border-color text-text-dark rounded-md font-semibold hover:bg-surface transition-colors shadow-sm">
-            <i class="fa-solid fa-list-check text-primary"></i> Kelola Lamaran Masuk
-        </a>
-        <a href="{{ url('/penyedia/profil-usaha') }}" class="flex items-center justify-center gap-2 p-4 bg-white border border-border-color text-text-dark rounded-md font-semibold hover:bg-surface transition-colors shadow-sm">
-            <i class="fa-solid fa-store text-secondary"></i> Lengkapi Profil Usaha
-        </a>
-    </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         

@@ -7,7 +7,7 @@ use App\Models\Lamaran;
 use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use App\Services\DummyData;
 class MahasiswaController extends Controller
 {
     public function cariLowongan(Request $request)
@@ -67,5 +67,72 @@ class MahasiswaController extends Controller
                            ->get();
                            
         return view('mahasiswa.applications.index', compact('lamarans'));
+    }
+
+    // --- METODE DUMMY DATA UNTUK UI (JANGAN DIHAPUS SEBELUM UI DIINTEGRASIKAN SEPENUHNYA) ---
+    protected $currentUserId = 'usr-student-001';
+
+    public function dashboard()
+    {
+        $user = DummyData::findById('users', $this->currentUserId);
+        $my_applications = DummyData::getCollection('applications', 'student_id', $this->currentUserId);
+        
+        $stats = [
+            'lamaran_dikirim' => $my_applications->count(),
+            'lamaran_diproses' => $my_applications->where('status', 'diproses')->count(),
+            'lamaran_diterima' => $my_applications->where('status', 'diterima')->count(),
+            'rating' => 4.8,
+        ];
+
+        $last_application = $my_applications->sortByDesc('applied_at')->first();
+        $recent_reviews = DummyData::getCollection('reviews', 'reviewed_id', $this->currentUserId)->take(3);
+        $recent_jobs = DummyData::getCollection('jobs')->where('status', 'aktif')->take(4);
+
+        return view('mahasiswa.dashboard', compact('user', 'stats', 'last_application', 'recent_reviews', 'recent_jobs'));
+    }
+
+    public function jobs()
+    {
+        $jobs = DummyData::getCollection('jobs')->where('status', 'aktif');
+        $categories = DummyData::getCollection('categories');
+        return view('mahasiswa.jobs.index', compact('jobs', 'categories'));
+    }
+
+    public function jobDetail($id)
+    {
+        $job = DummyData::findById('jobs', $id);
+        if (!$job) abort(404);
+        return view('mahasiswa.jobs.detail', compact('job'));
+    }
+
+    public function favorites()
+    {
+        $favorites = DummyData::getCollection('jobs')->where('status', 'aktif')->take(3);
+        return view('mahasiswa.favorites.index', compact('favorites'));
+    }
+
+    public function applications()
+    {
+        $applications = DummyData::getCollection('applications', 'student_id', $this->currentUserId);
+        return view('mahasiswa.applications.index', compact('applications'));
+    }
+
+    public function applicationDetail($id)
+    {
+        $application = DummyData::findById('applications', $id);
+        if (!$application) abort(404);
+        return view('mahasiswa.applications.detail', compact('application'));
+    }
+
+    public function reviews()
+    {
+        $reviews = DummyData::getCollection('reviews', 'reviewed_id', $this->currentUserId);
+        return view('mahasiswa.reviews.index', compact('reviews'));
+    }
+
+    public function profile()
+    {
+        $user = DummyData::findById('users', $this->currentUserId);
+        return view('mahasiswa.profile.index', compact('user'));
     }
 }

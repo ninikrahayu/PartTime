@@ -42,11 +42,11 @@
                     <h3 class="font-bold text-text-dark text-sm uppercase tracking-wider">Pesan / Cover Letter Anda</h3>
                 </x-slot>
                 <div class="p-5">
-                    <p class="text-sm text-text-gray leading-relaxed whitespace-pre-wrap">{{ $application['cover_letter'] }}</p>
+                    <p class="text-sm text-text-gray leading-relaxed whitespace-pre-wrap">{{ $application['cover_letter'] ?? 'Tidak ada surat lamaran / cover letter.' }}</p>
                 </div>
             </x-card>
 
-            @if($application['notes_from_provider'])
+            @if($application['notes_from_provider'] ?? false)
             <x-card class="shadow-sm border-border-color p-0">
                 <x-slot name="header">
                     <h3 class="font-bold text-text-dark text-sm uppercase tracking-wider text-primary">Catatan dari Penyedia</h3>

@@ -23,7 +23,7 @@
         <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-40 hidden md:hidden" onclick="toggleSidebar()"></div>
 
         <!-- Sidebar -->
-        <aside id="sidebar" class="bg-white border-r border-border-color w-64 flex-shrink-0 flex flex-col fixed inset-y-0 left-0 transform -translate-x-full md:relative md:translate-x-0 z-50 transition-transform duration-300 ease-in-out">
+        <aside id="sidebar" class="bg-white border-r border-border-color w-64 flex-shrink-0 flex flex-col fixed inset-y-0 left-0 transform -translate-x-full md:sticky md:top-0 md:h-screen md:translate-x-0 z-50 transition-transform duration-300 ease-in-out">
             <!-- Sidebar Header -->
             <div class="h-16 flex items-center px-6 border-b border-border-color">
                 <a href="{{ url('/penyedia/dashboard') }}" class="text-xl font-bold text-primary flex items-center gap-2">
@@ -105,11 +105,6 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <!-- Notification Bell (Dummy) -->
-                    <button class="text-text-gray hover:text-primary relative">
-                        <i class="fa-regular fa-bell text-xl"></i>
-                        <span class="absolute top-0 right-0 -mt-1 -mr-1 flex h-4 w-4 items-center justify-center rounded-full bg-danger text-[10px] text-white">2</span>
-                    </button>
 
                     <!-- User Profile Dropdown (Dummy) -->
                     <div class="flex items-center gap-2 cursor-pointer border-l border-border-color pl-4">
