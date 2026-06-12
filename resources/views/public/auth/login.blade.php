@@ -68,13 +68,15 @@
                         <a href="{{ url('/forgot-password') }}" class="font-medium text-primary hover:text-blue-900 hover:underline">Lupa password?</a>
                     </div>
 
-                    <div class="flex flex-col items-center gap-4 mt-8 pt-2">
-                        <button type="button" onclick="togglePassword(this)" class="absolute inset-y-0 right-0 px-4 flex items-center text-text-gray hover:text-text-dark transition-colors">
+                        <div class="flex flex-col items-center gap-4 mt-8 pt-2">
+                        <button type="submit" class="w-full bg-primary hover:bg-blue-900 text-white font-semibold py-3.5 px-8 rounded-xl shadow-md transition-colors">
                             Masuk Sekarang!
                         </button>
-                        <span class="text-sm font-medium text-text-gray"> Belum punya akun? <a href="{{ url('/register') }}" class="text-sm font-medium text-text-gray hover:text-primary hover:underline underline-offset-4 decoration-2 transition-all">
-                            Daftar
-                        </a>
+                        
+                        <span class="text-sm font-medium text-text-gray"> Belum punya akun? 
+                            <a href="{{ url('/register') }}" class="text-sm font-medium text-text-gray hover:text-primary hover:underline underline-offset-4 decoration-2 transition-all">
+                                Daftar
+                            </a>
                         </span>
                     </div>
                 </form>
