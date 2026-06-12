@@ -12,10 +12,10 @@ use App\Http\Controllers\LowonganController;
 Route::get('/', [PublicController::class, 'landing']);
 Route::get('/lowongan', [PublicController::class, 'lowonganList']);
 Route::get('/lowongan/{id}', [PublicController::class, 'lowonganDetail']);
-Route::get('/register', [PublicController::class, 'registerRole']);
-Route::get('/register/mahasiswa', [PublicController::class, 'registerMahasiswa']);
-Route::get('/register/penyedia', [PublicController::class, 'registerPenyedia']);
 Route::get('/login', [PublicController::class, 'login'])->name('login');
+Route::get('/register', [PublicController::class, 'registerRole'])->name('register');
+Route::get('/register/mahasiswa', [PublicController::class, 'registerMahasiswa'])->name('register.mahasiswa');
+Route::get('/register/penyedia', [PublicController::class, 'registerPenyedia'])->name('register.penyedia');
 Route::get('/forgot-password', [PublicController::class, 'forgotPassword']);
 Route::get('/reset-password', [PublicController::class, 'resetPassword']);
 

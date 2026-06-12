@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('fakultas')->nullable();
             $table->string('jurusan')->nullable();
             $table->integer('semester')->nullable();
+            $table->decimal('ipk', 3, 2)->nullable();
             $table->text('alamat')->nullable(); // Bisa dipakai sebagai alamat mahasiswa
             $table->string('ktm_path')->nullable(); // Path file PDF/JPG KTM
             

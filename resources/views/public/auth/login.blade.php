@@ -27,8 +27,25 @@
             <div class="mt-12 md:mt-0 w-full mx-auto">
                 <h1 class="text-3xl md:text-4xl font-bold text-text-dark mb-10 tracking-tight">Masuk ke akun Anda</h1>
                 
+            @if(session('success'))
+                <div class="m-5 rounded-md bg-green-50 p-4 border border-green-200">
+                    <p class="text-sm font-medium text-green-800"><i class="fa-solid fa-circle-check mr-2"></i>{{ session('success') }}</p>
+                </div>
+            @endif
 
-                <form data-dummy-submit data-success-message="Berhasil masuk ke dashboard." class="space-y-6">
+            @if($errors->any())
+                <div class="m-5 rounded-md bg-red-50 p-4 border border-red-200">
+                    <p class="text-sm font-bold text-red-800 mb-2"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Pendaftaran Gagal:</p>
+                    <ul class="list-disc pl-5 text-sm font-medium text-red-800 space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+                <form action="{{ route('login.post') }}" method="POST" class="space-y-6">
+                    @csrf
                     <div>
                         <label class="block text-sm font-semibold text-text-dark mb-2">Email</label>
                         <x-input name="login" type="text" placeholder="Masukkan email Anda" class="w-full py-3.5 px-4 bg-surface border-border-color rounded-xl" required />

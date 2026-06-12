@@ -12,9 +12,27 @@
                 <p class="mt-2 text-sm text-text-gray">Lengkapi data penanggung jawab dan data usaha untuk proses verifikasi admin.</p>
                 
             </div>
+            
+            @if(session('success'))
+                <div class="m-5 rounded-md bg-green-50 p-4 border border-green-200">
+                    <p class="text-sm font-medium text-green-800"><i class="fa-solid fa-circle-check mr-2"></i>{{ session('success') }}</p>
+                </div>
+            @endif
 
-            <form data-dummy-submit data-success-message="Pendaftaran penyedia berhasil dikirim. Status akun Menunggu Verifikasi." class="p-5 sm:p-6">
-                
+            @if($errors->any())
+                <div class="m-5 rounded-md bg-red-50 p-4 border border-red-200">
+                    <p class="text-sm font-bold text-red-800 mb-2"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Pendaftaran Gagal:</p>
+                    <ul class="list-disc pl-5 text-sm font-medium text-red-800 space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form action="{{ route('register.post') }}" method="POST" enctype="multipart/form-data" class="p-5 sm:p-6">
+                @csrf
+                <input type="hidden" name="role" value="penyedia">
                 <!-- Step 1: Data Penanggung Jawab -->
                 <div id="step-1-content" class="space-y-6">
                     <h2 class="text-lg font-semibold text-text-dark border-b border-border-color pb-2">Data Penanggung Jawab</h2>

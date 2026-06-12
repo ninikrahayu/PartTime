@@ -10,13 +10,11 @@ class Profile extends Model
     use HasFactory;
 
     protected $fillable = [
-        'user_id', 
-        'nim', 'universitas', 'fakultas', 'jurusan', 'semester', 'alamat', 'ktm_path',
+        'user_id', 'nim', 'universitas', 'fakultas', 'jurusan', 'semester', 'ipk', 'alamat', 'ktm_path',
         'business_name', 'business_type', 'business_email', 'business_phone', 
         'business_address', 'description', 'logo_path', 'document_path'
     ];
 
-    // Relasi balik ke User
     public function user()
     {
         return $this->belongsTo(User::class);
