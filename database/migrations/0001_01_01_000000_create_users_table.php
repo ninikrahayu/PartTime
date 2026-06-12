@@ -9,26 +9,28 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-{
+public function up(): void
+    {
     Schema::create('users', function (Blueprint $table) {
         $table->id();
         $table->string('name');
+        $table->string('username')->unique(); // Tambahan untuk username
         $table->string('email')->unique();
-        $table->string('no_hp')->nullable(); // FR-002
+        $table->string('no_hp')->nullable(); // Tambahan nomor HP
         $table->timestamp('email_verified_at')->nullable();
         $table->string('password');
+            
+        // Role pengguna: admin, penyedia, mahasiswa
+        $table->enum('role', ['admin', 'penyedia', 'mahasiswa'])->default('mahasiswa');
         
-        // Role pengguna: admin, penyedia, pelamar
-        $table->enum('role', ['admin', 'penyedia', 'pelamar'])->default('pelamar');
-        
-        // Status verifikasi Akun (FR-003)
+        // Status verifikasi: pending, verified, rejected
         $table->enum('status', ['pending', 'verified', 'rejected'])->default('pending');
-        
+            
         $table->rememberToken();
         $table->timestamps();
     });
 
+    // ... (Schema password_reset_tokens dan sessions biarkan seperti aslinya)    
     Schema::create('password_reset_tokens', function (Blueprint $table) {
         $table->string('email')->primary();
         $table->string('token');
