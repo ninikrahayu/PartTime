@@ -40,8 +40,24 @@
                         <label class="block text-sm font-medium text-text-dark">Email<x-input name="email" type="email" class="mt-2" placeholder="nama@email.com" required /></label>
                         <label class="block text-sm font-medium text-text-dark">Username<x-input name="username" type="text" class="mt-2" placeholder="username" required /></label>
                         <label class="block text-sm font-medium text-text-dark">Nomor telepon<x-input name="phone" type="tel" class="mt-2" placeholder="08xxxxxxxxxx" required /></label>
-                        <label class="block text-sm font-medium text-text-dark">Password<x-input name="password" type="password" class="mt-2" placeholder="Minimal 8 karakter" required /></label>
-                        <label class="block text-sm font-medium text-text-dark">Konfirmasi password<x-input name="password_confirmation" type="password" class="mt-2" placeholder="Ulangi password" required /></label>
+                        <div>
+                     <label class="block text-sm font-medium text-text-dark mb-1">Password</label>
+                     <div class="relative mt-2">
+                         <x-input name="password" type="password" class="w-full pr-12" placeholder="Minimal 8 karakter" required />
+                         <button type="button" onclick="togglePassword(this)" class="absolute inset-y-0 right-0 px-4 flex items-center text-text-gray hover:text-text-dark transition-colors">
+                             <i class="fa-solid fa-eye"></i>
+                         </button>
+                     </div>
+                 </div>
+                 <div>
+                     <label class="block text-sm font-medium text-text-dark mb-1">Konfirmasi password</label>
+                     <div class="relative mt-2">
+                         <x-input name="password_confirmation" type="password" class="w-full pr-12" placeholder="Ulangi password" required />
+                         <button type="button" onclick="togglePassword(this)" class="absolute inset-y-0 right-0 px-4 flex items-center text-text-gray hover:text-text-dark transition-colors">
+                             <i class="fa-solid fa-eye"></i>
+                         </button>
+                     </div>
+                 </div>
                     </div>
                     <div class="flex flex-col-reverse gap-3 border-t border-border-color pt-6 sm:flex-row sm:justify-between mt-8">
                         <a href="{{ url('/register') }}" class="inline-flex justify-center rounded-md border border-border-color bg-white px-6 py-2 text-sm font-medium text-text-dark hover:bg-surface">Kembali</a>
@@ -77,6 +93,19 @@
 
 @push('scripts')
 <script>
+    function togglePassword(button) {
+        const input = button.previousElementSibling;
+        const icon = button.querySelector('i');
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash');
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye');
+        }
+    }
     function nextStep() {
         document.getElementById('step-1-content').classList.add('hidden');
         document.getElementById('step-2-content').classList.remove('hidden');

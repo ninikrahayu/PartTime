@@ -48,14 +48,14 @@
                     @csrf
                     <div>
                         <label class="block text-sm font-semibold text-text-dark mb-2">Email</label>
-                        <x-input name="login" type="text" placeholder="Masukkan email Anda" class="w-full py-3.5 px-4 bg-surface border-border-color rounded-xl" required />
+                        <x-input name="email" type="email" placeholder="Masukkan email Anda" class="w-full py-3.5 px-4 bg-surface border-border-color rounded-xl" required />
                     </div>
                     
                     <div>
                         <label class="block text-sm font-semibold text-text-dark mb-2">Password</label>
                         <div class="relative">
                             <x-input name="password" type="password" placeholder="Masukkan password yang kuat" class="w-full py-3.5 px-4 pr-12 bg-surface border-border-color rounded-xl" required />
-                            <button type="button" class="absolute inset-y-0 right-0 px-4 flex items-center text-text-gray hover:text-text-dark transition-colors">
+                            <button type="button" onclick="togglePassword(this)" class="absolute inset-y-0 right-0 px-4 flex items-center text-text-gray hover:text-text-dark transition-colors">
                                 <i class="fa-solid fa-eye"></i>
                             </button>
                         </div>
@@ -69,7 +69,7 @@
                     </div>
 
                     <div class="flex flex-col items-center gap-4 mt-8 pt-2">
-                        <button type="submit" class="w-full bg-primary hover:bg-blue-900 text-white font-semibold py-3.5 px-8 rounded-xl shadow-md transition-colors">
+                        <button type="button" onclick="togglePassword(this)" class="absolute inset-y-0 right-0 px-4 flex items-center text-text-gray hover:text-text-dark transition-colors">
                             Masuk Sekarang!
                         </button>
                         <span class="text-sm font-medium text-text-gray"> Belum punya akun? <a href="{{ url('/register') }}" class="text-sm font-medium text-text-gray hover:text-primary hover:underline underline-offset-4 decoration-2 transition-all">
@@ -91,5 +91,23 @@
     </div>
     
     @stack('scripts')
+    <script>
+    function togglePassword(button) {
+        // Mengambil elemen input password yang ada di sebelah tombol
+        const input = button.previousElementSibling;
+        const icon = button.querySelector('i');
+
+        // Mengubah tipe input dan ikon mata
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash'); // Ikon mata dicoret
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye'); // Ikon mata terbuka
+        }
+    }
+</script>
 </body>
 </html>
