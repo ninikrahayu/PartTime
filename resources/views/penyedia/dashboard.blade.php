@@ -4,7 +4,7 @@
 
 @section('content')
 
-@if($user['verification_status'] === 'menunggu_verifikasi')
+@if($user->status === 'pending')
 <div class="bg-warning/10 border-l-4 border-warning p-4 rounded-md mb-6 flex items-start gap-3">
     <i class="fa-solid fa-triangle-exclamation text-warning mt-0.5"></i>
     <div>

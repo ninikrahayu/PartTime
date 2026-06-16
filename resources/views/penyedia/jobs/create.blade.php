@@ -13,6 +13,7 @@
 
     <x-card>
         <form data-provider-job-form class="space-y-8">
+            @csrf
             <div>
                 <h3 class="text-base font-semibold text-text-dark">Informasi Pekerjaan</h3>
                 <div class="mt-4 grid gap-4 sm:grid-cols-2">
@@ -100,13 +101,3 @@
 </div>
 @endsection
 
-@push('scripts')
-<script>
-    document.querySelectorAll('[data-provider-job-form]').forEach((form) => {
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
-            showToast('Lowongan berhasil dikirim dan menunggu review.', 'success');
-        });
-    });
-</script>
-@endpush

@@ -19,7 +19,10 @@ Route::get('/register/penyedia', [PublicController::class, 'registerPenyedia'])-
 Route::get('/forgot-password', [PublicController::class, 'forgotPassword']);
 Route::get('/reset-password', [PublicController::class, 'resetPassword']);
 
-Route::prefix('admin')->group(function () {
+// ==========================================
+// RUTE KHUSUS ADMIN (Digembok wajib login & role admin)
+// ==========================================
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard']);
     Route::get('/verifikasi-akun', [AdminController::class, 'verifikasiAkun']);
     Route::get('/verifikasi-lowongan', [AdminController::class, 'verifikasiLowongan']);
@@ -37,7 +40,10 @@ Route::prefix('admin')->group(function () {
     Route::get('/profile', [AdminController::class, 'profile']);
 });
 
-Route::prefix('mahasiswa')->group(function () {
+// ==========================================
+// RUTE KHUSUS MAHASISWA (Digembok wajib login & role mahasiswa)
+// ==========================================
+Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->group(function () {
     Route::put('/profil', [ProfilController::class, 'updateMahasiswa'])->name('mahasiswa.profil.update');
     Route::get('/dashboard', [MahasiswaController::class, 'dashboard']);
     Route::get('/jobs', [MahasiswaController::class, 'jobs']);
@@ -49,7 +55,10 @@ Route::prefix('mahasiswa')->group(function () {
     Route::get('/profile', [MahasiswaController::class, 'profile']);
 });
 
-Route::prefix('penyedia')->group(function () {
+// ==========================================
+// RUTE KHUSUS PENYEDIA (Digembok wajib login & role penyedia)
+// ==========================================
+Route::middleware(['auth', 'role:penyedia'])->prefix('penyedia')->group(function () {
     Route::put('/profil', [ProfilController::class, 'updatePenyedia'])->name('penyedia.profil.update');
     Route::get('/lowongan/{id}/pelamar', [LowonganController::class, 'daftarPelamar'])->name('penyedia.lowongan.pelamar');
     Route::put('/lamaran/{lamaran_id}/status', [LowonganController::class, 'ubahStatusLamaran'])->name('penyedia.lamaran.status');
@@ -57,6 +66,7 @@ Route::prefix('penyedia')->group(function () {
     Route::get('/profil-usaha', [PenyediaController::class, 'profilUsaha']);
     Route::get('/jobs', [PenyediaController::class, 'jobs']);
     Route::get('/jobs/create', [PenyediaController::class, 'jobCreate']);
+    Route::post('/jobs', [PenyediaController::class, 'jobStore'])->name('penyedia.jobs.store');
     Route::get('/jobs/{id}', [PenyediaController::class, 'jobDetail']);
     Route::get('/jobs/{id}/edit', [PenyediaController::class, 'jobEdit']);
     Route::get('/applications', [PenyediaController::class, 'applications']);
@@ -68,25 +78,3 @@ Route::prefix('penyedia')->group(function () {
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
-// Route::middleware('auth')->prefix('admin')->group(function () {
-//     Route::get('/verifikasi-akun', [AdminController::class, 'pendingAccounts'])->name('admin.verifikasi.index');
-//     Route::post('/verifikasi-akun/{id}/approve', [AdminController::class, 'approveAccount'])->name('admin.verifikasi.approve');
-//     Route::post('/verifikasi-akun/{id}/reject', [AdminController::class, 'rejectAccount'])->name('admin.verifikasi.reject');
-// });
-
-Route::middleware(['auth'])->prefix('penyedia')->group(function () {
-    Route::put('/profil', [ProfilController::class, 'updatePenyedia'])->name('penyedia.profil.update');
-    Route::get('/lowongan/{id}/pelamar', [LowonganController::class, 'daftarPelamar'])->name('penyedia.lowongan.pelamar');
-    Route::put('/lamaran/{lamaran_id}/status', [LowonganController::class, 'ubahStatusLamaran'])->name('penyedia.lamaran.status');
-    Route::get('/lowongan', [LowonganController::class, 'index'])->name('penyedia.lowongan.index');
-    Route::post('/lowongan', [LowonganController::class, 'store'])->name('penyedia.lowongan.store');
-    Route::put('/lowongan/{id}', [LowonganController::class, 'update'])->name('penyedia.lowongan.update');
-});
-
-Route::middleware(['auth'])->prefix('mahasiswa')->group(function () {
-    Route::put('/profil', [ProfilController::class, 'updateMahasiswa'])->name('mahasiswa.profil.update');
-    Route::get('/lowongan', [MahasiswaController::class, 'cariLowongan'])->name('mahasiswa.lowongan.index');
-    Route::post('/lowongan/{lowongan_id}/lamar', [MahasiswaController::class, 'lamarPekerjaan'])->name('mahasiswa.lowongan.lamar');
-    Route::get('/lamaran-saya', [MahasiswaController::class, 'statusLamaran'])->name('mahasiswa.lamaran.status');
-});

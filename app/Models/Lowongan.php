@@ -10,20 +10,20 @@ class Lowongan extends Model
     use HasFactory;
 
     protected $fillable = [
-        'penyedia_id', 'judul', 'deskripsi', 'kriteria', 
-        'shift', 'gaji', 'lokasi', 'status'
+        'user_id', 'category_id', 'title', 'description', 'requirements',
+        'location', 'salary', 'salary_type', 'schedule', 'start_date',
+        'end_date', 'quota', 'deadline', 'contact', 'status'
     ];
 
-    // Relasi balik: Lowongan ini milik 1 Penyedia (User)
-
+    // Relasi ke Pembuat Lowongan (Penyedia)
     public function penyedia()
     {
-        return $this->belongsTo(User::class, 'penyedia_id');
+        return $this->belongsTo(User::class, 'user_id');
     }
 
-    // Relasi: 1 Lowongan bisa punya banyak Lamaran masuk
-    public function lamarans()
+    // Relasi ke Kategori
+    public function category()
     {
-        return $this->hasMany(Lamaran::class);
+        return $this->belongsTo(Category::class);
     }
 }
