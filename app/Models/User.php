@@ -33,9 +33,18 @@ class User extends Authenticatable
         ];
     }
 
-    // Relasi ke tabel Profile (1 User punya 1 Profile)
     public function profile()
     {
         return $this->hasOne(Profile::class);
+    }
+
+    public function lowongans()
+    {
+        return $this->hasMany(Lowongan::class, 'penyedia_id');
+    }
+
+    public function lamarans()
+    {
+        return $this->hasMany(Lamaran::class, 'pelamar_id');
     }
 }
