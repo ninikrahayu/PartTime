@@ -3,67 +3,66 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\DummyData;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Lowongan;
+use App\Models\Lamaran;
 
 class PenyediaController extends Controller
 {
-    // Simulasi penyedia yang sedang login
-    protected $currentUserId = 'usr-provider-001';
-
     public function dashboard()
     {
-        $user = DummyData::findById('users', $this->currentUserId);
-        $provider = DummyData::getCollection('provider_profiles', 'user_id', $this->currentUserId)->first();
+        $user = Auth::user();
+        $provider = $user->profile;
         
-        $my_jobs = DummyData::getCollection('jobs', 'provider_id', $this->currentUserId);
-        $my_applications = DummyData::getCollection('applications', 'provider_id', $this->currentUserId);
-        
+        $jobsQuery = $user->lowongans();
+        $lamaranQuery = Lamaran::whereHas('lowongan', function ($query) {
+            $query->where('penyedia_id', Auth::id());
+        });
+
         $stats = [
-            'jobs_aktif' => $my_jobs->where('status', 'aktif')->count(),
-            'jobs_menunggu' => $my_jobs->where('status', 'menunggu_review')->count(),
-            'lamaran_masuk' => $my_applications->count(),
-            'lamaran_diterima' => $my_applications->where('status', 'diterima')->count(),
+            'jobs_aktif' => (clone $jobsQuery)->where('status', 'aktif')->count(),
+            'jobs_menunggu' => 0, 
+            'lamaran_masuk' => (clone $lamaranQuery)->count(),
+            'lamaran_diterima' => (clone $lamaranQuery)->where('status', 'diterima')->count(),
         ];
 
-        $recent_applications = $my_applications->sortByDesc('applied_at')->take(5);
-        $recent_jobs = $my_jobs->sortByDesc('created_at')->take(5);
+        $recent_jobs = (clone $jobsQuery)->withCount('lamarans')->latest()->take(5)->get();
+        $recent_applications = (clone $lamaranQuery)->with(['pelamar.profile', 'lowongan'])->latest()->take(5)->get();
 
         return view('penyedia.dashboard', compact('user', 'provider', 'stats', 'recent_applications', 'recent_jobs'));
     }
 
     public function profilUsaha()
     {
-        $user = DummyData::findById('users', $this->currentUserId);
-        $provider = DummyData::getCollection('provider_profiles', 'user_id', $this->currentUserId)->first();
+        $user = Auth::user();
+        $provider = $user->profile;
         return view('penyedia.profil-usaha', compact('user', 'provider'));
     }
 
     public function jobs()
     {
-        $jobs = DummyData::getCollection('jobs', 'provider_id', $this->currentUserId);
-        $categories = DummyData::getCollection('categories');
-        $jobStatuses = DummyData::get('status_options.job', []);
+        $jobs = Auth::user()->lowongans()->withCount('lamarans')->latest()->get();
+        $categories = []; 
+        $jobStatuses = ['aktif', 'closed'];
 
         return view('penyedia.jobs.index', compact('jobs', 'categories', 'jobStatuses'));
     }
 
     public function jobCreate()
     {
-        $categories = DummyData::getCollection('categories');
-        $salaryTypes = DummyData::get('form_options.salary_types', []);
+        $categories = []; 
+        $salaryTypes = []; 
 
         return view('penyedia.jobs.create', compact('categories', 'salaryTypes'));
     }
 
     public function jobDetail($id)
     {
-        $job = DummyData::findById('jobs', $id);
-        if (!$job || $job['provider_id'] !== $this->currentUserId) {
-            abort(404, 'Lowongan tidak ditemukan');
-        }
+        $job = Auth::user()->lowongans()->with(['lamarans.pelamar.profile'])->findOrFail($id);
 
-        $applications = DummyData::getCollection('applications', 'job_id', $id);
-        $latestApplications = $applications->sortByDesc('applied_at')->take(5);
+        $applications = $job->lamarans;
+        $latestApplications = $applications->sortByDesc('created_at')->take(5);
+        
         $applicationStats = [
             'total' => $applications->count(),
             'accepted' => $applications->where('status', 'diterima')->count(),
@@ -76,43 +75,48 @@ class PenyediaController extends Controller
 
     public function jobEdit($id)
     {
-        $job = DummyData::findById('jobs', $id);
-        if (!$job || $job['provider_id'] !== $this->currentUserId) {
-            abort(404, 'Lowongan tidak ditemukan');
-        }
-        $categories = DummyData::getCollection('categories');
-        $salaryTypes = DummyData::get('form_options.salary_types', []);
+        $job = Auth::user()->lowongans()->findOrFail($id);
+        $categories = []; 
+        $salaryTypes = []; 
 
         return view('penyedia.jobs.edit', compact('job', 'categories', 'salaryTypes'));
     }
 
     public function applications()
     {
-        $applications = DummyData::getCollection('applications', 'provider_id', $this->currentUserId);
+        $applications = Lamaran::with(['pelamar.profile', 'lowongan'])
+            ->whereHas('lowongan', function ($query) {
+                $query->where('penyedia_id', Auth::id());
+            })
+            ->latest()
+            ->get();
+            
         return view('penyedia.applications.index', compact('applications'));
     }
 
     public function applicationDetail($id)
     {
-        $application = DummyData::findById('applications', $id);
-        if (!$application || $application['provider_id'] !== $this->currentUserId) {
-            abort(404, 'Lamaran tidak ditemukan');
-        }
+        $application = Lamaran::with(['pelamar.profile', 'lowongan'])
+            ->whereHas('lowongan', function ($query) {
+                $query->where('penyedia_id', Auth::id());
+            })
+            ->findOrFail($id);
+
         return view('penyedia.applications.detail', compact('application'));
     }
 
     public function reviews()
     {
-        $provider = DummyData::getCollection('provider_profiles', 'user_id', $this->currentUserId)->first();
-        $receivedReviews = DummyData::getCollection('reviews', 'reviewed_id', $this->currentUserId);
-        $givenReviews = DummyData::getCollection('reviews', 'reviewer_id', $this->currentUserId);
+        $provider = Auth::user()->profile;
+        $receivedReviews = collect(); 
+        $givenReviews = collect(); 
 
         return view('penyedia.reviews.index', compact('provider', 'receivedReviews', 'givenReviews'));
     }
 
     public function profile()
     {
-        $user = DummyData::findById('users', $this->currentUserId);
+        $user = Auth::user();
         return view('penyedia.profile.index', compact('user'));
     }
 }

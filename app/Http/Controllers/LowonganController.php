@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Lowongan;
+use App\Models\Lamaran;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -10,7 +11,11 @@ class LowonganController extends Controller
 {
     public function index()
     {
-        $lowongans = Lowongan::where('penyedia_id', Auth::id())->get();
+        $lowongans = Lowongan::withCount('lamarans')
+            ->where('penyedia_id', Auth::id())
+            ->latest()
+            ->get();
+            
         return view('penyedia.jobs.index', compact('lowongans'));
     }
 
@@ -51,10 +56,11 @@ class LowonganController extends Controller
 
         return redirect()->route('penyedia.lowongan.index')->with('success', 'Lowongan berhasil diperbarui.');
     }
+
     public function daftarPelamar($id)
     {
-        $lowongan = \App\Models\Lowongan::where('penyedia_id', Auth::id())->findOrFail($id);
-        $lamarans = $lowongan->lamarans()->with('pelamar.profile')->get();
+        $lowongan = Lowongan::where('penyedia_id', Auth::id())->findOrFail($id);
+        $lamarans = $lowongan->lamarans()->with('pelamar.profile')->latest()->get();
 
         return view('penyedia.applications.index', compact('lowongan', 'lamarans'));
     }
@@ -65,7 +71,7 @@ class LowonganController extends Controller
             'status' => 'required|in:diproses,diterima,ditolak'
         ]);
 
-        $lamaran = \App\Models\Lamaran::whereHas('lowongan', function($query) {
+        $lamaran = Lamaran::whereHas('lowongan', function($query) {
             $query->where('penyedia_id', Auth::id());
         })->findOrFail($lamaran_id);
 

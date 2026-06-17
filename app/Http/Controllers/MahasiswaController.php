@@ -7,16 +7,37 @@ use App\Models\Lamaran;
 use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Services\DummyData;
+
 class MahasiswaController extends Controller
 {
+    public function dashboard()
+    {
+        $user = Auth::user();
+        $my_applications = $user->lamarans()->with('lowongan.penyedia.profile')->get();
+        
+        $stats = [
+            'lamaran_dikirim' => $my_applications->count(),
+            'lamaran_diproses' => $my_applications->where('status', 'diproses')->count(),
+            'lamaran_diterima' => $my_applications->where('status', 'diterima')->count(),
+            'rating' => 0,
+        ];
+
+        $last_application = $my_applications->sortByDesc('created_at')->first();
+        $recent_reviews = collect();
+        $recent_jobs = Lowongan::with('penyedia.profile')->where('status', 'aktif')->latest()->take(4)->get();
+
+        return view('mahasiswa.dashboard', compact('user', 'stats', 'last_application', 'recent_reviews', 'recent_jobs'));
+    }
+
     public function cariLowongan(Request $request)
     {
         $query = Lowongan::with('penyedia.profile')->where('status', 'aktif');
 
         if ($request->filled('keyword')) {
-            $query->where('judul', 'like', '%' . $request->keyword . '%')
+            $query->where(function($q) use ($request) {
+                $q->where('judul', 'like', '%' . $request->keyword . '%')
                   ->orWhere('deskripsi', 'like', '%' . $request->keyword . '%');
+            });
         }
         
         if ($request->filled('shift')) {
@@ -37,7 +58,7 @@ class MahasiswaController extends Controller
         $pelamar_id = Auth::id();
         $profile = Profile::where('user_id', $pelamar_id)->first();
 
-        if (!$profile || !$profile->cv_path) {
+        if (!$profile || empty($profile->cv_path)) {
             return back()->with('error', 'Silakan unggah CV di menu profil terlebih dahulu sebelum melamar.');
         }
 
@@ -61,7 +82,7 @@ class MahasiswaController extends Controller
 
     public function statusLamaran()
     {
-        $lamarans = Lamaran::with(['lowongan.penyedia'])
+        $lamarans = Lamaran::with(['lowongan.penyedia.profile'])
                            ->where('pelamar_id', Auth::id())
                            ->latest()
                            ->get();
@@ -69,70 +90,51 @@ class MahasiswaController extends Controller
         return view('mahasiswa.applications.index', compact('lamarans'));
     }
 
-    // --- METODE DUMMY DATA UNTUK UI (JANGAN DIHAPUS SEBELUM UI DIINTEGRASIKAN SEPENUHNYA) ---
-    protected $currentUserId = 'usr-student-001';
-
-    public function dashboard()
-    {
-        $user = DummyData::findById('users', $this->currentUserId);
-        $my_applications = DummyData::getCollection('applications', 'student_id', $this->currentUserId);
-        
-        $stats = [
-            'lamaran_dikirim' => $my_applications->count(),
-            'lamaran_diproses' => $my_applications->where('status', 'diproses')->count(),
-            'lamaran_diterima' => $my_applications->where('status', 'diterima')->count(),
-            'rating' => 4.8,
-        ];
-
-        $last_application = $my_applications->sortByDesc('applied_at')->first();
-        $recent_reviews = DummyData::getCollection('reviews', 'reviewed_id', $this->currentUserId)->take(3);
-        $recent_jobs = DummyData::getCollection('jobs')->where('status', 'aktif')->take(4);
-
-        return view('mahasiswa.dashboard', compact('user', 'stats', 'last_application', 'recent_reviews', 'recent_jobs'));
-    }
-
     public function jobs()
     {
-        $jobs = DummyData::getCollection('jobs')->where('status', 'aktif');
-        $categories = DummyData::getCollection('categories');
+        $jobs = Lowongan::with('penyedia.profile')->where('status', 'aktif')->latest()->get();
+        $categories = []; 
         return view('mahasiswa.jobs.index', compact('jobs', 'categories'));
     }
 
     public function jobDetail($id)
     {
-        $job = DummyData::findById('jobs', $id);
-        if (!$job) abort(404);
+        $job = Lowongan::with('penyedia.profile')->where('status', 'aktif')->findOrFail($id);
         return view('mahasiswa.jobs.detail', compact('job'));
     }
 
     public function favorites()
     {
-        $favorites = DummyData::getCollection('jobs')->where('status', 'aktif')->take(3);
+        $favorites = collect();
         return view('mahasiswa.favorites.index', compact('favorites'));
     }
 
     public function applications()
     {
-        $applications = DummyData::getCollection('applications', 'student_id', $this->currentUserId);
+        $applications = Lamaran::with(['lowongan.penyedia.profile'])
+                               ->where('pelamar_id', Auth::id())
+                               ->latest()
+                               ->get();
         return view('mahasiswa.applications.index', compact('applications'));
     }
 
     public function applicationDetail($id)
     {
-        $application = DummyData::findById('applications', $id);
-        if (!$application) abort(404);
+        $application = Lamaran::with(['lowongan.penyedia.profile'])
+                              ->where('pelamar_id', Auth::id())
+                              ->findOrFail($id);
         return view('mahasiswa.applications.detail', compact('application'));
     }
 
     public function reviews()
     {
-        $reviews = DummyData::getCollection('reviews', 'reviewed_id', $this->currentUserId);
+        $reviews = collect();
         return view('mahasiswa.reviews.index', compact('reviews'));
     }
 
     public function profile()
     {
-        $user = DummyData::findById('users', $this->currentUserId);
+        $user = Auth::user();
         return view('mahasiswa.profile.index', compact('user'));
     }
 }

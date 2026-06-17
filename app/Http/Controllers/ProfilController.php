@@ -2,14 +2,6 @@
 
 namespace App\Http\Controllers;
 
-<<<<<<< HEAD
-use Illuminate\Http\Request;
-
-class ProfilController extends Controller
-{
-    //
-}
-=======
 use App\Models\Profile;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,6 +28,7 @@ class ProfilController extends Controller
         }
 
         $profile->update($request->only(['universitas', 'semester', 'jurusan']));
+        $profile->save();
 
         return back()->with('success', 'Profil dan CV berhasil diperbarui.');
     }
@@ -45,15 +38,13 @@ class ProfilController extends Controller
         $profile = Profile::where('user_id', Auth::id())->firstOrFail();
 
         $request->validate([
-            'nama_toko' => 'nullable|string|max:255',
-            'deskripsi_usaha' => 'nullable|string',
-            'alamat_lengkap' => 'nullable|string',
-            'jam_operasional' => 'nullable|string|max:255',
+            'business_name' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'business_address' => 'nullable|string',
         ]);
 
-        $profile->update($request->all());
+        $profile->update($request->only(['business_name', 'description', 'business_address']));
 
         return back()->with('success', 'Profil usaha berhasil diperbarui.');
     }
 }
->>>>>>> aaa2e40742bc2e2d6a93f2f54b4c02e03d5f42e0

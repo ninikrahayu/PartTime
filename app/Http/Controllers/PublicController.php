@@ -3,21 +3,22 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\DummyData;
+use App\Models\Lowongan;
+use App\Models\Lamaran;
+use App\Models\User;
 
 class PublicController extends Controller
 {
     public function landing()
     {
-        // Hanya ambil lowongan yang aktif untuk landing page
-        $jobs = DummyData::getCollection('jobs', 'status', 'aktif')->take(6);
-        $categories = DummyData::getCollection('categories')->take(8);
+        $jobs = Lowongan::with('penyedia.profile')->where('status', 'aktif')->latest()->take(6)->get();
+        $categories = []; 
         
         $stats = [
-            'total_jobs' => count(DummyData::get('jobs', [])),
-            'total_providers' => count(DummyData::get('provider_profiles', [])),
-            'total_students' => count(DummyData::get('student_profiles', [])),
-            'total_applications' => count(DummyData::get('applications', []))
+            'total_jobs' => Lowongan::count(),
+            'total_providers' => User::where('role', 'penyedia')->count(),
+            'total_students' => User::where('role', 'mahasiswa')->count(),
+            'total_applications' => Lamaran::count()
         ];
 
         return view('public.landing', compact('jobs', 'categories', 'stats'));
@@ -25,24 +26,22 @@ class PublicController extends Controller
 
     public function lowonganList(Request $request)
     {
-        $jobs = DummyData::getCollection('jobs', 'status', 'aktif');
-        $categories = DummyData::getCollection('categories');
+        $jobs = Lowongan::with('penyedia.profile')->where('status', 'aktif')->latest()->get();
+        $categories = []; 
         
         return view('public.lowongan.index', compact('jobs', 'categories'));
     }
 
     public function lowonganDetail($id)
     {
-        $job = DummyData::findById('jobs', $id);
-        
-        if (!$job) {
-            abort(404, 'Lowongan tidak ditemukan');
-        }
+        $job = Lowongan::with('penyedia.profile')->where('status', 'aktif')->findOrFail($id);
 
-        $similarJobs = DummyData::getCollection('jobs', 'category_id', $job['category_id'])
+        $similarJobs = Lowongan::with('penyedia.profile')
                         ->where('id', '!=', $id)
                         ->where('status', 'aktif')
-                        ->take(3);
+                        ->inRandomOrder()
+                        ->take(3)
+                        ->get();
 
         return view('public.lowongan.detail', compact('job', 'similarJobs'));
     }
