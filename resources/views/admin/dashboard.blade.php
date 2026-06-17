@@ -8,8 +8,8 @@
     <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
         <div>
             <p class="text-sm font-medium text-primary">Ringkasan Platform</p>
-            <h2 class="mt-1 text-2xl font-semibold text-text-dark">Dashboard Admin</h2>
-            <p class="mt-1 text-sm text-text-gray">Pantau verifikasi, lowongan, dan lamaran dari data dummy Partimeku.</p>
+            <h2 class="mt-1 text-2xl font-semibold text-text-dark">Overview Platform</h2>
+            <p class="mt-1 text-sm text-text-gray">Pantau statistik pengguna, verifikasi, lowongan, dan status lamaran secara real-time.</p>
         </div>
         <a href="{{ url('/admin/reports') }}" class="inline-flex items-center justify-center rounded-md border border-border-color bg-white px-4 py-2 text-sm font-medium text-text-dark hover:bg-surface">
             <i class="fa-solid fa-chart-pie mr-2 text-primary"></i>
@@ -38,14 +38,16 @@
     </div>
 
     <div class="grid gap-6 xl:grid-cols-2">
-        <x-chart-card
-            title="Jumlah Lowongan per Bulan"
-            subtitle="Grafik dummy lowongan Januari sampai Juni"
+        <x-chart-card 
+            id="chart-lowongan" 
+            title="Tren Lowongan" 
+            subtitle="Grafik penambahan lowongan selama 6 bulan terakhir"
             chart-id="adminJobsChart"
         />
-        <x-chart-card
-            title="Jumlah Pelamar per Bulan"
-            subtitle="Grafik dummy pelamar Januari sampai Juni"
+        <x-chart-card 
+            id="chart-pelamar" 
+            title="Tren Pelamar" 
+            subtitle="Grafik statistik pelamar selama 6 bulan terakhir"
             chart-id="adminApplicantsChart"
         />
     </div>

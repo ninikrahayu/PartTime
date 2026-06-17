@@ -9,7 +9,7 @@
         <div>
             <p class="text-sm font-medium text-primary">Laporan Admin</p>
             <h2 class="mt-1 text-2xl font-semibold text-text-dark">Ringkasan Data Platform</h2>
-            <p class="mt-1 text-sm text-text-gray">Pantau mahasiswa, penyedia, lowongan, lamaran, verifikasi, dan review dari dummy data.</p>
+            <p class="mt-1 text-sm text-text-gray">Pantau statistik mahasiswa, penyedia, lowongan, lamaran, dan status verifikasi secara real-time.</p>
         </div>
         <div class="flex flex-wrap gap-2">
             <a href="{{ route('admin.reports.export.pdf') }}" class="inline-flex items-center rounded-md bg-danger border border-transparent px-4 py-2 text-sm font-medium text-white shadow-md hover:bg-red-700 focus:ring-2 focus:ring-danger/50 transition-all">

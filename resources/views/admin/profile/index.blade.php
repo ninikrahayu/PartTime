@@ -9,7 +9,7 @@
         <div>
             <p class="text-sm font-medium text-primary">Akun Admin</p>
             <h2 class="mt-1 text-2xl font-semibold text-text-dark">Profil Admin</h2>
-            <p class="mt-1 text-sm text-text-gray">Kelola informasi akun administrator Partimeku secara frontend dummy.</p>
+            <p class="mt-1 text-sm text-text-gray">Kelola informasi akun dan pengaturan keamanan administrator Partimeku.</p>
         </div>
         <button type="button" onclick="openModal('admin-logout-modal')" class="inline-flex items-center justify-center rounded-md border border-danger bg-white px-4 py-2 text-sm font-medium text-danger hover:bg-danger/10">
             <i class="fa-solid fa-right-from-bracket mr-2"></i>Logout
