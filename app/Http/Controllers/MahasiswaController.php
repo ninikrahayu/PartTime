@@ -48,9 +48,10 @@ class MahasiswaController extends Controller
             $query->where('gaji', '>=', $request->gaji_min);
         }
 
-        $lowongans = $query->latest()->get();
+        $jobs = $query->latest()->get();
+        $categories = [];
         
-        return view('mahasiswa.jobs.index', compact('lowongans'));
+        return view('mahasiswa.jobs.index', compact('jobs', 'categories'));
     }
 
     public function lamarPekerjaan(Request $request, $lowongan_id)
@@ -82,12 +83,12 @@ class MahasiswaController extends Controller
 
     public function statusLamaran()
     {
-        $lamarans = Lamaran::with(['lowongan.penyedia.profile'])
-                           ->where('pelamar_id', Auth::id())
-                           ->latest()
-                           ->get();
+        $applications = Lamaran::with(['lowongan.penyedia.profile'])
+                               ->where('pelamar_id', Auth::id())
+                               ->latest()
+                               ->get();
                            
-        return view('mahasiswa.applications.index', compact('lamarans'));
+        return view('mahasiswa.applications.index', compact('applications'));
     }
 
     public function jobs()

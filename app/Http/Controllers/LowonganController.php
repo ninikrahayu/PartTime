@@ -11,23 +11,36 @@ class LowonganController extends Controller
 {
     public function index()
     {
-        $lowongans = Lowongan::withCount('lamarans')
+        $jobs = Lowongan::withCount('lamarans')
             ->where('penyedia_id', Auth::id())
             ->latest()
             ->get();
-            
-        return view('penyedia.jobs.index', compact('lowongans'));
+
+        $jobStatuses = [
+            ['value' => 'aktif',  'label' => 'Aktif'],
+            ['value' => 'closed', 'label' => 'Ditutup'],
+        ];
+        $categories = [];
+
+        return view('penyedia.jobs.index', compact('jobs', 'jobStatuses', 'categories'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'judul' => 'required|string|max:255',
-            'deskripsi' => 'required|string',
-            'kriteria' => 'nullable|string',
-            'shift' => 'required|string',
-            'gaji' => 'nullable|numeric',
-            'lokasi' => 'required|string',
+            'judul'       => 'required|string|max:255',
+            'category'    => 'nullable|string|max:100',
+            'deskripsi'   => 'required|string',
+            'kriteria'    => 'nullable|string',
+            'lokasi'      => 'required|string',
+            'gaji'        => 'nullable|numeric|min:0',
+            'salary_type' => 'nullable|string|max:50',
+            'shift'       => 'required|string',
+            'start_date'  => 'nullable|date',
+            'end_date'    => 'nullable|date|after_or_equal:start_date',
+            'quota'       => 'nullable|integer|min:1',
+            'deadline'    => 'nullable|date',
+            'contact'     => 'nullable|string|max:255',
         ]);
 
         $validated['penyedia_id'] = Auth::id();

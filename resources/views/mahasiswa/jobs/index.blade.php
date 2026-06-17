@@ -61,7 +61,7 @@
         <!-- Main Content -->
         <div class="flex-1">
             <div class="hidden md:flex justify-between items-center mb-4">
-                <p class="text-sm text-text-gray">Menampilkan <strong>{{ count($jobs) }}</strong> lowongan part time aktif.</p>
+                <p class="text-sm text-text-gray">Menampilkan <strong>{{ $jobs->count() }}</strong> lowongan part time aktif.</p>
                 <div class="flex items-center gap-2">
                     <span class="text-sm text-text-gray">Urutkan:</span>
                     <x-select class="text-sm py-1.5 h-auto">
@@ -72,10 +72,10 @@
             </div>
 
             <!-- Job List Mobile/Desktop Grid -->
-            @if(count($jobs) > 0)
+            @if($jobs->count() > 0)
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                     @foreach($jobs as $job)
-                        <x-card class="hover:shadow-md transition-shadow group flex flex-col h-full cursor-pointer relative border-border-color shadow-sm" onclick="window.location.href='{{ url('/mahasiswa/jobs/'.$job['id']) }}'">
+                        <x-card class="hover:shadow-md transition-shadow group flex flex-col h-full cursor-pointer relative border-border-color shadow-sm" onclick="window.location.href='{{ url('/mahasiswa/jobs/'.$job->id) }}'">
                             
                             <!-- Heart Button (Favorit) -->
                             <button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-surface border border-border-color flex items-center justify-center text-text-gray hover:text-danger hover:border-danger transition-colors z-10" onclick="event.stopPropagation(); this.classList.toggle('text-danger'); this.classList.toggle('text-text-gray'); this.querySelector('i').classList.toggle('fa-solid'); this.querySelector('i').classList.toggle('fa-regular'); showToast('Ditambahkan ke Favorit', 'success');">
@@ -83,28 +83,28 @@
                             </button>
 
                             <div class="flex items-start gap-3 mb-3">
-                                <img src="{{ asset($job['provider_logo'] ?? 'images/dummy/default-logo.png') }}" alt="{{ $job['provider_name'] }}" class="w-12 h-12 rounded-md object-cover border border-border-color" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($job['provider_name']) }}&background=F9FAFB'">
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode($job->penyedia->name ?? 'P') }}&background=F9FAFB" alt="{{ $job->penyedia->name ?? '' }}" class="w-12 h-12 rounded-md object-cover border border-border-color">
                                 <div class="flex-1 pr-8">
-                                    <h3 class="font-bold text-text-dark group-hover:text-primary transition-colors line-clamp-1 text-base">{{ $job['title'] }}</h3>
-                                    <p class="text-xs text-text-gray">{{ $job['provider_name'] }}</p>
+                                    <h3 class="font-bold text-text-dark group-hover:text-primary transition-colors line-clamp-1 text-base">{{ $job->judul }}</h3>
+                                    <p class="text-xs text-text-gray">{{ $job->penyedia->name ?? '-' }}</p>
                                 </div>
                             </div>
                             
                             <div class="space-y-1.5 mb-4 flex-grow">
                                 <div class="flex items-center text-xs text-text-gray">
-                                    <i class="fa-solid fa-location-dot w-4 text-center text-primary/70"></i> {{ $job['location'] }}
+                                    <i class="fa-solid fa-location-dot w-4 text-center text-primary/70"></i> {{ $job->lokasi }}
                                 </div>
                                 <div class="flex items-center text-xs text-text-gray">
-                                    <i class="fa-solid fa-clock w-4 text-center text-primary/70"></i> {{ $job['schedule'] }}
+                                    <i class="fa-solid fa-clock w-4 text-center text-primary/70"></i> {{ $job->shift }}
                                 </div>
                                 <div class="flex items-center text-xs text-text-gray font-medium text-text-dark mt-2">
-                                    <i class="fa-solid fa-money-bill-wave w-4 text-center text-primary/70"></i> Rp {{ number_format($job['salary'], 0, ',', '.') }}
+                                    <i class="fa-solid fa-money-bill-wave w-4 text-center text-primary/70"></i> Rp {{ number_format($job->gaji ?? 0, 0, ',', '.') }}
                                 </div>
                             </div>
                             
                             <div class="flex items-center justify-between mt-auto pt-3 border-t border-border-color">
-                                <x-badge color="info">{{ $job['category'] }}</x-badge>
-                                <span class="text-[10px] text-text-gray">{{ \Carbon\Carbon::parse($job['created_at'])->diffForHumans() }}</span>
+                                <x-badge color="info">{{ $job->category ?? 'Umum' }}</x-badge>
+                                <span class="text-[10px] text-text-gray">{{ $job->created_at->diffForHumans() }}</span>
                             </div>
                         </x-card>
                     @endforeach

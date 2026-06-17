@@ -4,7 +4,7 @@
 
 @section('content')
 
-@if($user['verification_status'] === 'menunggu_verifikasi')
+@if($user->status === 'pending')
 <div class="bg-warning/10 border-l-4 border-warning p-4 rounded-md mb-6 flex items-start gap-3">
     <i class="fa-solid fa-triangle-exclamation text-warning mt-0.5"></i>
     <div>
@@ -89,11 +89,11 @@
                     @forelse($recent_jobs as $job)
                         <tr class="border-b border-border-color last:border-0 hover:bg-surface">
                             <td class="px-4 py-3">
-                                <div class="font-medium text-sm text-text-dark line-clamp-1"><a href="{{ url('/penyedia/jobs/'.$job['id']) }}" class="hover:text-primary">{{ $job['title'] }}</a></div>
-                                <div class="text-xs text-text-gray">{{ \Carbon\Carbon::parse($job['created_at'])->diffForHumans() }}</div>
+                                <div class="font-medium text-sm text-text-dark line-clamp-1"><a href="{{ url('/penyedia/jobs/'.$job->id) }}" class="hover:text-primary">{{ $job->judul }}</a></div>
+                                <div class="text-xs text-text-gray">{{ $job->created_at->diffForHumans() }}</div>
                             </td>
                             <td class="px-4 py-3 text-center">
-                                <x-status-badge :status="$job['status']" />
+                                <x-status-badge :status="$job->status" />
                             </td>
                         </tr>
                     @empty
@@ -125,13 +125,13 @@
                     @forelse($recent_applications as $app)
                         <tr class="border-b border-border-color last:border-0 hover:bg-surface">
                             <td class="px-4 py-3">
-                                <div class="font-medium text-sm text-text-dark">{{ $app['student_name'] }}</div>
+                                <div class="font-medium text-sm text-text-dark">{{ $app->pelamar->name ?? '-' }}</div>
                             </td>
                             <td class="px-4 py-3">
-                                <div class="text-xs text-text-gray line-clamp-1">{{ $app['job_title'] }}</div>
+                                <div class="text-xs text-text-gray line-clamp-1">{{ $app->lowongan->judul ?? '-' }}</div>
                             </td>
                             <td class="px-4 py-3 text-center">
-                                <x-status-badge :status="$app['status']" />
+                                <x-status-badge :status="$app->status" />
                             </td>
                         </tr>
                     @empty

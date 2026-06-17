@@ -2,67 +2,96 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+use App\Models\Lowongan;
+use App\Models\Lamaran;
+use App\Models\Profile;
 use Illuminate\Http\Request;
-use App\Services\DummyData;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
     public function dashboard()
     {
-        $summaryCards = DummyData::get('dashboard.admin.summary_cards', []);
-        $additionalStats = DummyData::get('dashboard.admin.additional_stats', []);
-        $charts = [
-            'jobs_per_month' => DummyData::get('charts.admin_jobs_per_month', ['labels' => [], 'data' => []]),
-            'applicants_per_month' => DummyData::get('charts.admin_applicants_per_month', ['labels' => [], 'data' => []]),
+        $totalMahasiswa  = User::where('role', 'mahasiswa')->count();
+        $totalPenyedia   = User::where('role', 'penyedia')->count();
+        $totalLowongan   = Lowongan::count();
+        $totalLamaran    = Lamaran::count();
+        $pendingAccounts = User::where('status', 'pending')->count();
+
+        $summaryCards = [
+            ['label' => 'Total Mahasiswa',   'value' => $totalMahasiswa,  'icon' => 'fa-user-graduate', 'color' => 'text-primary'],
+            ['label' => 'Total Penyedia',    'value' => $totalPenyedia,   'icon' => 'fa-building',      'color' => 'text-info'],
+            ['label' => 'Total Lowongan',    'value' => $totalLowongan,   'icon' => 'fa-briefcase',     'color' => 'text-success'],
+            ['label' => 'Total Lamaran',     'value' => $totalLamaran,    'icon' => 'fa-file-lines',    'color' => 'text-warning'],
         ];
 
-        $pendingAccounts = DummyData::getCollection('users', 'verification_status', 'menunggu_verifikasi')->take(5);
-        $pendingJobs = DummyData::getCollection('jobs', 'status', 'menunggu_review')->take(5);
-        $recentApplications = collect(DummyData::get('applications', []))->sortByDesc('applied_at')->take(5);
+        $pendingAccountsList  = User::where('status', 'pending')->latest()->take(5)->get();
+        $recentApplications   = Lamaran::with(['pelamar', 'lowongan.penyedia'])->latest()->take(5)->get();
+        $recentLowongans      = Lowongan::with('penyedia')->latest()->take(5)->get();
 
         return view('admin.dashboard', compact(
             'summaryCards',
-            'additionalStats',
-            'charts',
             'pendingAccounts',
-            'pendingJobs',
-            'recentApplications'
+            'pendingAccountsList',
+            'recentApplications',
+            'recentLowongans'
         ));
     }
 
-    public function verifikasiAkun()
+    // ── VERIFIKASI AKUN ─────────────────────────────────────────────────────────
+
+    public function pendingAccounts()
     {
-        $users = DummyData::getCollection('users')
-            ->whereIn('role', ['mahasiswa', 'penyedia'])
-            ->values();
-        $studentProfiles = DummyData::getCollection('student_profiles')->keyBy('user_id');
-        $providerProfiles = DummyData::getCollection('provider_profiles')->keyBy('user_id');
-        $verificationStatuses = DummyData::get('status_options.verification', []);
+        $students  = User::where('role', 'mahasiswa')->with('profile')->latest()->get();
+        $providers = User::where('role', 'penyedia')->with('profile')->latest()->get();
 
-        $students = $users->where('role', 'mahasiswa')->values();
-        $providers = $users->where('role', 'penyedia')->values();
+        $verificationStatuses = [
+            ['value' => 'pending',  'label' => 'Menunggu Verifikasi'],
+            ['value' => 'verified', 'label' => 'Terverifikasi'],
+            ['value' => 'rejected', 'label' => 'Ditolak'],
+        ];
 
-        return view('admin.verifikasi.akun', compact(
-            'students',
-            'providers',
-            'studentProfiles',
-            'providerProfiles',
-            'verificationStatuses'
-        ));
+        return view('admin.verifikasi.akun', compact('students', 'providers', 'verificationStatuses'));
     }
+
+    public function approveAccount(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->update(['status' => 'verified']);
+
+        return back()->with('success', "Akun {$user->name} berhasil diverifikasi.");
+    }
+
+    public function rejectAccount(Request $request, $id)
+    {
+        $request->validate(['reason' => 'nullable|string|max:500']);
+
+        $user = User::findOrFail($id);
+        $user->update(['status' => 'rejected']);
+
+        return back()->with('success', "Akun {$user->name} berhasil ditolak.");
+    }
+
+    // ── VERIFIKASI LOWONGAN ──────────────────────────────────────────────────────
 
     public function verifikasiLowongan()
     {
-        $pendingJobs = DummyData::getCollection('jobs', 'status', 'menunggu_review');
-        $categories = DummyData::getCollection('categories');
-        $jobStatuses = DummyData::get('status_options.job', []);
+        $lowongans = Lowongan::with('penyedia')->latest()->get();
 
-        return view('admin.verifikasi.lowongan', compact('pendingJobs', 'categories', 'jobStatuses'));
+        $jobStatuses = [
+            ['value' => 'aktif',  'label' => 'Aktif'],
+            ['value' => 'closed', 'label' => 'Ditutup'],
+        ];
+
+        return view('admin.verifikasi.lowongan', compact('lowongans', 'jobStatuses'));
     }
+
+    // ── MANAJEMEN PENGGUNA ───────────────────────────────────────────────────────
 
     public function users()
     {
-        $users = DummyData::get('users', []);
+        $users = User::with('profile')->latest()->get();
         return view('admin.users.index', compact('users'));
     }
 
@@ -73,116 +102,93 @@ class AdminController extends Controller
 
     public function showUser($id)
     {
-        $user = DummyData::findById('users', $id);
-        if (!$user) abort(404);
-        
-        $profile = null;
-        if ($user['role'] === 'mahasiswa') {
-            $profile = DummyData::getCollection('student_profiles')->firstWhere('user_id', $id);
-        } elseif ($user['role'] === 'penyedia') {
-            $profile = DummyData::getCollection('provider_profiles')->firstWhere('user_id', $id);
-        }
-
+        $user    = User::with('profile')->findOrFail($id);
+        $profile = $user->profile;
         return view('admin.users.show', compact('user', 'profile'));
     }
 
     public function editUser($id)
     {
-        $user = DummyData::findById('users', $id);
-        if (!$user) abort(404);
-        
-        $profile = null;
-        if ($user['role'] === 'mahasiswa') {
-            $profile = DummyData::getCollection('student_profiles')->firstWhere('user_id', $id);
-        } elseif ($user['role'] === 'penyedia') {
-            $profile = DummyData::getCollection('provider_profiles')->firstWhere('user_id', $id);
-        }
-
+        $user    = User::with('profile')->findOrFail($id);
+        $profile = $user->profile;
         return view('admin.users.edit', compact('user', 'profile'));
     }
 
+    // ── KATEGORI ─────────────────────────────────────────────────────────────────
+
     public function categories()
     {
-        $categories = DummyData::get('categories', []);
+        // Sistem saat ini tidak punya tabel kategori terpisah.
+        // Ambil dari nilai unik kolom category di lowongans.
+        $categories = Lowongan::whereNotNull('category')
+            ->distinct()
+            ->pluck('category')
+            ->sort()
+            ->values()
+            ->map(fn($c, $i) => ['id' => $i + 1, 'name' => $c, 'count' => Lowongan::where('category', $c)->count()]);
+
         return view('admin.categories.index', compact('categories'));
     }
 
-    public function editCategory($id)
-    {
-        $category = DummyData::findById('categories', $id);
-        if (!$category) abort(404);
-        
-        return view('admin.categories.edit', compact('category'));
-    }
+    // ── MANAJEMEN LOWONGAN ───────────────────────────────────────────────────────
 
     public function jobs()
     {
-        $jobs = DummyData::get('jobs', []);
+        $jobs = Lowongan::with('penyedia')->latest()->get();
         return view('admin.jobs.index', compact('jobs'));
     }
 
     public function showJob($id)
     {
-        $job = DummyData::findById('jobs', $id);
-        if (!$job) abort(404);
-        
+        $job = Lowongan::with(['penyedia', 'lamarans.pelamar'])->findOrFail($id);
         return view('admin.jobs.show', compact('job'));
     }
 
+    // ── MANAJEMEN LAMARAN ────────────────────────────────────────────────────────
+
     public function applications()
     {
-        $applications = DummyData::get('applications', []);
+        $applications = Lamaran::with(['pelamar', 'lowongan.penyedia'])->latest()->get();
         return view('admin.applications.index', compact('applications'));
     }
 
     public function showApplication($id)
     {
-        $application = DummyData::findById('applications', $id);
-        if (!$application) abort(404);
-        
-        // Coba cari data user / profile pelamar agar datanya lengkap (dummy fallback)
-        $studentProfile = DummyData::getCollection('student_profiles')->firstWhere('user_id', $application['student_id'] ?? 0);
-        $user = DummyData::findById('users', $application['student_id'] ?? 0);
-        
-        return view('admin.applications.show', compact('application', 'studentProfile', 'user'));
+        $application    = Lamaran::with(['pelamar.profile', 'lowongan.penyedia'])->findOrFail($id);
+        $user           = $application->pelamar;
+        $studentProfile = $application->pelamar?->profile;
+
+        return view('admin.applications.show', compact('application', 'user', 'studentProfile'));
     }
+
+    // ── LAPORAN ──────────────────────────────────────────────────────────────────
 
     public function reports()
     {
-        $users = DummyData::getCollection('users');
-        $jobs = DummyData::getCollection('jobs');
-        $applications = DummyData::getCollection('applications');
-        $reviews = DummyData::getCollection('reviews');
-        $categories = DummyData::getCollection('categories');
-        $reports = DummyData::get('reports', []);
-        $statusOptions = DummyData::get('status_options', []);
+        $totalMahasiswa = User::where('role', 'mahasiswa')->count();
+        $totalPenyedia  = User::where('role', 'penyedia')->count();
+        $totalJobs      = Lowongan::count();
+        $totalLamaran   = Lamaran::count();
+        $activeJobs     = Lowongan::where('status', 'aktif')->count();
+        $pendingUsers   = User::where('status', 'pending')->count();
 
         $summary = [
-            'students' => $users->where('role', 'mahasiswa')->count(),
-            'providers' => $users->where('role', 'penyedia')->count(),
-            'jobs' => $jobs->count(),
-            'applications' => $applications->count(),
-            'active_jobs' => $jobs->where('status', 'aktif')->count(),
-            'completed_jobs' => $jobs->where('status', 'selesai')->count(),
-            'reviews' => $reviews->count(),
-            'pending_verifications' => $users->where('verification_status', 'menunggu_verifikasi')->count(),
+            'students'             => $totalMahasiswa,
+            'providers'            => $totalPenyedia,
+            'jobs'                 => $totalJobs,
+            'applications'         => $totalLamaran,
+            'active_jobs'          => $activeJobs,
+            'pending_verifications' => $pendingUsers,
         ];
 
-        return view('admin.reports.index', compact(
-            'users',
-            'jobs',
-            'applications',
-            'reviews',
-            'categories',
-            'reports',
-            'statusOptions',
-            'summary'
-        ));
+        return view('admin.reports.index', compact('summary'));
     }
+
+    // ── PROFIL ADMIN ─────────────────────────────────────────────────────────────
 
     public function profile()
     {
-        $admin = DummyData::findById('users', 'usr-admin-001');
+        $admin = Auth::user();
         return view('admin.profile.index', compact('admin'));
     }
 }
