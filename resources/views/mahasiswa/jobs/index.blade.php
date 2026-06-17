@@ -111,7 +111,9 @@
                 </div>
                 
                 <div class="mt-6 pb-6">
-                    <x-pagination />
+                    <div class="p-4 border-t border-border-color">
+                        {{ $jobs->links() }}
+                    </div>
                 </div>
             @else
                 <x-empty-state icon="fa-search" title="Pekerjaan Tidak Ditemukan" description="Cobalah mengubah filter pencarian." />

@@ -51,7 +51,9 @@
         </div>
         
         <div class="mt-6">
-            <x-pagination />
+            <div class="p-4 border-t border-border-color">
+                {{ $applications->links() }}
+            </div>
         </div>
     @else
         <x-empty-state icon="fa-paper-plane" title="Belum Ada Lamaran" description="Anda belum mengirimkan lamaran apapun. Mulai eksplorasi lowongan yang tersedia.">

@@ -5,6 +5,11 @@
 @section('content')
 <div class="space-y-6 max-w-6xl">
     <!-- Action Bar -->
+    @if(session('success'))
+        <div class="mb-4 rounded-md bg-green-50 p-4 border border-green-200">
+            <p class="text-sm font-medium text-green-800"><i class="fa-solid fa-circle-check mr-2"></i>{{ session('success') }}</p>
+        </div>
+    @endif
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div class="flex items-center gap-3">
             <a href="{{ url('/admin/jobs') }}" class="text-text-gray hover:text-primary transition-colors">
@@ -13,15 +18,20 @@
             <h2 class="text-2xl font-bold text-text-dark">Detail Lowongan</h2>
         </div>
         <div class="flex flex-wrap gap-2">
-            @if(($job['status'] ?? 'aktif') === 'aktif')
-                <button onclick="openModal('modal-nonaktif')" class="inline-flex items-center rounded-md bg-white border border-danger/30 text-danger px-4 py-2 text-sm font-medium hover:bg-danger/5 transition-colors">
-                    <i class="fa-solid fa-ban mr-2"></i> Nonaktifkan
-                </button>
-            @else
-                <button onclick="showToast('Lowongan berhasil diaktifkan', 'success')" class="inline-flex items-center rounded-md bg-white border border-success/30 text-success px-4 py-2 text-sm font-medium hover:bg-success/5 transition-colors">
-                    <i class="fa-solid fa-check mr-2"></i> Aktifkan
-                </button>
-            @endif
+            <form method="POST" action="{{ route('admin.jobs.status', $job['id']) }}">
+                @csrf @method('PUT')
+                @if(($job['status'] ?? 'aktif') === 'aktif')
+                    <input type="hidden" name="status" value="nonaktif">
+                    <button type="submit" onclick="return confirm('Nonaktifkan lowongan ini?')" class="inline-flex items-center rounded-md bg-white border border-danger/30 text-danger px-4 py-2 text-sm font-medium hover:bg-danger/5 transition-colors">
+                        <i class="fa-solid fa-ban mr-2"></i> Nonaktifkan
+                    </button>
+                @else
+                    <input type="hidden" name="status" value="aktif">
+                    <button type="submit" onclick="return confirm('Aktifkan lowongan ini?')" class="inline-flex items-center rounded-md bg-white border border-success/30 text-success px-4 py-2 text-sm font-medium hover:bg-success/5 transition-colors">
+                        <i class="fa-solid fa-check mr-2"></i> Aktifkan
+                    </button>
+                @endif
+            </form>
         </div>
     </div>
 
@@ -33,16 +43,16 @@
             </div>
             <div>
                 <p class="text-xs font-medium text-text-gray uppercase tracking-wider mb-0.5">Total Pelamar</p>
-                <p class="text-lg font-bold text-text-dark leading-none">{{ rand(10, 50) }} <span class="text-sm font-medium text-text-gray normal-case">Orang</span></p>
+                <p class="text-lg font-bold text-text-dark leading-none">{{ $job['applicants_count'] ?? 0 }} <span class="text-sm font-medium text-text-gray normal-case">Orang</span></p>
             </div>
         </div>
         <div class="bg-white rounded-lg border border-border-color shadow-sm p-4 flex items-center gap-4">
             <div class="h-10 w-10 rounded-full bg-info/10 text-info flex items-center justify-center text-lg">
-                <i class="fa-solid fa-eye"></i>
+                <i class="fa-solid fa-calendar"></i>
             </div>
             <div>
-                <p class="text-xs font-medium text-text-gray uppercase tracking-wider mb-0.5">Dilihat</p>
-                <p class="text-lg font-bold text-text-dark leading-none">{{ rand(100, 500) }} <span class="text-sm font-medium text-text-gray normal-case">Kali</span></p>
+                <p class="text-xs font-medium text-text-gray uppercase tracking-wider mb-0.5">Dibuat Pada</p>
+                <p class="text-sm font-bold text-text-dark leading-none">{{ isset($job['created_at']) ? \Carbon\Carbon::parse($job['created_at'])->format('d M Y') : '-' }}</p>
             </div>
         </div>
         <div class="bg-white rounded-lg border border-border-color shadow-sm p-4 flex items-center gap-4">
@@ -130,13 +140,13 @@
                         </div>
                     </div>
                     <div class="text-sm space-y-3 bg-surface p-3 rounded-md border border-border-color">
-                        <div class="flex items-center gap-3 text-text-dark font-medium">
-                            <i class="fa-solid fa-envelope text-text-gray w-4 text-center"></i>
-                            {{ strtolower(str_replace(' ', '', $job['provider_name'] ?? 'provider')) }}@gmail.com
+                        <div class="flex items-center gap-3 text-text-dark font-medium break-all">
+                            <i class="fa-solid fa-envelope text-text-gray w-4 text-center shrink-0"></i>
+                            {{ $job['provider_email'] ?? '-' }}
                         </div>
                         <div class="flex items-center gap-3 text-text-dark font-medium">
-                            <i class="fa-solid fa-phone text-text-gray w-4 text-center"></i>
-                            08{{ rand(100000000, 999999999) }}
+                            <i class="fa-solid fa-phone text-text-gray w-4 text-center shrink-0"></i>
+                            {{ $job['provider_phone'] ?? '-' }}
                         </div>
                     </div>
                 </div>
@@ -224,87 +234,74 @@
                     <h4 class="text-lg font-bold text-text-dark flex items-center gap-2">
                         <i class="fa-solid fa-star text-warning"></i> Penilaian & Ulasan Pekerja
                     </h4>
-                    <span class="text-sm text-text-gray font-medium">{{ rand(10, 30) }} Ulasan</span>
+                    <span class="text-sm text-text-gray font-medium">{{ $ratingData['total'] }} Ulasan</span>
                 </div>
 
+                @if($ratingData['total'] > 0)
                 <div class="flex flex-col sm:flex-row items-center gap-6 mb-6">
                     <div class="text-center w-full sm:w-auto">
-                        <p class="text-5xl font-bold text-text-dark">4.8</p>
+                        <p class="text-5xl font-bold text-text-dark">{{ $ratingData['average'] }}</p>
                         <div class="flex text-warning text-sm mt-2 justify-center">
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star"></i>
-                            <i class="fa-solid fa-star-half-stroke"></i>
+                            @for($i = 1; $i <= 5; $i++)
+                                @if($i <= floor($ratingData['average']))
+                                    <i class="fa-solid fa-star"></i>
+                                @elseif($i == ceil($ratingData['average']) && $ratingData['average'] - floor($ratingData['average']) > 0)
+                                    <i class="fa-solid fa-star-half-stroke"></i>
+                                @else
+                                    <i class="fa-regular fa-star"></i>
+                                @endif
+                            @endfor
                         </div>
                         <p class="text-xs text-text-gray mt-1">Sangat Baik</p>
                     </div>
                     <div class="flex-1 w-full space-y-2 text-sm text-text-gray sm:border-l border-border-color sm:pl-6">
-                        <div class="flex items-center gap-3"><span class="w-3 font-medium">5</span> <i class="fa-solid fa-star text-warning text-[10px]"></i> <div class="h-2 w-full bg-surface border border-border-color rounded-full overflow-hidden"><div class="h-full bg-warning w-[75%] rounded-full"></div></div></div>
-                        <div class="flex items-center gap-3"><span class="w-3 font-medium">4</span> <i class="fa-solid fa-star text-warning text-[10px]"></i> <div class="h-2 w-full bg-surface border border-border-color rounded-full overflow-hidden"><div class="h-full bg-warning w-[20%] rounded-full"></div></div></div>
-                        <div class="flex items-center gap-3"><span class="w-3 font-medium">3</span> <i class="fa-solid fa-star text-warning text-[10px]"></i> <div class="h-2 w-full bg-surface border border-border-color rounded-full overflow-hidden"><div class="h-full bg-warning w-[5%] rounded-full"></div></div></div>
-                        <div class="flex items-center gap-3"><span class="w-3 font-medium">2</span> <i class="fa-solid fa-star text-warning text-[10px]"></i> <div class="h-2 w-full bg-surface border border-border-color rounded-full overflow-hidden"><div class="h-full bg-warning w-0 rounded-full"></div></div></div>
-                        <div class="flex items-center gap-3"><span class="w-3 font-medium">1</span> <i class="fa-solid fa-star text-warning text-[10px]"></i> <div class="h-2 w-full bg-surface border border-border-color rounded-full overflow-hidden"><div class="h-full bg-warning w-0 rounded-full"></div></div></div>
+                        @for($i = 5; $i >= 1; $i--)
+                            @php
+                                $percent = $ratingData['total'] > 0 ? ($ratingData['counts'][$i] / $ratingData['total']) * 100 : 0;
+                            @endphp
+                            <div class="flex items-center gap-3"><span class="w-3 font-medium">{{ $i }}</span> <i class="fa-solid fa-star text-warning text-[10px]"></i> <div class="h-2 w-full bg-surface border border-border-color rounded-full overflow-hidden"><div class="h-full bg-warning rounded-full" style="width: {{ $percent }}%"></div></div></div>
+                        @endfor
                     </div>
                 </div>
 
                 <div class="space-y-4">
+                    @foreach($ratingData['reviews']->take(3) as $review)
                     <div class="bg-surface p-4 rounded-lg border border-border-color">
                         <div class="flex justify-between items-start mb-3">
                             <div class="flex items-center gap-3">
-                                <img src="https://ui-avatars.com/api/?name=Budi+Santoso&background=fff&color=1E3A8A&bold=true" class="w-9 h-9 rounded-full border border-border-color shadow-sm" alt="User">
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode($review->reviewer->name ?? 'User') }}&background=fff&color=1E3A8A&bold=true" class="w-9 h-9 rounded-full border border-border-color shadow-sm" alt="User">
                                 <div>
-                                    <p class="text-sm font-bold text-text-dark leading-none">Budi Santoso</p>
-                                    <p class="text-xs text-text-gray mt-1">Mahasiswa Universitas Sriwijaya</p>
+                                    <p class="text-sm font-bold text-text-dark leading-none">{{ $review->reviewer->name ?? 'Pengguna' }}</p>
                                 </div>
                             </div>
                             <div class="flex text-warning text-xs">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                                @for($i = 1; $i <= 5; $i++)
+                                    @if($i <= $review->rating)
+                                        <i class="fa-solid fa-star"></i>
+                                    @else
+                                        <i class="fa-regular fa-star"></i>
+                                    @endif
+                                @endfor
                             </div>
                         </div>
-                        <p class="text-sm text-text-dark leading-relaxed">Pengalaman luar biasa! Bosnya sangat pengertian dan jam kerjanya fleksibel, sangat cocok untuk mahasiswa yang sedang berkuliah.</p>
-                        <p class="text-xs text-text-gray mt-3 font-medium">2 Hari yang lalu</p>
+                        <p class="text-sm text-text-dark leading-relaxed">{{ $review->comment }}</p>
+                        <p class="text-xs text-text-gray mt-3 font-medium">{{ $review->created_at->diffForHumans() }}</p>
                     </div>
-
-                    <div class="bg-surface p-4 rounded-lg border border-border-color">
-                        <div class="flex justify-between items-start mb-3">
-                            <div class="flex items-center gap-3">
-                                <img src="https://ui-avatars.com/api/?name=Siti+Aminah&background=fff&color=1E3A8A&bold=true" class="w-9 h-9 rounded-full border border-border-color shadow-sm" alt="User">
-                                <div>
-                                    <p class="text-sm font-bold text-text-dark leading-none">Siti Aminah</p>
-                                    <p class="text-xs text-text-gray mt-1">Mahasiswa Politeknik Negeri Sriwijaya</p>
-                                </div>
-                            </div>
-                            <div class="flex text-warning text-xs">
-                                <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
-                            </div>
-                        </div>
-                        <p class="text-sm text-text-dark leading-relaxed">Semuanya oke, gaji dibayar sesuai kesepakatan dan tidak pernah terlambat. Lingkungan kerjanya juga cukup nyaman dan tim suportif.</p>
-                        <p class="text-xs text-text-gray mt-3 font-medium">1 Minggu yang lalu</p>
-                    </div>
+                    @endforeach
                 </div>
                 
-                <button class="w-full mt-5 py-2.5 bg-white border border-border-color rounded-md text-sm font-semibold text-text-dark hover:bg-surface transition-colors shadow-sm">Lihat Semua Ulasan</button>
+                @if($ratingData['total'] > 3)
+                    <button class="w-full mt-5 py-2.5 bg-white border border-border-color rounded-md text-sm font-semibold text-text-dark hover:bg-surface transition-colors shadow-sm">Lihat Semua Ulasan</button>
+                @endif
+                @else
+                    <div class="text-center py-8 text-text-gray">
+                        <i class="fa-regular fa-star text-4xl mb-3"></i>
+                        <p>Belum ada ulasan untuk penyedia ini.</p>
+                    </div>
+                @endif
             </x-card>
         </div>
     </div>
 </div>
 
-<!-- Modal Nonaktif -->
-<x-confirm-modal id="modal-nonaktif" title="Nonaktifkan Lowongan" message="Apakah Anda yakin ingin menonaktifkan lowongan ini?" confirmText="Nonaktifkan" />
-
-@push('scripts')
-<script>
-    function openModal(id) {
-        document.getElementById(id).classList.remove('hidden');
-    }
-    function closeModal(id) {
-        document.getElementById(id).classList.add('hidden');
-    }
-    function confirmAction(id) {
-        closeModal(id);
-        if (id === 'modal-nonaktif') showToast('Lowongan berhasil dinonaktifkan', 'warning');
-    }
-</script>
-@endpush
 @endsection

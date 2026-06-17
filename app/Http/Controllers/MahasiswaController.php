@@ -23,7 +23,7 @@ class MahasiswaController extends Controller
         ];
 
         $last_application = $my_applications->sortByDesc('created_at')->first();
-        $recent_reviews = collect();
+        $recent_reviews = \App\Models\Review::where('reviewee_id', Auth::id())->latest()->take(3)->get();
         $recent_jobs = Lowongan::with('penyedia.profile')->where('status', 'aktif')->latest()->take(4)->get();
 
         return view('mahasiswa.dashboard', compact('user', 'stats', 'last_application', 'recent_reviews', 'recent_jobs'));
@@ -48,8 +48,8 @@ class MahasiswaController extends Controller
             $query->where('gaji', '>=', $request->gaji_min);
         }
 
-        $jobs = $query->latest()->get();
-        $categories = [];
+        $jobs = $query->latest()->paginate(10);
+        $categories = \App\Models\Category::all();
         
         return view('mahasiswa.jobs.index', compact('jobs', 'categories'));
     }
@@ -86,15 +86,15 @@ class MahasiswaController extends Controller
         $applications = Lamaran::with(['lowongan.penyedia.profile'])
                                ->where('pelamar_id', Auth::id())
                                ->latest()
-                               ->get();
+                               ->paginate(10);
                            
         return view('mahasiswa.applications.index', compact('applications'));
     }
 
     public function jobs()
     {
-        $jobs = Lowongan::with('penyedia.profile')->where('status', 'aktif')->latest()->get();
-        $categories = []; 
+        $jobs = Lowongan::with('penyedia.profile')->where('status', 'aktif')->latest()->paginate(10);
+        $categories = \App\Models\Category::all(); 
         return view('mahasiswa.jobs.index', compact('jobs', 'categories'));
     }
 
@@ -106,6 +106,7 @@ class MahasiswaController extends Controller
 
     public function favorites()
     {
+        // Assuming a Favorite model exists or will be implemented; using empty collection for now but properly instantiated
         $favorites = collect();
         return view('mahasiswa.favorites.index', compact('favorites'));
     }
@@ -115,7 +116,7 @@ class MahasiswaController extends Controller
         $applications = Lamaran::with(['lowongan.penyedia.profile'])
                                ->where('pelamar_id', Auth::id())
                                ->latest()
-                               ->get();
+                               ->paginate(10);
         return view('mahasiswa.applications.index', compact('applications'));
     }
 
@@ -129,7 +130,7 @@ class MahasiswaController extends Controller
 
     public function reviews()
     {
-        $reviews = collect();
+        $reviews = \App\Models\Review::where('reviewee_id', Auth::id())->with(['reviewer', 'lamaran.lowongan'])->latest()->paginate(10);
         return view('mahasiswa.reviews.index', compact('reviews'));
     }
 

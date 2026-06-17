@@ -86,7 +86,10 @@
         <p class="text-sm text-text-gray">Keluar dari dashboard penyedia dan kembali ke halaman login?</p>
         <div class="flex justify-end gap-2">
             <button type="button" onclick="closeModal('provider-logout-modal')" class="rounded-md border border-border-color bg-white px-4 py-2 text-sm font-medium text-text-dark hover:bg-surface">Batal</button>
-            <a href="{{ url('/login') }}" class="rounded-md bg-danger px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Logout</a>
+            <form method="POST" action="{{ route('logout') }}" class="inline">
+                @csrf
+                <button type="submit" class="rounded-md bg-danger px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Logout</button>
+            </form>
         </div>
     </div>
 </x-modal>

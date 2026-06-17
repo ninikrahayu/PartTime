@@ -20,7 +20,7 @@ class LowonganController extends Controller
             ['value' => 'aktif',  'label' => 'Aktif'],
             ['value' => 'closed', 'label' => 'Ditutup'],
         ];
-        $categories = [];
+        $categories = \App\Models\Category::all();
 
         return view('penyedia.jobs.index', compact('jobs', 'jobStatuses', 'categories'));
     }

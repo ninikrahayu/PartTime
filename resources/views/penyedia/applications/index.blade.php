@@ -88,7 +88,9 @@
             </tr>
             @endforelse
         </x-table>
-        <x-pagination />
+        <div class="p-4 border-t border-border-color">
+            {{ $applications->links() }}
+        </div>
     </x-card>
 </div>
 

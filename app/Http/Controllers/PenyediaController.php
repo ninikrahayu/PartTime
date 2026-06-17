@@ -41,8 +41,8 @@ class PenyediaController extends Controller
 
     public function jobs()
     {
-        $jobs = Auth::user()->lowongans()->withCount('lamarans')->latest()->get();
-        $categories = []; 
+        $jobs = Auth::user()->lowongans()->withCount('lamarans')->latest()->paginate(10);
+        $categories = \App\Models\Category::all(); 
         $jobStatuses = ['aktif', 'closed'];
 
         return view('penyedia.jobs.index', compact('jobs', 'categories', 'jobStatuses'));
@@ -50,7 +50,7 @@ class PenyediaController extends Controller
 
     public function jobCreate()
     {
-        $categories = []; 
+        $categories = \App\Models\Category::all(); 
         $salaryTypes = []; 
 
         return view('penyedia.jobs.create', compact('categories', 'salaryTypes'));
@@ -76,7 +76,7 @@ class PenyediaController extends Controller
     public function jobEdit($id)
     {
         $job = Auth::user()->lowongans()->findOrFail($id);
-        $categories = []; 
+        $categories = \App\Models\Category::all(); 
         $salaryTypes = []; 
 
         return view('penyedia.jobs.edit', compact('job', 'categories', 'salaryTypes'));
@@ -89,7 +89,7 @@ class PenyediaController extends Controller
                 $query->where('penyedia_id', Auth::id());
             })
             ->latest()
-            ->get();
+            ->paginate(10);
             
         return view('penyedia.applications.index', compact('applications'));
     }
@@ -108,8 +108,8 @@ class PenyediaController extends Controller
     public function reviews()
     {
         $provider = Auth::user()->profile;
-        $receivedReviews = collect(); 
-        $givenReviews = collect(); 
+        $receivedReviews = \App\Models\Review::where('reviewee_id', Auth::id())->with(['reviewer', 'lamaran.lowongan'])->latest()->paginate(10);
+        $givenReviews = \App\Models\Review::where('reviewer_id', Auth::id())->with(['reviewee', 'lamaran.lowongan'])->latest()->paginate(10);
 
         return view('penyedia.reviews.index', compact('provider', 'receivedReviews', 'givenReviews'));
     }

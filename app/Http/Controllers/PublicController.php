@@ -12,7 +12,7 @@ class PublicController extends Controller
     public function landing()
     {
         $jobs = Lowongan::with('penyedia.profile')->where('status', 'aktif')->latest()->take(6)->get();
-        $categories = []; 
+        $categories = \App\Models\Category::all(); 
         
         $stats = [
             'total_jobs' => Lowongan::count(),
@@ -26,8 +26,43 @@ class PublicController extends Controller
 
     public function lowonganList(Request $request)
     {
-        $jobs = Lowongan::with('penyedia.profile')->where('status', 'aktif')->latest()->get();
-        $categories = []; 
+        $query = Lowongan::with('penyedia.profile')->where('status', 'aktif')->latest();
+
+        if ($request->filled('search')) {
+            $query->where(function($q) use ($request) {
+                $q->where('judul', 'LIKE', '%' . $request->search . '%')
+                  ->orWhereHas('penyedia', function($pQuery) use ($request) {
+                      $pQuery->where('name', 'LIKE', '%' . $request->search . '%');
+                  });
+            });
+        }
+
+        if ($request->filled('category')) {
+            $query->whereIn('category', (array) $request->category);
+        }
+
+        if ($request->filled('location')) {
+            $query->whereIn('lokasi', (array) $request->location);
+        }
+
+        if ($request->filled('schedule')) {
+            $query->whereIn('shift', (array) $request->schedule);
+        }
+
+        if ($request->filled('min_salary')) {
+            $query->where('gaji', '>=', $request->min_salary);
+        }
+
+        if ($request->filled('sort')) {
+            if ($request->sort == 'terbaru') {
+                $query->latest();
+            } elseif ($request->sort == 'gaji_tertinggi') {
+                $query->orderBy('gaji', 'desc');
+            }
+        }
+
+        $jobs = $query->paginate(12);
+        $categories = \App\Models\Category::all();
         
         return view('public.lowongan.index', compact('jobs', 'categories'));
     }

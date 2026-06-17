@@ -104,7 +104,9 @@
             @endforelse
         </x-table>
         <div class="mt-4">
-            <x-pagination />
+            <div class="p-4 border-t border-border-color">
+                {{ $jobs->links() }}
+            </div>
         </div>
     </x-card>
 </div>

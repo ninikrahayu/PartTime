@@ -77,16 +77,19 @@
             <!-- Sidebar Footer (Profile & Logout) -->
             <div class="p-4 border-t border-border-color">
                 <div class="flex items-center gap-3 mb-4 px-2">
-                    <img src="https://ui-avatars.com/api/?name=Mahasiswa&background=1E3A8A&color=fff" alt="User" class="w-10 h-10 rounded-full object-cover">
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name ?? 'Mahasiswa') }}&background=1E3A8A&color=fff" alt="User" class="w-10 h-10 rounded-full object-cover">
                     <div class="text-sm overflow-hidden">
-                        <p class="font-semibold text-text-dark truncate">Raka Pratama</p>
+                        <p class="font-semibold text-text-dark truncate">{{ Auth::user()->name ?? 'Raka Pratama' }}</p>
                         <p class="text-text-gray text-xs truncate">Mahasiswa</p>
                     </div>
                 </div>
-                <a href="{{ url('/login') }}" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-danger hover:bg-danger/10 transition-colors">
-                    <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
-                    Logout
-                </a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-danger hover:bg-danger/10 transition-colors">
+                        <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
+                        Logout
+                    </button>
+                </form>
             </div>
         </aside>
 

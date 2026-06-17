@@ -38,25 +38,46 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/verifikasi-lowongan', [AdminController::class, 'verifikasiLowongan'])->name('verifikasi.lowongan');
 
     // Manajemen Pengguna
+    Route::get('/users/export/xls', [AdminController::class, 'exportUsersXls'])->name('users.export.xls');
+    Route::get('/users/export/pdf', [AdminController::class, 'exportUsersPdf'])->name('users.export.pdf');
     Route::get('/users', [AdminController::class, 'users'])->name('users.index');
     Route::get('/users/create', [AdminController::class, 'createUser'])->name('users.create');
+    Route::post('/users', [AdminController::class, 'storeUser'])->name('users.store');
     Route::get('/users/{id}', [AdminController::class, 'showUser'])->name('users.show');
     Route::get('/users/{id}/edit', [AdminController::class, 'editUser'])->name('users.edit');
+    Route::put('/users/{id}', [AdminController::class, 'updateUser'])->name('users.update');
+    Route::put('/users/{id}/toggle-active', [AdminController::class, 'toggleActiveUser'])->name('users.toggle-active');
+    Route::delete('/users/{id}', [AdminController::class, 'destroyUser'])->name('users.destroy');
 
     // Kategori
     Route::get('/categories', [AdminController::class, 'categories'])->name('categories.index');
+    Route::post('/categories', [AdminController::class, 'storeCategory'])->name('categories.store');
+    Route::put('/categories/{id}', [AdminController::class, 'updateCategory'])->name('categories.update');
+    Route::delete('/categories/{id}', [AdminController::class, 'destroyCategory'])->name('categories.destroy');
 
     // Lowongan
+    Route::get('/jobs/export/xls', [AdminController::class, 'exportJobsXls'])->name('jobs.export.xls');
+    Route::get('/jobs/export/pdf', [AdminController::class, 'exportJobsPdf'])->name('jobs.export.pdf');
     Route::get('/jobs', [AdminController::class, 'jobs'])->name('jobs.index');
     Route::get('/jobs/{id}', [AdminController::class, 'showJob'])->name('jobs.show');
+    Route::put('/jobs/{id}/status', [AdminController::class, 'updateJobStatus'])->name('jobs.status');
+    Route::delete('/jobs/{id}', [AdminController::class, 'destroyJob'])->name('jobs.destroy');
 
     // Lamaran
+    Route::get('/applications/export/xls', [AdminController::class, 'exportApplicationsXls'])->name('applications.export.xls');
+    Route::get('/applications/export/pdf', [AdminController::class, 'exportApplicationsPdf'])->name('applications.export.pdf');
     Route::get('/applications', [AdminController::class, 'applications'])->name('applications.index');
     Route::get('/applications/{id}', [AdminController::class, 'showApplication'])->name('applications.show');
+    Route::put('/applications/{id}/status', [AdminController::class, 'updateApplicationStatus'])->name('applications.status');
+    Route::delete('/applications/{id}', [AdminController::class, 'destroyApplication'])->name('applications.destroy');
 
     // Laporan & Profil
+    Route::get('/reports/export/xls', [AdminController::class, 'exportReportsXls'])->name('reports.export.xls');
+    Route::get('/reports/export/pdf', [AdminController::class, 'exportReportsPdf'])->name('reports.export.pdf');
     Route::get('/reports', [AdminController::class, 'reports'])->name('reports');
+    
     Route::get('/profile', [AdminController::class, 'profile'])->name('profile');
+    Route::post('/profile', [AdminController::class, 'updateProfile'])->name('profile.update');
 });
 
 // ── MAHASISWA ─────────────────────────────────────────────────────────────────

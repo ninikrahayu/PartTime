@@ -11,7 +11,19 @@
         <h2 class="text-2xl font-bold text-text-dark">Tambah Pengguna</h2>
     </div>
 
-    <form data-dummy-submit data-success-message="Data pengguna berhasil ditambahkan." data-redirect-url="{{ url('/admin/users') }}" class="space-y-6">
+    @if($errors->any())
+        <div class="mb-4 rounded-md bg-red-50 p-4 border border-red-200">
+            <p class="text-sm font-medium text-red-800"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Terjadi kesalahan:</p>
+            <ul class="list-disc pl-5 mt-1 text-sm text-red-700">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form method="POST" action="{{ route('admin.users.store') }}" class="space-y-6">
+        @csrf
         <x-card>
             <h4 class="text-lg font-semibold text-text-dark border-b border-border-color pb-2 mb-4">Informasi Akun Dasar</h4>
             

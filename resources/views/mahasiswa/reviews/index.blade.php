@@ -63,7 +63,9 @@
     </div>
     
     <div class="mt-6">
-        <x-pagination />
+        <div class="p-4 border-t border-border-color">
+            {{ $reviews->links() }}
+        </div>
     </div>
 
 </div>

@@ -24,21 +24,29 @@
     @endif
 
     <x-card>
-        <div class="grid gap-3 md:grid-cols-[1fr_220px]">
+        <form method="GET" action="{{ route('admin.verifikasi.index') }}" class="grid gap-3 md:grid-cols-[1fr_220px_auto]">
             <label class="block text-sm font-medium text-text-dark">
                 Search akun
-                <x-input class="mt-2" type="search" placeholder="Cari nama, email, atau username" />
+                <x-input name="search" value="{{ request('search') }}" class="mt-2" type="search" placeholder="Cari nama, email, atau username" />
             </label>
             <label class="block text-sm font-medium text-text-dark">
                 Filter status
-                <x-select class="mt-2">
+                <x-select name="status" class="mt-2" onchange="this.form.submit()">
                     <option value="">Semua status</option>
                     @foreach($verificationStatuses as $status)
-                        <option value="{{ $status['value'] }}">{{ $status['label'] }}</option>
+                        <option value="{{ $status['value'] }}" {{ request('status') == $status['value'] ? 'selected' : '' }}>{{ $status['label'] }}</option>
                     @endforeach
                 </x-select>
             </label>
-        </div>
+            <div class="flex items-end gap-2">
+                <button type="submit" class="hidden">Search</button>
+                @if(request()->anyFilled(['search', 'status']))
+                    <a href="{{ route('admin.verifikasi.index') }}" class="inline-flex h-[42px] items-center justify-center rounded-md border border-border-color bg-white px-4 text-sm font-medium text-danger hover:bg-surface">
+                        <i class="fa-solid fa-xmark mr-2"></i>Reset
+                    </a>
+                @endif
+            </div>
+        </form>
     </x-card>
 
     <div class="rounded-md border border-border-color bg-white shadow-sm">
@@ -67,7 +75,7 @@
                     </tr>
                 </x-slot:thead>
                 @forelse($students as $student)
-                    @php($profile = $student->profile)
+                    <?php $profile = $student->profile; ?>
                     <tr>
                         <td>
                             <div class="font-medium text-text-dark">{{ $student->name }}</div>
@@ -130,7 +138,7 @@
                     </tr>
                 </x-slot:thead>
                 @forelse($providers as $provider)
-                    @php($profile = $provider->profile)
+                    <?php $profile = $provider->profile; ?>
                     <tr>
                         <td>
                             <div class="font-medium text-text-dark">{{ $provider->name }}</div>

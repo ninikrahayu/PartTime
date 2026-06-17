@@ -17,7 +17,8 @@ class User extends Authenticatable
         'no_hp', 
         'password', 
         'role', 
-        'status'
+        'status',
+        'is_active'
     ];
 
     protected $hidden = [
@@ -38,13 +39,28 @@ class User extends Authenticatable
         return $this->hasOne(Profile::class);
     }
 
+    public function lamarans()
+    {
+        return $this->hasMany(Lamaran::class, 'pelamar_id');
+    }
+
     public function lowongans()
     {
         return $this->hasMany(Lowongan::class, 'penyedia_id');
     }
 
-    public function lamarans()
+    public function givenReviews()
     {
-        return $this->hasMany(Lamaran::class, 'pelamar_id');
+        return $this->hasMany(Review::class, 'reviewer_id');
+    }
+
+    public function receivedReviews()
+    {
+        return $this->hasMany(Review::class, 'reviewee_id');
+    }
+
+    public function averageRating()
+    {
+        return round($this->receivedReviews()->avg('rating') ?? 0, 1);
     }
 }

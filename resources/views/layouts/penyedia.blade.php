@@ -85,10 +85,13 @@
 
             <!-- Sidebar Footer (Logout) -->
             <div class="p-4 border-t border-border-color">
-                <a href="{{ url('/login') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-danger hover:bg-danger/10 transition-colors">
-                    <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
-                    Logout
-                </a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-danger hover:bg-danger/10 transition-colors">
+                        <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
+                        Logout
+                    </button>
+                </form>
             </div>
         </aside>
 
@@ -106,11 +109,11 @@
 
                 <div class="flex items-center gap-4">
 
-                    <!-- User Profile Dropdown (Dummy) -->
+                    <!-- User Profile Dropdown -->
                     <div class="flex items-center gap-2 cursor-pointer border-l border-border-color pl-4">
-                        <img src="https://ui-avatars.com/api/?name=Penyedia&background=1E3A8A&color=fff" alt="Penyedia" class="w-8 h-8 rounded-full object-cover">
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name ?? 'Penyedia') }}&background=1E3A8A&color=fff" alt="Penyedia" class="w-8 h-8 rounded-full object-cover">
                         <div class="hidden sm:block text-sm">
-                            <p class="font-semibold text-text-dark leading-none">Penyedia Part Time</p>
+                            <p class="font-semibold text-text-dark leading-none">{{ Auth::user()->name ?? 'Penyedia Part Time' }}</p>
                             <p class="text-text-gray text-xs mt-1">Akun Penyedia</p>
                         </div>
                     </div>

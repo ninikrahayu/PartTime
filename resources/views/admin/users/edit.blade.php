@@ -11,7 +11,19 @@
         <h2 class="text-2xl font-bold text-text-dark">Edit Pengguna</h2>
     </div>
 
-    <form data-dummy-submit data-success-message="Data pengguna berhasil diperbarui." data-redirect-url="{{ url('/admin/users') }}" class="space-y-6">
+    @if($errors->any())
+        <div class="mb-4 rounded-md bg-red-50 p-4 border border-red-200">
+            <p class="text-sm font-medium text-red-800"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Terjadi kesalahan:</p>
+            <ul class="list-disc pl-5 mt-1 text-sm text-red-700">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form method="POST" action="{{ route('admin.users.update', $user['id']) }}" class="space-y-6">
+        @csrf @method('PUT')
         <x-card>
             <h4 class="text-lg font-semibold text-text-dark border-b border-border-color pb-2 mb-4">Informasi Akun Dasar</h4>
             
@@ -39,18 +51,18 @@
                 </label>
                 
                 <label class="block text-sm font-medium text-text-dark">
-                    Status Akun
-                    <x-select name="account_status" class="mt-2">
-                        <option value="aktif" {{ $user['account_status'] === 'aktif' ? 'selected' : '' }}>Aktif</option>
-                        <option value="nonaktif" {{ $user['account_status'] === 'nonaktif' ? 'selected' : '' }}>Nonaktif / Banned</option>
+                    Status Akun (Aktif/Banned)
+                    <x-select name="is_active" class="mt-2">
+                        <option value="1" {{ !isset($user['is_active']) || $user['is_active'] ? 'selected' : '' }}>Aktif</option>
+                        <option value="0" {{ isset($user['is_active']) && !$user['is_active'] ? 'selected' : '' }}>Nonaktif / Banned</option>
                     </x-select>
                 </label>
                 <label class="block text-sm font-medium text-text-dark">
                     Status Verifikasi
-                    <x-select name="verification_status" class="mt-2">
-                        <option value="menunggu_verifikasi" {{ $user['verification_status'] === 'menunggu_verifikasi' ? 'selected' : '' }}>Menunggu Verifikasi</option>
-                        <option value="aktif" {{ $user['verification_status'] === 'aktif' ? 'selected' : '' }}>Terverifikasi (Aktif)</option>
-                        <option value="ditolak" {{ $user['verification_status'] === 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                    <x-select name="status" class="mt-2">
+                        <option value="pending" {{ $user['status'] === 'pending' ? 'selected' : '' }}>Menunggu Verifikasi</option>
+                        <option value="verified" {{ $user['status'] === 'verified' ? 'selected' : '' }}>Terverifikasi (Aktif)</option>
+                        <option value="rejected" {{ $user['status'] === 'rejected' ? 'selected' : '' }}>Ditolak</option>
                     </x-select>
                 </label>
             </div>
