@@ -14,20 +14,26 @@ class ProfilController extends Controller
         $profile = Profile::where('user_id', Auth::id())->firstOrFail();
 
         $request->validate([
+            'name' => 'required|string|max:255',
+            'no_hp' => 'required|string|max:20',
             'universitas' => 'nullable|string|max:255',
             'semester' => 'nullable|integer',
             'jurusan' => 'nullable|string|max:255',
+            'ipk' => 'nullable|numeric|min:0|max:4',
             'cv_file' => 'nullable|mimes:pdf|max:5120',
         ]);
 
         if ($request->hasFile('cv_file')) {
-            if ($profile->cv_path) {
-                Storage::disk('public')->delete($profile->cv_path);
+            if ($profile->ktm_path) {
+                Storage::disk('public')->delete($profile->ktm_path);
             }
-            $profile->cv_path = $request->file('cv_file')->store('cv_documents', 'public');
+            $profile->ktm_path = $request->file('cv_file')->store('cv_documents', 'public');
         }
 
-        $profile->update($request->only(['universitas', 'semester', 'jurusan']));
+        $user = Auth::user();
+        $user->update($request->only(['name', 'no_hp']));
+
+        $profile->update($request->only(['universitas', 'semester', 'jurusan', 'ipk']));
         $profile->save();
 
         return back()->with('success', 'Profil dan CV berhasil diperbarui.');

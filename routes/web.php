@@ -90,9 +90,11 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
     Route::get('/jobs/{id}', [MahasiswaController::class, 'jobDetail'])->name('jobs.show');
     Route::get('/lowongan', [MahasiswaController::class, 'cariLowongan'])->name('lowongan.index');
     Route::post('/lowongan/{lowongan_id}/lamar', [MahasiswaController::class, 'lamarPekerjaan'])->name('lowongan.lamar');
+    Route::post('/lowongan/{lowongan_id}/favorite', [MahasiswaController::class, 'toggleFavorite'])->name('lowongan.favorite');
 
     // Lamaran / Applications
     Route::get('/lamaran-saya', [MahasiswaController::class, 'statusLamaran'])->name('lamaran.status');
+    Route::get('/lamaran-saya/{id}', [MahasiswaController::class, 'detailLamaran'])->name('lamaran.detail');
     Route::get('/applications', [MahasiswaController::class, 'applications'])->name('applications.index');
     Route::get('/applications/{id}', [MahasiswaController::class, 'applicationDetail'])->name('applications.show');
 
@@ -102,7 +104,7 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
     Route::get('/profile', [MahasiswaController::class, 'profile'])->name('profile');
 });
 
-// ── PENYEDIA ──────────────────────────────────────────────────────────────────
+// ── PENYEDIA
 Route::middleware(['auth', 'role:penyedia'])->prefix('penyedia')->name('penyedia.')->group(function () {
     Route::get('/dashboard', [PenyediaController::class, 'dashboard'])->name('dashboard');
     Route::put('/profil', [ProfilController::class, 'updatePenyedia'])->name('profil.update');

@@ -23,4 +23,9 @@ class Lowongan extends Model
     {
         return $this->hasMany(Lamaran::class);
     }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class);
+    }
 }

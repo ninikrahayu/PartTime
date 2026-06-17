@@ -8,25 +8,28 @@
     <div class="bg-primary text-white rounded-md p-6 flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden mb-6">
         <div class="relative z-10 flex items-center gap-6 w-full md:w-auto">
             <div class="w-20 h-20 rounded-full bg-white text-primary flex items-center justify-center text-3xl font-bold shadow-md shrink-0">
-                4.8
+                {{ round(Auth::user()->receivedReviews()->avg('rating') ?? 0, 1) }}
             </div>
             <div>
                 <h2 class="text-xl font-bold mb-1 text-white">Rating Rata-rata Anda</h2>
                 <div class="flex text-secondary text-lg mb-1">
-                    <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
+                    @php $avgRating = round(Auth::user()->receivedReviews()->avg('rating') ?? 0); @endphp
+                    @for($i=1; $i<=5; $i++)
+                        <i class="fa-{{ $i <= $avgRating ? 'solid' : 'regular' }} fa-star"></i>
+                    @endfor
                 </div>
-                <p class="text-xs text-blue-100">Berdasarkan 12 ulasan dari penyedia</p>
+                <p class="text-xs text-blue-100">Berdasarkan {{ Auth::user()->receivedReviews()->count() }} ulasan dari penyedia</p>
             </div>
         </div>
         
         <div class="relative z-10 grid grid-cols-2 gap-4 w-full md:w-auto text-center border-t md:border-t-0 md:border-l border-white/20 pt-4 md:pt-0 md:pl-6">
             <div>
-                <p class="text-2xl font-bold">12</p>
-                <p class="text-xs text-blue-200">Pekerjaan Selesai</p>
+                <p class="text-2xl font-bold">{{ Auth::user()->lamarans()->where('status', 'diterima')->count() }}</p>
+                <p class="text-xs text-blue-200">Pekerjaan Diterima</p>
             </div>
             <div>
-                <p class="text-2xl font-bold">100%</p>
-                <p class="text-xs text-blue-200">Tepat Waktu</p>
+                <p class="text-2xl font-bold">{{ Auth::user()->lamarans()->where('status', 'diproses')->count() }}</p>
+                <p class="text-xs text-blue-200">Sedang Diproses</p>
             </div>
         </div>
         <!-- Decorative bg -->
@@ -36,8 +39,7 @@
     <h3 class="font-bold text-text-dark text-lg mb-4">Ulasan dari Penyedia</h3>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <!-- Dummy Reviews -->
-        @for($i=1; $i<=6; $i++)
+        @forelse($reviews as $review)
             <x-card class="shadow-sm border-border-color p-5 hover:shadow-md transition-shadow">
                 <div class="flex justify-between items-start mb-3">
                     <div class="flex items-center gap-3">
@@ -45,21 +47,29 @@
                             <i class="fa-solid fa-store text-text-gray"></i>
                         </div>
                         <div>
-                            <p class="font-semibold text-text-dark text-sm">Penyedia Terverifikasi {{ $i }}</p>
-                            <p class="text-[10px] text-text-gray">{{ \Carbon\Carbon::now()->subDays($i*3)->format('d M Y') }}</p>
+                            <p class="font-semibold text-text-dark text-sm">{{ $review->reviewer->name ?? 'Penyedia' }}</p>
+                            <p class="text-[10px] text-text-gray">{{ $review->created_at->format('d M Y') }}</p>
                         </div>
                     </div>
                     <div class="text-secondary text-xs flex gap-0.5">
-                        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        @for($i=1; $i<=5; $i++)
+                            <i class="fa-{{ $i <= $review->rating ? 'solid' : 'regular' }} fa-star"></i>
+                        @endfor
                     </div>
                 </div>
-                <p class="text-sm text-text-gray italic leading-relaxed">"Mahasiswa ini kerjanya sangat bagus, rajin, dan selalu datang tepat waktu. Sangat direkomendasikan untuk part time di sini lagi."</p>
+                <p class="text-sm text-text-gray italic leading-relaxed">"{{ $review->comment }}"</p>
                 <div class="mt-4 pt-3 border-t border-border-color flex items-center justify-between text-xs">
-                    <span class="text-text-gray">Posisi: Barista Part Time</span>
-                    <a href="#" class="text-primary hover:underline font-medium">Lihat Lowongan</a>
+                    <span class="text-text-gray">Posisi: {{ $review->lamaran->lowongan->judul ?? '-' }}</span>
+                    @if($review->lamaran && $review->lamaran->lowongan)
+                        <a href="{{ url('/mahasiswa/jobs/'.$review->lamaran->lowongan->id) }}" class="text-primary hover:underline font-medium">Lihat Lowongan</a>
+                    @endif
                 </div>
             </x-card>
-        @endfor
+        @empty
+            <div class="col-span-full">
+                <x-empty-state icon="fa-star" title="Belum Ada Ulasan" description="Anda belum menerima ulasan dari penyedia." />
+            </div>
+        @endforelse
     </div>
     
     <div class="mt-6">

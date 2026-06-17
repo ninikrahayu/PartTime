@@ -20,7 +20,7 @@
             </div>
             <div class="text-center">
                 <p class="text-xs text-blue-200 uppercase tracking-wider mb-1">Total Review</p>
-                <p class="text-lg font-bold">12</p>
+                <p class="text-lg font-bold">{{ $user->receivedReviews()->count() }}</p>
             </div>
         </div>
         <!-- Decorative bg -->
@@ -33,7 +33,7 @@
             <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center text-lg mb-3">
                 <i class="fa-solid fa-briefcase"></i>
             </div>
-            <p class="text-2xl font-bold text-text-dark">97+</p>
+            <p class="text-2xl font-bold text-text-dark">{{ $stats['lowongan_aktif'] }}</p>
             <p class="text-xs font-medium text-text-gray mt-1">Lowongan Tersedia</p>
         </x-card>
         
@@ -119,7 +119,7 @@
                     @forelse($recent_reviews as $review)
                         <div class="p-4 border-b border-border-color last:border-0 hover:bg-surface transition-colors">
                             <div class="flex justify-between items-start mb-2">
-                                <p class="text-xs font-semibold text-text-dark">Dari: Penyedia (Dummy)</p>
+                                <p class="text-xs font-semibold text-text-dark">Dari: {{ $review->reviewer->name ?? 'Penyedia' }}</p>
                                 <div class="text-secondary text-xs">
                                     @for($i=1; $i<=5; $i++)
                                         <i class="fa-{{ $i <= $review['rating'] ? 'solid' : 'regular' }} fa-star"></i>
@@ -149,9 +149,15 @@
                 @foreach($recent_jobs as $job)
                 <x-card class="hover:shadow-md transition-shadow group flex flex-col  cursor-pointer relative" onclick="window.location.href='{{ url('/mahasiswa/jobs/'.$job->id) }}'">
                     <!-- Favorit Button Overlay -->
-                    <button class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/80 backdrop-blur border border-border-color flex items-center justify-center text-text-gray hover:text-danger hover:border-danger transition-colors z-10" onclick="event.stopPropagation(); this.classList.toggle('text-danger'); this.classList.toggle('text-text-gray'); this.querySelector('i').classList.toggle('fa-solid'); this.querySelector('i').classList.toggle('fa-regular'); showToast('Favorit diperbarui', 'success');">
-                        <i class="fa-regular fa-heart"></i>
-                    </button>
+                    <form method="POST" action="{{ route('mahasiswa.lowongan.favorite', $job->id) }}" class="absolute top-3 right-3 z-20">
+                        @csrf
+                        @php
+                            $isFav = \App\Models\Favorite::where('user_id', Auth::id())->where('lowongan_id', $job->id)->exists();
+                        @endphp
+                        <button type="submit" class="w-8 h-8 rounded-full bg-white/80 backdrop-blur border border-border-color flex items-center justify-center {{ $isFav ? 'text-danger border-danger' : 'text-text-gray hover:text-danger hover:border-danger' }} transition-colors" onclick="event.stopPropagation();">
+                            <i class="{{ $isFav ? 'fa-solid' : 'fa-regular' }} fa-heart"></i>
+                        </button>
+                    </form>
 
                     <div class="flex items-start gap-3 mb-3">
                         <img src="https://ui-avatars.com/api/?name={{ urlencode($job->penyedia->name ?? 'P') }}&background=F9FAFB" alt="{{ $job->penyedia->name ?? '' }}" class="w-12 h-12 rounded-md object-cover border border-border-color">

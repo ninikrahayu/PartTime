@@ -30,9 +30,15 @@
     <!-- Header Card -->
     <x-card class="p-0 border-border-color shadow-sm overflow-hidden relative">
         <div class="h-24 md:h-32 bg-primary/10 w-full relative">
-            <button class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/90 backdrop-blur border border-border-color flex items-center justify-center text-text-gray hover:text-danger hover:border-danger transition-colors shadow-sm z-10" onclick="this.classList.toggle('text-danger'); this.classList.toggle('text-text-gray'); this.querySelector('i').classList.toggle('fa-solid'); this.querySelector('i').classList.toggle('fa-regular'); showToast('Disimpan ke Favorit', 'success');">
-                <i class="fa-regular fa-heart text-lg"></i>
-            </button>
+            <form method="POST" action="{{ route('mahasiswa.lowongan.favorite', $job->id) }}" class="absolute top-4 right-4 z-20">
+                @csrf
+                @php
+                    $isFav = \App\Models\Favorite::where('user_id', Auth::id())->where('lowongan_id', $job->id)->exists();
+                @endphp
+                <button type="submit" class="w-10 h-10 rounded-full bg-white/90 backdrop-blur border border-border-color flex items-center justify-center {{ $isFav ? 'text-danger border-danger' : 'text-text-gray hover:text-danger hover:border-danger' }} transition-colors shadow-sm" onclick="event.stopPropagation();">
+                    <i class="{{ $isFav ? 'fa-solid' : 'fa-regular' }} fa-heart text-lg"></i>
+                </button>
+            </form>
         </div>
         
         <div class="px-5 md:px-8 pb-6">
@@ -41,7 +47,7 @@
                 
                 <div class="flex-1 pt-2 md:pt-0">
                     <div class="flex items-center gap-2 mb-1">
-                        <x-badge color="info">{{ $job->category ?? 'Umum' }}</x-badge>
+                        <x-badge color="info">{{ !empty($job->category) ? $job->category : 'Umum' }}</x-badge>
                         <x-status-badge :status="$job->status" />
                     </div>
                     <h1 class="text-xl md:text-2xl font-bold text-text-dark line-clamp-2">{{ $job->judul }}</h1>

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Lowongan;
 use App\Models\Lamaran;
 use App\Models\Profile;
+use App\Models\Favorite;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,7 +21,9 @@ class MahasiswaController extends Controller
             'lamaran_dikirim' => $my_applications->count(),
             'lamaran_diproses' => $my_applications->where('status', 'diproses')->count(),
             'lamaran_diterima' => $my_applications->where('status', 'diterima')->count(),
-            'rating' => 0,
+            'rating' => round($user->receivedReviews()->avg('rating') ?? 0, 1),
+            'wishlist' => $user->favorites()->count(),
+            'lowongan_aktif' => Lowongan::where('status', 'aktif')->count(),
         ];
 
         $last_application = $my_applications->sortByDesc('created_at')->first();
@@ -47,9 +51,12 @@ class MahasiswaController extends Controller
         if ($request->filled('gaji_min')) {
             $query->where('gaji', '>=', $request->gaji_min);
         }
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
 
-        $jobs = $query->latest()->paginate(10);
-        $categories = \App\Models\Category::all();
+        $jobs = $query->latest()->paginate(10)->withQueryString();
+        $categories = Category::all();
         
         return view('mahasiswa.jobs.index', compact('jobs', 'categories'));
     }
@@ -59,7 +66,7 @@ class MahasiswaController extends Controller
         $pelamar_id = Auth::id();
         $profile = Profile::where('user_id', $pelamar_id)->first();
 
-        if (!$profile || empty($profile->cv_path)) {
+        if (!$profile || empty($profile->ktm_path)) {
             return back()->with('error', 'Silakan unggah CV di menu profil terlebih dahulu sebelum melamar.');
         }
 
@@ -106,9 +113,29 @@ class MahasiswaController extends Controller
 
     public function favorites()
     {
-        // Assuming a Favorite model exists or will be implemented; using empty collection for now but properly instantiated
-        $favorites = collect();
+        $favorites = Favorite::with('lowongan.penyedia.profile')
+                             ->where('user_id', Auth::id())
+                             ->latest()
+                             ->paginate(10);
+                             
         return view('mahasiswa.favorites.index', compact('favorites'));
+    }
+
+    public function toggleFavorite(Request $request, $lowongan_id)
+    {
+        $user_id = Auth::id();
+        $favorite = Favorite::where('user_id', $user_id)->where('lowongan_id', $lowongan_id)->first();
+
+        if ($favorite) {
+            $favorite->delete();
+            return back()->with('success', 'Lowongan dihapus dari daftar favorit/wishlist.');
+        } else {
+            Favorite::create([
+                'user_id' => $user_id,
+                'lowongan_id' => $lowongan_id
+            ]);
+            return back()->with('success', 'Lowongan berhasil disimpan ke daftar favorit/wishlist.');
+        }
     }
 
     public function applications()
