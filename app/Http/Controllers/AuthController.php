@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    // ==========================================
-    // PROSES LOGIN
-    // ==========================================
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -21,16 +18,17 @@ class AuthController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
             $user = Auth::user();
 
-            // Cek jika akun ditolak admin
-            if ($user->status === 'rejected') {
+            if ($user->role !== 'admin' && $user->status !== 'verified') {
                 Auth::logout();
-                return back()->withErrors(['email' => 'Akun Anda ditolak. Hubungi Admin.']);
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+                return back()->withErrors(['email' => 'Akun Anda belum diverifikasi oleh Admin atau telah ditolak.'])->onlyInput('email');
             }
 
-            // Redirect sesuai Role (sesuai dengan URL di web.php Anda)
+            $request->session()->regenerate();
+
             return match ($user->role) {
                 'admin' => redirect()->intended('/admin/dashboard'),
                 'penyedia' => redirect()->intended('/penyedia/dashboard'),
@@ -41,18 +39,14 @@ class AuthController extends Controller
         return back()->withErrors(['email' => 'Email atau password tidak valid.'])->onlyInput('email');
     }
 
-    // ==========================================
-    // PROSES REGISTRASI (Sesuai Database Baru)
-    // ==========================================
-   public function register(Request $request)
+    public function register(Request $request)
     {
         $role = $request->input('role');
 
         if ($role === 'mahasiswa') {
-            // Validasi khusus Mahasiswa (Nama variabel sudah disamakan dengan form frontend)
             $request->validate([
                 'name' => 'required|string|max:255',
-                'username' => 'required|string|max:50|unique:users|alpha_dash', // alpha_dash menolak spasi
+                'username' => 'required|string|max:50|unique:users|alpha_dash',
                 'email' => 'required|string|email|max:255|unique:users',
                 'phone' => 'required|string|max:15|unique:users,no_hp',
                 'password' => 'required|min:8|confirmed',
@@ -63,7 +57,6 @@ class AuthController extends Controller
                 'address' => 'required|string',
                 'ktm' => 'required|file|mimes:pdf,jpg,jpeg,png|max:5120',
             ], [
-                // Pesan Error Kustom agar tidak membingungkan
                 'username.alpha_dash' => 'Username tidak boleh mengandung spasi.',
                 'username.unique' => 'Username ini sudah dipakai orang lain.',
                 'phone.unique' => 'Nomor telepon ini sudah terdaftar.',
@@ -71,7 +64,6 @@ class AuthController extends Controller
                 'password.confirmed' => 'Konfirmasi password tidak cocok.'
             ]);
         } elseif ($role === 'penyedia') {
-            // Validasi khusus Penyedia
             $request->validate([
                 'name' => 'required|string|max:255',
                 'username' => 'required|string|max:50|unique:users|alpha_dash',
@@ -91,7 +83,6 @@ class AuthController extends Controller
             return back()->with('error', 'Role tidak valid.');
         }
 
-        // 1. Simpan Data Inti User (Mengubah 'phone' dari form ke kolom 'no_hp' di DB)
         $user = User::create([
             'name' => $request->name,
             'username' => $request->username,
@@ -102,7 +93,6 @@ class AuthController extends Controller
             'status' => 'pending', 
         ]);
 
-        // 2. Simpan Data Profil
         if ($role === 'mahasiswa') {
             $ktmPath = $request->hasFile('ktm') ? $request->file('ktm')->store('documents/ktm', 'public') : null;
 
@@ -128,9 +118,8 @@ class AuthController extends Controller
             ]);
         }
 
-        return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');
+        return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan tunggu verifikasi admin sebelum login.');
     }
-    // PROSES LOGOUT
 
     public function logout(Request $request)
     {
