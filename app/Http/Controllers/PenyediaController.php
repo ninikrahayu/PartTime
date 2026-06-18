@@ -29,21 +29,58 @@ class PenyediaController extends Controller
         $recent_jobs = (clone $jobsQuery)->withCount('lamarans')->latest()->take(5)->get();
         $recent_applications = (clone $lamaranQuery)->with(['pelamar.profile', 'lowongan'])->latest()->take(5)->get();
 
-        return view('penyedia.dashboard', compact('user', 'provider', 'stats', 'recent_applications', 'recent_jobs'));
+        $chartData = [];
+        $maxCount = 0;
+        for ($i = 5; $i >= 0; $i--) {
+            $month = \Carbon\Carbon::now()->subMonths($i);
+            $count = (clone $lamaranQuery)
+                ->whereYear('created_at', $month->year)
+                ->whereMonth('created_at', $month->month)
+                ->count();
+            
+            $chartData[] = [
+                'month' => $month->translatedFormat('M'),
+                'count' => $count,
+            ];
+            if ($count > $maxCount) $maxCount = $count;
+        }
+
+        // Hitung persentase tinggi (minimal 1 agar ada sedikit bar)
+        foreach ($chartData as &$data) {
+            $data['height'] = $maxCount > 0 ? max(5, round(($data['count'] / $maxCount) * 100)) : 5;
+        }
+
+        return view('penyedia.dashboard', compact('user', 'provider', 'stats', 'recent_applications', 'recent_jobs', 'chartData'));
     }
 
-    public function profilUsaha()
-    {
-        $user = Auth::user();
-        $provider = $user->profile;
-        return view('penyedia.profil-usaha', compact('user', 'provider'));
-    }
 
-    public function jobs()
+
+    public function jobs(Request $request)
     {
-        $jobs = Auth::user()->lowongans()->withCount('lamarans')->latest()->paginate(10);
+        $query = Auth::user()->lowongans()->withCount('lamarans');
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('judul', 'like', "%{$search}%")
+                  ->orWhere('lokasi', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        if ($request->filled('kategori')) {
+            $query->where('category', $request->kategori);
+        }
+
+        $jobs = $query->latest()->paginate(10)->withQueryString();
         $categories = \App\Models\Category::all(); 
-        $jobStatuses = ['aktif', 'closed'];
+        $jobStatuses = [
+            ['value' => 'aktif', 'label' => 'Aktif'],
+            ['value' => 'closed', 'label' => 'Closed']
+        ];
 
         return view('penyedia.jobs.index', compact('jobs', 'categories', 'jobStatuses'));
     }
@@ -82,14 +119,29 @@ class PenyediaController extends Controller
         return view('penyedia.jobs.edit', compact('job', 'categories', 'salaryTypes'));
     }
 
-    public function applications()
+    public function applications(Request $request)
     {
-        $applications = Lamaran::with(['pelamar.profile', 'lowongan'])
-            ->whereHas('lowongan', function ($query) {
-                $query->where('penyedia_id', Auth::id());
-            })
-            ->latest()
-            ->paginate(10);
+        $query = Lamaran::with(['pelamar.profile', 'lowongan'])
+            ->whereHas('lowongan', function ($q) {
+                $q->where('penyedia_id', Auth::id());
+            });
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->whereHas('pelamar', function($q2) use ($search) {
+                    $q2->where('name', 'like', "%{$search}%");
+                })->orWhereHas('lowongan', function($q2) use ($search) {
+                    $q2->where('judul', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $applications = $query->latest()->paginate(10)->withQueryString();
             
         return view('penyedia.applications.index', compact('applications'));
     }
@@ -102,7 +154,21 @@ class PenyediaController extends Controller
             })
             ->findOrFail($id);
 
-        return view('penyedia.applications.detail', compact('application'));
+        // Review dari penyedia ke mahasiswa
+        $penyediaReview = \App\Models\Review::where('lamaran_id', $application->id)
+            ->where('reviewer_id', Auth::id())
+            ->first();
+
+        // Review dari mahasiswa ke penyedia
+        $mahasiswaReview = \App\Models\Review::where('lamaran_id', $application->id)
+            ->where('reviewer_id', $application->pelamar_id)
+            ->first();
+
+        // Rata-rata rating mahasiswa ini dari semua review
+        $avgRating = \App\Models\Review::where('reviewee_id', $application->pelamar_id)->avg('rating');
+        $totalReviews = \App\Models\Review::where('reviewee_id', $application->pelamar_id)->count();
+
+        return view('penyedia.applications.detail', compact('application', 'penyediaReview', 'mahasiswaReview', 'avgRating', 'totalReviews'));
     }
 
     public function reviews()
@@ -117,6 +183,7 @@ class PenyediaController extends Controller
     public function profile()
     {
         $user = Auth::user();
-        return view('penyedia.profile.index', compact('user'));
+        $provider = clone $user->profile;
+        return view('penyedia.profile.index', compact('user', 'provider'));
     }
 }

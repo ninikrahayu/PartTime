@@ -5,28 +5,20 @@
 @section('content')
 <div class="space-y-6">
     <!-- Action Bar -->
-    <div class="flex flex-col sm:flex-row justify-between gap-4">
+    <form action="{{ route('penyedia.applications.index') }}" method="GET" class="flex flex-col sm:flex-row justify-between gap-4">
         <div class="flex flex-col sm:flex-row gap-4 flex-1">
-            <x-search-input placeholder="Cari nama mahasiswa..." class="w-full sm:w-64" />
-            <x-select class="w-full sm:w-48">
-                <option value="">Semua Lowongan</option>
-                @php
-                    $uniqueJobs = $applications->pluck('lowongan.judul')->unique()->filter();
-                @endphp
-                @foreach($uniqueJobs as $jobTitle)
-                    <option value="{{ $jobTitle }}">{{ $jobTitle }}</option>
-                @endforeach
-            </x-select>
-            <x-select class="w-full sm:w-40">
+            <x-input name="search" value="{{ request('search') }}" placeholder="Cari nama mahasiswa atau judul..." class="w-full sm:w-64" />
+            <x-select name="status" class="w-full sm:w-40" onchange="this.form.submit()">
                 <option value="">Semua Status</option>
-                <option value="pending">Menunggu</option>
-                <option value="diproses">Diproses</option>
-                <option value="diterima">Diterima</option>
-                <option value="ditolak">Ditolak</option>
+                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Menunggu</option>
+                <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
+                <option value="diterima" {{ request('status') == 'diterima' ? 'selected' : '' }}>Diterima</option>
+                <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
             </x-select>
-            <x-input type="date" class="w-full sm:w-40" />
+            <x-button type="submit" class="bg-primary hover:bg-blue-900 text-white"><i class="fa-solid fa-search mr-2"></i>Cari</x-button>
         </div>
-    </div>
+    </form>
 
     @if(session('success'))
         <div class="rounded-md bg-green-50 p-4 border border-green-200">

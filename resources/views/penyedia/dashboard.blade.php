@@ -153,13 +153,13 @@
         <div class="p-6">
             <div class="flex items-end justify-between h-48 gap-2">
                 <!-- Bar Dummy -->
-                @foreach([12, 19, 15, 25, 22, 30] as $idx => $height)
+                @foreach($chartData as $data)
                     <div class="flex flex-col items-center flex-1 group">
                         <div class="w-full bg-primary/20 rounded-t-md relative flex items-end justify-center group-hover:bg-primary/30 transition-colors" style="height: 100%;">
-                            <div class="w-full bg-primary rounded-t-md transition-all duration-500" style="height: {{ $height * 3 }}%;"></div>
-                            <span class="absolute -top-6 text-xs font-bold text-text-dark opacity-0 group-hover:opacity-100 transition-opacity">{{ $height }}</span>
+                            <div class="w-full bg-primary rounded-t-md transition-all duration-500" style="height: {{ $data['height'] }}%;"></div>
+                            <span class="absolute -top-6 text-xs font-bold text-text-dark opacity-0 group-hover:opacity-100 transition-opacity">{{ $data['count'] }}</span>
                         </div>
-                        <span class="text-xs text-text-gray mt-2">{{ \Carbon\Carbon::now()->subMonths(5 - $idx)->format('M') }}</span>
+                        <span class="text-xs text-text-gray mt-2">{{ $data['month'] }}</span>
                     </div>
                 @endforeach
             </div>

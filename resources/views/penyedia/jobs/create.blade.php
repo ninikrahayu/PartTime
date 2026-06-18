@@ -42,12 +42,9 @@
                         Kategori pekerjaan
                         <x-select name="category" class="mt-2">
                             <option value="">Pilih kategori</option>
-                            <option value="F&B (Cafe/Resto)" {{ old('category') == 'F&B (Cafe/Resto)' ? 'selected' : '' }}>F&B (Cafe/Resto)</option>
-                            <option value="Retail (Toko/Minimarket)" {{ old('category') == 'Retail (Toko/Minimarket)' ? 'selected' : '' }}>Retail (Toko/Minimarket)</option>
-                            <option value="IT / Freelance" {{ old('category') == 'IT / Freelance' ? 'selected' : '' }}>IT / Freelance</option>
-                            <option value="Event / Usher" {{ old('category') == 'Event / Usher' ? 'selected' : '' }}>Event / Usher</option>
-                            <option value="Administrasi" {{ old('category') == 'Administrasi' ? 'selected' : '' }}>Administrasi</option>
-                            <option value="Lainnya" {{ old('category') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                            @foreach($categories as $cat)
+                                <option value="{{ $cat->name }}" {{ old('category') == $cat->name ? 'selected' : '' }}>{{ $cat->name }}</option>
+                            @endforeach
                         </x-select>
                     </label>
                     <label class="block text-sm font-medium text-text-dark sm:col-span-2">

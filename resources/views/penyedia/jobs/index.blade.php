@@ -23,30 +23,33 @@
     @endif
 
     <x-card>
-        <div class="grid gap-3 lg:grid-cols-[1fr_220px_220px]">
+        <form method="GET" action="{{ route('penyedia.jobs.index') }}" class="grid gap-3 lg:grid-cols-[1fr_220px_220px_auto]">
             <label class="block text-sm font-medium text-text-dark">
                 Search lowongan
-                <x-input type="search" class="mt-2" placeholder="Cari judul, lokasi, atau jadwal" />
+                <x-input name="search" type="search" class="mt-2" placeholder="Cari judul, lokasi, atau jadwal" value="{{ request('search') }}" />
             </label>
             <label class="block text-sm font-medium text-text-dark">
                 Filter status
-                <x-select class="mt-2">
+                <x-select name="status" class="mt-2">
                     <option value="">Semua status</option>
                     @foreach($jobStatuses as $status)
-                        <option value="{{ $status['value'] }}">{{ $status['label'] }}</option>
+                        <option value="{{ $status['value'] }}" {{ request('status') == $status['value'] ? 'selected' : '' }}>{{ $status['label'] }}</option>
                     @endforeach
                 </x-select>
             </label>
             <label class="block text-sm font-medium text-text-dark">
                 Filter kategori
-                <x-select class="mt-2">
+                <x-select name="kategori" class="mt-2">
                     <option value="">Semua kategori</option>
                     @foreach($categories as $category)
-                        <option value="{{ $category }}">{{ $category }}</option>
+                        <option value="{{ $category->name }}" {{ request('kategori') == $category->name ? 'selected' : '' }}>{{ $category->name }}</option>
                     @endforeach
                 </x-select>
             </label>
-        </div>
+            <div class="flex items-end">
+                <x-button type="submit" class="w-full h-[42px]">Filter</x-button>
+            </div>
+        </form>
     </x-card>
 
     <x-card>

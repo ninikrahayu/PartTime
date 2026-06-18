@@ -260,10 +260,17 @@
                     Preview
                 </button>
 
-                <button onclick="showToast('Mengunduh KTM...', 'success')" class="flex-1 sm:flex-none px-4 py-2 bg-primary rounded text-xs font-bold text-white hover:brightness-90 transition-all">
+                @if(!empty($studentProfile['ktm_path']))
+                <a href="{{ Storage::url($studentProfile['ktm_path']) }}" download="KTM_{{ $application['student_name'] ?? 'Pelamar' }}.jpg" class="flex-1 sm:flex-none px-4 py-2 bg-primary rounded text-xs font-bold text-white hover:brightness-90 transition-all text-center">
+                    <i class="fa-solid fa-download mr-1.5"></i>
+                    Unduh
+                </a>
+                @else
+                <button disabled class="flex-1 sm:flex-none px-4 py-2 bg-gray-300 rounded text-xs font-bold text-white cursor-not-allowed">
                     <i class="fa-solid fa-download mr-1.5"></i>
                     Unduh
                 </button>
+                @endif
             </div>
         </div>
 
@@ -277,7 +284,7 @@
 
                 <div>
                     <h5 class="font-bold text-sm text-text-dark">Curriculum Vitae (CV)</h5>
-                    <p class="text-xs text-text-gray mt-1">Format: PDF • 1.2 MB</p>
+                    <p class="text-xs text-text-gray mt-1">Format: PDF</p>
                 </div>
             </div>
 
@@ -287,10 +294,17 @@
                     Preview
                 </button>
 
-                <button onclick="showToast('Mengunduh CV...', 'success')" class="flex-1 sm:flex-none px-4 py-2 bg-primary rounded text-xs font-bold text-white hover:brightness-90 transition-all">
+                @if(!empty($studentProfile['cv_path']))
+                <a href="{{ Storage::url($studentProfile['cv_path']) }}" download="CV_{{ $application['student_name'] ?? 'Pelamar' }}.pdf" class="flex-1 sm:flex-none px-4 py-2 bg-primary rounded text-xs font-bold text-white hover:brightness-90 transition-all text-center">
+                    <i class="fa-solid fa-download mr-1.5"></i>
+                    Unduh
+                </a>
+                @else
+                <button disabled class="flex-1 sm:flex-none px-4 py-2 bg-gray-300 rounded text-xs font-bold text-white cursor-not-allowed">
                     <i class="fa-solid fa-download mr-1.5"></i>
                     Unduh
                 </button>
+                @endif
             </div>
         </div>
     </div>

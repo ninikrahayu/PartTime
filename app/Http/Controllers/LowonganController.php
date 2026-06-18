@@ -48,7 +48,7 @@ class LowonganController extends Controller
 
         Lowongan::create($validated);
 
-        return redirect()->route('penyedia.lowongan.index')->with('success', 'Lowongan berhasil diterbitkan.');
+        return redirect()->route('penyedia.jobs.index')->with('success', 'Lowongan berhasil diterbitkan.');
     }
 
     public function update(Request $request, $id)
@@ -67,7 +67,7 @@ class LowonganController extends Controller
 
         $lowongan->update($validated);
 
-        return redirect()->route('penyedia.lowongan.index')->with('success', 'Lowongan berhasil diperbarui.');
+        return redirect()->route('penyedia.jobs.index')->with('success', 'Lowongan berhasil diperbarui.');
     }
 
     public function daftarPelamar($id)
@@ -81,7 +81,7 @@ class LowonganController extends Controller
     public function ubahStatusLamaran(Request $request, $lamaran_id)
     {
         $request->validate([
-            'status' => 'required|in:diproses,diterima,ditolak'
+            'status' => 'required|in:diproses,diterima,ditolak,selesai'
         ]);
 
         $lamaran = Lamaran::whereHas('lowongan', function($query) {
@@ -91,5 +91,31 @@ class LowonganController extends Controller
         $lamaran->update(['status' => $request->status]);
 
         return back()->with('success', 'Status lamaran berhasil diubah menjadi ' . $request->status);
+    }
+
+    public function storeReview(Request $request, $lamaran_id)
+    {
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string',
+        ]);
+
+        $lamaran = Lamaran::whereHas('lowongan', function($query) {
+            $query->where('penyedia_id', Auth::id());
+        })->findOrFail($lamaran_id);
+
+        \App\Models\Review::updateOrCreate(
+            [
+                'lamaran_id' => $lamaran->id,
+                'reviewer_id' => Auth::id(),
+            ],
+            [
+                'reviewee_id' => $lamaran->pelamar_id,
+                'rating' => $request->rating,
+                'comment' => $request->comment,
+            ]
+        );
+
+        return back()->with('success', 'Review berhasil dikirim.');
     }
 }

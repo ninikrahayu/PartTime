@@ -152,7 +152,42 @@ class MahasiswaController extends Controller
         $application = Lamaran::with(['lowongan.penyedia.profile'])
                               ->where('pelamar_id', Auth::id())
                               ->findOrFail($id);
-        return view('mahasiswa.applications.detail', compact('application'));
+
+        // Review dari mahasiswa ke penyedia
+        $mahasiswaReview = \App\Models\Review::where('lamaran_id', $application->id)
+            ->where('reviewer_id', Auth::id())
+            ->first();
+
+        // Review dari penyedia ke mahasiswa
+        $penyediaReview = \App\Models\Review::where('lamaran_id', $application->id)
+            ->where('reviewer_id', $application->lowongan->penyedia_id)
+            ->first();
+
+        return view('mahasiswa.applications.detail', compact('application', 'mahasiswaReview', 'penyediaReview'));
+    }
+
+    public function storeReview(Request $request, $lamaran_id)
+    {
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+            'comment' => 'nullable|string',
+        ]);
+
+        $lamaran = Lamaran::where('pelamar_id', Auth::id())->findOrFail($lamaran_id);
+
+        \App\Models\Review::updateOrCreate(
+            [
+                'lamaran_id' => $lamaran->id,
+                'reviewer_id' => Auth::id(),
+            ],
+            [
+                'reviewee_id' => $lamaran->lowongan->penyedia_id,
+                'rating' => $request->rating,
+                'comment' => $request->comment,
+            ]
+        );
+
+        return back()->with('success', 'Review berhasil dikirim.');
     }
 
     public function reviews()

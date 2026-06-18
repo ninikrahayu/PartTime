@@ -11,7 +11,8 @@ class Lowongan extends Model
 
     protected $fillable = [
         'penyedia_id', 'judul', 'deskripsi', 'kriteria', 
-        'shift', 'gaji', 'lokasi', 'status'
+        'shift', 'gaji', 'lokasi', 'status',
+        'category', 'salary_type', 'start_date', 'end_date', 'quota', 'deadline', 'contact'
     ];
 
     public function penyedia()

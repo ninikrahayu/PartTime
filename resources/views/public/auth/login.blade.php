@@ -19,9 +19,18 @@
         
         <!-- Left Side: Form -->
         <div class="w-full md:w-1/2 p-10 md:p-16 flex flex-col justify-center relative">
-            <!-- Logo -->
-            <a href="{{ url('/') }}" class="absolute top-8 left-10 md:left-16 flex items-center gap-2 font-bold text-lg text-primary hover:opacity-80 transition-opacity">
-                <i class="fa-solid fa-briefcase text-secondary"></i> Partimeku
+            <!-- Header Actions (Logo & Back) -->
+            <div class="absolute top-8 left-10 md:left-16 flex items-center gap-6">
+                <a href="{{ url('/') }}" class="flex items-center gap-2 font-bold text-lg text-primary hover:opacity-80 transition-opacity">
+                    <i class="fa-solid fa-briefcase text-secondary"></i> Partimeku
+                </a>
+                <a href="{{ url('/') }}" class="hidden sm:flex items-center gap-2 text-sm font-medium text-text-gray hover:text-primary transition-colors">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda
+                </a>
+            </div>
+            <!-- Mobile Back Button (Absolute Top Right for small screens) -->
+            <a href="{{ url('/') }}" class="sm:hidden absolute top-8 right-10 flex items-center justify-center w-8 h-8 rounded-full bg-surface text-text-gray hover:text-primary transition-colors border border-border-color">
+                <i class="fa-solid fa-house text-sm"></i>
             </a>
 
             <div class="mt-12 md:mt-0 w-full mx-auto">

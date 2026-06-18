@@ -29,8 +29,8 @@
                     <div class="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                         @foreach($categories as $category)
                             <label class="flex items-center">
-                                <x-checkbox name="category[]" value="{{ $category['id'] }}" {{ in_array($category['id'], request('category', [])) ? 'checked' : '' }} />
-                                <span class="ml-2 text-sm text-text-gray">{{ $category['name'] }}</span>
+                                <x-checkbox name="category[]" value="{{ $category->name }}" {{ in_array($category->name, request('category', [])) ? 'checked' : '' }} />
+                                <span class="ml-2 text-sm text-text-gray">{{ $category->name }}</span>
                             </label>
                         @endforeach
                     </div>
@@ -111,30 +111,30 @@
             @if(count($jobs) > 0)
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6 mb-8">
                     @foreach($jobs as $job)
-                        <x-card class="hover:shadow-md transition-shadow group flex flex-col h-full cursor-pointer" onclick="window.location.href='{{ url('/lowongan/'.$job['id']) }}'">
+                        <x-card class="hover:shadow-md transition-shadow group flex flex-col h-full cursor-pointer" onclick="window.location.href='{{ url('/lowongan/'.$job->id) }}'">
                             <div class="flex items-start gap-4 mb-4">
-                                <img src="{{ asset($job['provider_logo'] ?? 'images/dummy/default-logo.png') }}" alt="{{ $job['provider_name'] }}" class="w-12 h-12 rounded-md object-cover border border-border-color" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($job['provider_name']) }}&background=F9FAFB'">
+                                <img src="{{ ($job->penyedia && $job->penyedia->profile && $job->penyedia->profile->logo_path) ? Storage::url($job->penyedia->profile->logo_path) : asset('images/dummy/default-logo.png') }}" alt="{{ $job->penyedia->name ?? 'Penyedia' }}" class="w-12 h-12 rounded-md object-cover border border-border-color" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($job->penyedia->name ?? 'Penyedia') }}&background=F9FAFB'">
                                 <div class="flex-1">
-                                    <h3 class="font-bold text-lg text-text-dark group-hover:text-primary transition-colors line-clamp-1"><a href="{{ url('/lowongan/'.$job['id']) }}">{{ $job['title'] }}</a></h3>
-                                    <p class="text-sm text-text-gray">{{ $job['provider_name'] }}</p>
+                                    <h3 class="font-bold text-lg text-text-dark group-hover:text-primary transition-colors line-clamp-1"><a href="{{ url('/lowongan/'.$job->id) }}">{{ $job->judul }}</a></h3>
+                                    <p class="text-sm text-text-gray">{{ $job->penyedia->name ?? '-' }}</p>
                                 </div>
                             </div>
                             
                             <div class="space-y-2 mb-6 flex-grow">
                                 <div class="flex items-center gap-2 text-sm text-text-gray">
-                                    <i class="fa-solid fa-location-dot w-5 text-center text-primary/70"></i> <span>{{ $job['location'] }}</span>
+                                    <i class="fa-solid fa-location-dot w-5 text-center text-primary/70"></i> <span>{{ $job->lokasi }}</span>
                                 </div>
                                 <div class="flex items-center gap-2 text-sm text-text-gray">
-                                    <i class="fa-solid fa-clock w-5 text-center text-primary/70"></i> <span>{{ $job['schedule'] }}</span>
+                                    <i class="fa-solid fa-clock w-5 text-center text-primary/70"></i> <span>{{ $job->shift }}</span>
                                 </div>
                                 <div class="flex items-center gap-2 text-sm text-text-gray">
-                                    <i class="fa-solid fa-money-bill-wave w-5 text-center text-primary/70"></i> <span>Rp {{ number_format($job['salary'], 0, ',', '.') }} / {{ str_replace('Per ', '', $job['salary_type']) }}</span>
+                                    <i class="fa-solid fa-money-bill-wave w-5 text-center text-primary/70"></i> <span>Rp {{ number_format($job->gaji, 0, ',', '.') }} / {{ str_replace('Per ', '', $job->salary_type) }}</span>
                                 </div>
                             </div>
                             
                             <div class="flex items-center justify-between mt-auto pt-4 border-t border-border-color">
-                                <x-badge color="info">{{ $job['category'] }}</x-badge>
-                                <span class="text-xs text-text-gray">{{ \Carbon\Carbon::parse($job['created_at'])->diffForHumans() }}</span>
+                                <x-badge color="info">{{ $job->category }}</x-badge>
+                                <span class="text-xs text-text-gray">{{ $job->created_at->diffForHumans() }}</span>
                             </div>
                         </x-card>
                     @endforeach

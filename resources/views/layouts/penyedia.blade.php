@@ -37,7 +37,6 @@
                 @php
                     $menus = [
                         ['url' => 'penyedia/dashboard', 'icon' => 'fa-solid fa-gauge', 'title' => 'Dashboard'],
-                        ['url' => 'penyedia/profil-usaha', 'icon' => 'fa-solid fa-store', 'title' => 'Profil Usaha'],
                         [
                             'title' => 'Lowongan', 
                             'icon' => 'fa-solid fa-briefcase',

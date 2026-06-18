@@ -23,7 +23,13 @@ Route::get('/reset-password', [PublicController::class, 'resetPassword']);
 // ── AUTH POST ROUTES ──────────────────────────────────────────────────────────
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+    // Chat Routes
+    Route::get('/chat/{lamaran_id}', [\App\Http\Controllers\MessageController::class, 'show'])->name('chat.show');
+    Route::post('/chat/{lamaran_id}', [\App\Http\Controllers\MessageController::class, 'store'])->name('chat.store');
+});
 
 // ── ADMIN ─────────────────────────────────────────────────────────────────────
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -97,6 +103,7 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
     Route::get('/lamaran-saya/{id}', [MahasiswaController::class, 'detailLamaran'])->name('lamaran.detail');
     Route::get('/applications', [MahasiswaController::class, 'applications'])->name('applications.index');
     Route::get('/applications/{id}', [MahasiswaController::class, 'applicationDetail'])->name('applications.show');
+    Route::post('/applications/{lamaran_id}/review', [MahasiswaController::class, 'storeReview'])->name('applications.review');
 
     // Lainnya
     Route::get('/favorites', [MahasiswaController::class, 'favorites'])->name('favorites');
@@ -108,16 +115,16 @@ Route::middleware(['auth', 'role:mahasiswa'])->prefix('mahasiswa')->name('mahasi
 Route::middleware(['auth', 'role:penyedia'])->prefix('penyedia')->name('penyedia.')->group(function () {
     Route::get('/dashboard', [PenyediaController::class, 'dashboard'])->name('dashboard');
     Route::put('/profil', [ProfilController::class, 'updatePenyedia'])->name('profil.update');
-    Route::get('/profil-usaha', [PenyediaController::class, 'profilUsaha'])->name('profil.usaha');
 
     // Lowongan CRUD — LowonganController
-    Route::get('/lowongan', [LowonganController::class, 'index'])->name('lowongan.index');
-    Route::post('/lowongan', [LowonganController::class, 'store'])->name('lowongan.store');
-    Route::put('/lowongan/{id}', [LowonganController::class, 'update'])->name('lowongan.update');
+    Route::post('/jobs', [LowonganController::class, 'store'])->name('lowongan.store');
+    Route::put('/jobs/{id}', [LowonganController::class, 'update'])->name('lowongan.update');
+    Route::delete('/jobs/{id}', [LowonganController::class, 'destroy'])->name('lowongan.destroy');
     Route::get('/lowongan/{id}/pelamar', [LowonganController::class, 'daftarPelamar'])->name('lowongan.pelamar');
 
     // Lamaran Status
     Route::put('/lamaran/{lamaran_id}/status', [LowonganController::class, 'ubahStatusLamaran'])->name('lamaran.status');
+    Route::post('/lamaran/{lamaran_id}/review', [LowonganController::class, 'storeReview'])->name('lamaran.review');
 
     // Jobs UI (tampilan) — PenyediaController
     // PENTING: Route dengan segment statis (/jobs/create) harus SEBELUM route parameter (/jobs/{id})

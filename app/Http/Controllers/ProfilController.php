@@ -24,10 +24,10 @@ class ProfilController extends Controller
         ]);
 
         if ($request->hasFile('cv_file')) {
-            if ($profile->ktm_path) {
-                Storage::disk('public')->delete($profile->ktm_path);
+            if ($profile->cv_path) {
+                Storage::disk('public')->delete($profile->cv_path);
             }
-            $profile->ktm_path = $request->file('cv_file')->store('cv_documents', 'public');
+            $profile->cv_path = $request->file('cv_file')->store('cv_documents', 'public');
         }
 
         $user = Auth::user();
@@ -42,15 +42,40 @@ class ProfilController extends Controller
     public function updatePenyedia(Request $request)
     {
         $profile = Profile::where('user_id', Auth::id())->firstOrFail();
+        $user = Auth::user();
 
         $request->validate([
-            'business_name' => 'nullable|string|max:255',
+            'name' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users,username,' . $user->id,
+            'no_hp' => 'required|string|max:20',
+            'business_name' => 'required|string|max:255',
+            'business_type' => 'required|string|max:100',
+            'business_phone' => 'required|string|max:20',
+            'business_address' => 'required|string',
             'description' => 'nullable|string',
-            'business_address' => 'nullable|string',
+            'logo_path' => 'nullable|image|max:2048',
+            'document_path' => 'nullable|mimes:pdf|max:5120',
         ]);
 
-        $profile->update($request->only(['business_name', 'description', 'business_address']));
+        $user->update($request->only(['name', 'username', 'no_hp']));
 
-        return back()->with('success', 'Profil usaha berhasil diperbarui.');
+        if ($request->hasFile('logo_path')) {
+            if ($profile->logo_path) {
+                Storage::disk('public')->delete($profile->logo_path);
+            }
+            $profile->logo_path = $request->file('logo_path')->store('business_logos', 'public');
+        }
+
+        if ($request->hasFile('document_path')) {
+            if ($profile->document_path) {
+                Storage::disk('public')->delete($profile->document_path);
+            }
+            $profile->document_path = $request->file('document_path')->store('verification_documents', 'public');
+        }
+
+        $profile->update($request->only(['business_name', 'business_type', 'business_phone', 'business_address', 'description']));
+        $profile->save();
+
+        return back()->with('success', 'Profil akun dan usaha berhasil diperbarui.');
     }
 }

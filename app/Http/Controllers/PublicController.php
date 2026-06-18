@@ -42,11 +42,27 @@ class PublicController extends Controller
         }
 
         if ($request->filled('location')) {
-            $query->whereIn('lokasi', (array) $request->location);
+            $query->where(function ($q) use ($request) {
+                foreach ((array) $request->location as $loc) {
+                    $q->orWhere('lokasi', 'LIKE', '%' . $loc . '%');
+                }
+            });
         }
 
         if ($request->filled('schedule')) {
-            $query->whereIn('shift', (array) $request->schedule);
+            $query->where(function ($q) use ($request) {
+                foreach ((array) $request->schedule as $sch) {
+                    if ($sch === 'Weekend') {
+                        $q->orWhere('shift', 'LIKE', '%Sabtu%')
+                          ->orWhere('shift', 'LIKE', '%Minggu%')
+                          ->orWhere('shift', 'LIKE', '%Weekend%');
+                    } elseif ($sch === 'Shift Malam') {
+                        $q->orWhere('shift', 'LIKE', '%Malam%');
+                    } else {
+                        $q->orWhere('shift', 'LIKE', '%' . $sch . '%');
+                    }
+                }
+            });
         }
 
         if ($request->filled('min_salary')) {
