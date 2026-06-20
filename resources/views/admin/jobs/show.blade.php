@@ -52,7 +52,7 @@
             </div>
             <div>
                 <p class="text-xs font-medium text-text-gray uppercase tracking-wider mb-0.5">Dibuat Pada</p>
-                <p class="text-sm font-bold text-text-dark leading-none">{{ isset($job['created_at']) ? \Carbon\Carbon::parse($job['created_at'])->format('d M Y') : '-' }}</p>
+                <p class="text-sm font-bold text-text-dark leading-none">{{ $job['created_at'] ? \Carbon\Carbon::parse($job['created_at'])->format('d M Y') : '-' }}</p>
             </div>
         </div>
         <div class="bg-white rounded-lg border border-border-color shadow-sm p-4 flex items-center gap-4">
@@ -212,15 +212,17 @@
                         </div>
                         <div>
                             <p class="text-xs text-text-gray font-semibold mb-1 uppercase">Tanggal Dibuat</p>
-                            <p class="font-bold text-text-dark text-base">{{ \Carbon\Carbon::parse($job['created_at'] ?? now())->format('d F Y') }}</p>
+                            <p class="font-bold text-text-dark text-base">{{ $job['created_at'] ? \Carbon\Carbon::parse($job['created_at'])->format('d F Y') : '-' }}</p>
                         </div>
                         <div>
                             <p class="text-xs text-text-gray font-semibold mb-1 uppercase">Batas Lamaran</p>
                             <p class="font-bold text-text-dark text-base text-danger">
-                                @if(isset($job['deadline']))
+                                @if(!empty($job['deadline']))
                                     {{ \Carbon\Carbon::parse($job['deadline'])->format('d F Y') }}
+                                @elseif($job['created_at'])
+                                    {{ \Carbon\Carbon::parse($job['created_at'])->addDays(14)->format('d F Y') }}
                                 @else
-                                    {{ \Carbon\Carbon::parse($job['created_at'] ?? now())->addDays(14)->format('d F Y') }}
+                                    -
                                 @endif
                             </p>
                         </div>

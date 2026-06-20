@@ -261,7 +261,8 @@
                 </button>
 
                 @if(!empty($studentProfile['ktm_path']))
-                <a href="{{ Storage::url($studentProfile['ktm_path']) }}" download="KTM_{{ $application['student_name'] ?? 'Pelamar' }}.jpg" class="flex-1 sm:flex-none px-4 py-2 bg-primary rounded text-xs font-bold text-white hover:brightness-90 transition-all text-center">
+                @php $ktmExt = pathinfo($studentProfile['ktm_path'], PATHINFO_EXTENSION); @endphp
+                <a href="{{ Storage::url($studentProfile['ktm_path']) }}" download="KTM_{{ $application['student_name'] ?? 'Pelamar' }}.{{ $ktmExt }}" class="flex-1 sm:flex-none px-4 py-2 bg-primary rounded text-xs font-bold text-white hover:brightness-90 transition-all text-center">
                     <i class="fa-solid fa-download mr-1.5"></i>
                     Unduh
                 </a>
@@ -295,7 +296,8 @@
                 </button>
 
                 @if(!empty($studentProfile['cv_path']))
-                <a href="{{ Storage::url($studentProfile['cv_path']) }}" download="CV_{{ $application['student_name'] ?? 'Pelamar' }}.pdf" class="flex-1 sm:flex-none px-4 py-2 bg-primary rounded text-xs font-bold text-white hover:brightness-90 transition-all text-center">
+                @php $cvExt = pathinfo($studentProfile['cv_path'], PATHINFO_EXTENSION); @endphp
+                <a href="{{ Storage::url($studentProfile['cv_path']) }}" download="CV_{{ $application['student_name'] ?? 'Pelamar' }}.{{ $cvExt }}" class="flex-1 sm:flex-none px-4 py-2 bg-primary rounded text-xs font-bold text-white hover:brightness-90 transition-all text-center">
                     <i class="fa-solid fa-download mr-1.5"></i>
                     Unduh
                 </a>
@@ -428,12 +430,28 @@
 
 <!-- Modal Preview KTM -->
 <x-modal id="modal-preview-ktm" title="Preview Kartu Tanda Mahasiswa">
-    <div class="flex justify-center items-center bg-gray-100 rounded-lg p-4 overflow-hidden h-64">
-        <div class="text-center text-text-gray">
-            <i class="fa-solid fa-image text-5xl mb-3 text-gray-400"></i>
-            <p>Mockup Preview Gambar KTM.jpg</p>
-        </div>
+    <div class="flex justify-center items-center bg-gray-100 rounded-lg p-4 overflow-hidden min-h-48">
+        @if(!empty($studentProfile['ktm_path']))
+            @php $ktmUrl = Storage::url($studentProfile['ktm_path']); @endphp
+            @if(Str::endsWith(strtolower($studentProfile['ktm_path']), ['.jpg', '.jpeg', '.png']))
+                <img src="{{ $ktmUrl }}" alt="KTM" class="max-h-80 max-w-full object-contain rounded">
+            @else
+                <iframe src="{{ $ktmUrl }}" class="w-full h-80 rounded" frameborder="0"></iframe>
+            @endif
+        @else
+            <div class="text-center text-text-gray">
+                <i class="fa-solid fa-image text-5xl mb-3 text-gray-400"></i>
+                <p>KTM belum diunggah</p>
+            </div>
+        @endif
     </div>
+    @if(!empty($studentProfile['ktm_path']))
+    <div class="mt-3 flex justify-end">
+        <a href="{{ Storage::url($studentProfile['ktm_path']) }}" download class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm rounded font-bold hover:brightness-90">
+            <i class="fa-solid fa-download"></i> Unduh KTM
+        </a>
+    </div>
+    @endif
     <x-slot name="footer">
         <button type="button" class="inline-flex justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:brightness-90 transition-all" onclick="closeModal('modal-preview-ktm')">Tutup</button>
     </x-slot>
@@ -441,13 +459,23 @@
 
 <!-- Modal Preview CV -->
 <x-modal id="modal-preview-cv" title="Preview Curriculum Vitae">
-    <div class="flex justify-center items-center bg-gray-100 rounded-lg p-4 overflow-hidden h-96">
-        <div class="text-center text-text-gray">
-            <i class="fa-solid fa-file-pdf text-5xl mb-3 text-danger/50"></i>
-            <p>Mockup Preview Dokumen CV.pdf</p>
-            <p class="text-xs mt-2">Menampilkan halaman 1 dari 2</p>
-        </div>
+    <div class="flex justify-center items-center bg-gray-100 rounded-lg p-4 overflow-hidden min-h-64">
+        @if(!empty($studentProfile['cv_path']))
+            <iframe src="{{ Storage::url($studentProfile['cv_path']) }}" class="w-full h-96 rounded" frameborder="0"></iframe>
+        @else
+            <div class="text-center text-text-gray">
+                <i class="fa-solid fa-file-pdf text-5xl mb-3 text-danger/50"></i>
+                <p>CV belum diunggah</p>
+            </div>
+        @endif
     </div>
+    @if(!empty($studentProfile['cv_path']))
+    <div class="mt-3 flex justify-end">
+        <a href="{{ Storage::url($studentProfile['cv_path']) }}" download class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm rounded font-bold hover:brightness-90">
+            <i class="fa-solid fa-download"></i> Unduh CV
+        </a>
+    </div>
+    @endif
     <x-slot name="footer">
         <button type="button" class="inline-flex justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:brightness-90 transition-all" onclick="closeModal('modal-preview-cv')">Tutup</button>
     </x-slot>

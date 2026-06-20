@@ -266,8 +266,31 @@ class AdminController extends Controller
             'phone' => $u->no_hp ?? '-',
             'created_at' => $u->created_at ? $u->created_at->format('Y-m-d H:i:s') : now()->format('Y-m-d H:i:s'),
         ];
-        $profile = $u->profile ? $u->profile->toArray() : [];
-        if (!isset($profile['skills'])) $profile['skills'] = [];
+        // Map profile fields correctly to match DB column names
+        $profile = [];
+        if ($u->profile) {
+            $p = $u->profile;
+            if ($u->role === 'mahasiswa') {
+                $profile = [
+                    'campus'   => $p->universitas ?? '-',
+                    'major'    => $p->jurusan ?? '-',
+                    'semester' => $p->semester ?? '-',
+                    'gpa'      => $p->ipk ?? '-',
+                    'address'  => $p->alamat ?? '-',
+                    'ktm_path' => $p->ktm_path ?? null,
+                    'cv_path'  => $p->cv_path ?? null,
+                    'nim'      => $p->nim ?? '-',
+                ];
+            } else {
+                $profile = [
+                    'company_name'          => $p->business_name ?? '-',
+                    'company_type'          => $p->business_type ?? '-',
+                    'address'               => $p->business_address ?? '-',
+                    'verification_document' => $p->document_path ?? null,
+                    'logo_path'             => $p->logo_path ?? null,
+                ];
+            }
+        }
         return view('admin.users.show', compact('user', 'profile'));
     }
 
@@ -436,6 +459,14 @@ class AdminController extends Controller
     public function showJob($id)
     {
         $jobModel = Lowongan::with(['penyedia', 'lamarans.pelamar'])->findOrFail($id);
+
+        // Only pass a valid deadline string (not '-') to avoid Carbon parsing error
+        $deadline = null;
+        if (!empty($jobModel->deadline) && $jobModel->deadline !== '-') {
+            $deadline = $jobModel->deadline;
+        }
+        $createdAt = $jobModel->created_at;
+
         $job = [
             'id' => $jobModel->id,
             'title' => $jobModel->judul,
@@ -450,12 +481,12 @@ class AdminController extends Controller
             'status' => $jobModel->status,
             'schedule' => $jobModel->shift,
             'working_hours' => $jobModel->shift ?? 'Belum ditentukan',
-            'start_date' => $jobModel->start_date ?? '-',
-            'deadline' => $jobModel->deadline ?? '-',
-            'created_at' => $jobModel->created_at,
+            'start_date' => $jobModel->start_date,
+            'deadline' => $deadline,
+            'created_at' => $createdAt,
             'description' => $jobModel->deskripsi,
             'applicants_count' => $jobModel->lamarans->count(),
-            'requirements' => explode("\n", $jobModel->kriteria ?? ''),
+            'requirements' => array_filter(explode("\n", $jobModel->kriteria ?? '')),
             'applicants' => $jobModel->lamarans->map(function($app) {
                 return [
                     'student_name' => $app->pelamar->name ?? 'Anonim',
@@ -549,33 +580,47 @@ class AdminController extends Controller
     public function showApplication($id)
     {
         $app = Lamaran::with(['pelamar.profile', 'lowongan.penyedia'])->findOrFail($id);
-        
+        $pelamar = $app->pelamar;
+        $p = $pelamar->profile;
+
         $application = [
-            'id' => $app->id,
-            'job_title' => $app->lowongan->judul ?? '-',
-            'status' => $app->status,
-            'applied_at' => $app->created_at->format('d M Y H:i'),
-            'cover_letter' => $app->cover_letter ?? '-'
+            'id'           => $app->id,
+            'job_title'    => $app->lowongan->judul ?? '-',
+            'provider_name'=> $app->lowongan->penyedia->name ?? '-',
+            'student_name' => $pelamar->name ?? 'Anonim',
+            'status'       => $app->status,
+            'applied_at'   => $app->created_at->format('d M Y H:i'),
+            'cover_letter' => $app->catatan_tambahan ?? '-',
         ];
 
-        $u = $app->pelamar;
         $user = [
-            'name' => $u->name ?? 'Anonim',
-            'email' => $u->email ?? '-',
-            'phone' => $u->no_hp ?? '-'
+            'email' => $pelamar->email ?? '-',
+            'phone' => $pelamar->no_hp ?? '-',
         ];
 
-        $studentProfile = $app->pelamar->profile ? $app->pelamar->profile->toArray() : [];
-        $user = ['email' => $app->pelamar->email, 'phone' => $app->pelamar->no_hp];
+        // Map profile fields from actual DB column names
+        $studentProfile = [];
+        if ($p) {
+            $studentProfile = [
+                'campus'   => $p->universitas ?? '-',
+                'major'    => $p->jurusan ?? '-',
+                'semester' => $p->semester ?? '-',
+                'gpa'      => $p->ipk ?? '-',
+                'address'  => $p->alamat ?? '-',
+                'ktm_path' => $p->ktm_path ?? null,
+                'cv_path'  => $p->cv_path ?? null,
+                'nim'      => $p->nim ?? '-',
+            ];
+        }
 
-        $reviews = \App\Models\Review::with('reviewer')->where('reviewee_id', $app->pelamar->id)->latest()->get();
+        $reviews = \App\Models\Review::with('reviewer')->where('reviewee_id', $pelamar->id)->latest()->get();
         $avg = $reviews->avg('rating') ?? 0;
         $total = $reviews->count();
         $ratingData = [
             'average' => round($avg, 1),
-            'total' => $total,
+            'total'   => $total,
             'reviews' => $reviews,
-            'counts' => [
+            'counts'  => [
                 5 => $reviews->where('rating', 5)->count(),
                 4 => $reviews->where('rating', 4)->count(),
                 3 => $reviews->where('rating', 3)->count(),

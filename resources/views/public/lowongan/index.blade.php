@@ -18,7 +18,7 @@
             <div class="bg-white border border-border-color rounded-md p-5 sticky top-24">
                 <div class="flex items-center justify-between mb-4 pb-4 border-b border-border-color">
                     <h3 class="font-bold text-lg text-text-dark">Filter</h3>
-                    @if(request()->anyFilled(['category', 'location', 'schedule', 'min_salary', 'search', 'sort']))
+                    @if(request()->anyFilled(['category', 'shift', 'gaji_min', 'keyword', 'sort']))
                         <a href="{{ url('/lowongan') }}" class="text-sm text-primary hover:underline">Reset</a>
                     @endif
                 </div>
@@ -29,55 +29,32 @@
                     <div class="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
                         @foreach($categories as $category)
                             <label class="flex items-center">
-                                <x-checkbox name="category[]" value="{{ $category->name }}" {{ in_array($category->name, request('category', [])) ? 'checked' : '' }} />
+                                <input type="radio" name="category" value="{{ $category->name }}" {{ request('category') == $category->name ? 'checked' : '' }} class="text-primary focus:ring-primary h-4 w-4 rounded-full border-border-color" />
                                 <span class="ml-2 text-sm text-text-gray">{{ $category->name }}</span>
                             </label>
                         @endforeach
                     </div>
                 </div>
 
-                <!-- Lokasi -->
+                <!-- Gaji Minimal -->
                 <div class="mb-6">
-                    <h4 class="font-semibold text-text-dark mb-3 text-sm">Lokasi</h4>
-                    <div class="space-y-2">
-                        <label class="flex items-center">
-                            <x-checkbox name="location[]" value="Surabaya Timur" {{ in_array('Surabaya Timur', request('location', [])) ? 'checked' : '' }} />
-                            <span class="ml-2 text-sm text-text-gray">Surabaya Timur</span>
-                        </label>
-                        <label class="flex items-center">
-                            <x-checkbox name="location[]" value="Surabaya Barat" {{ in_array('Surabaya Barat', request('location', [])) ? 'checked' : '' }} />
-                            <span class="ml-2 text-sm text-text-gray">Surabaya Barat</span>
-                        </label>
-                        <label class="flex items-center">
-                            <x-checkbox name="location[]" value="Surabaya Pusat" {{ in_array('Surabaya Pusat', request('location', [])) ? 'checked' : '' }} />
-                            <span class="ml-2 text-sm text-text-gray">Surabaya Pusat</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Jadwal -->
-                <div class="mb-6">
-                    <h4 class="font-semibold text-text-dark mb-3 text-sm">Jadwal</h4>
-                    <div class="space-y-2">
-                        <label class="flex items-center">
-                            <x-checkbox name="schedule[]" value="Weekend" {{ in_array('Weekend', request('schedule', [])) ? 'checked' : '' }} />
-                            <span class="ml-2 text-sm text-text-gray">Akhir Pekan (Weekend)</span>
-                        </label>
-                        <label class="flex items-center">
-                            <x-checkbox name="schedule[]" value="Shift Malam" {{ in_array('Shift Malam', request('schedule', [])) ? 'checked' : '' }} />
-                            <span class="ml-2 text-sm text-text-gray">Shift Malam</span>
-                        </label>
-                        <label class="flex items-center">
-                            <x-checkbox name="schedule[]" value="Fleksibel" {{ in_array('Fleksibel', request('schedule', [])) ? 'checked' : '' }} />
-                            <span class="ml-2 text-sm text-text-gray">Fleksibel</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Gaji -->
-                <div>
                     <h4 class="font-semibold text-text-dark mb-3 text-sm">Gaji Minimal (Rp)</h4>
-                    <x-input name="min_salary" type="number" placeholder="Contoh: 50000" value="{{ request('min_salary') }}" />
+                    <x-input name="gaji_min" type="number" placeholder="Contoh: 1000000" value="{{ request('gaji_min') }}" />
+                </div>
+
+                <!-- Jadwal / Shift -->
+                <div class="mb-6">
+                    <h4 class="font-semibold text-text-dark mb-3 text-sm">Jadwal / Shift</h4>
+                    <div class="space-y-2 text-sm text-text-gray">
+                        <x-select name="shift" class="w-full text-sm">
+                            <option value="">Semua Shift</option>
+                            <option value="Pagi" {{ request('shift') == 'Pagi' ? 'selected' : '' }}>Pagi</option>
+                            <option value="Siang" {{ request('shift') == 'Siang' ? 'selected' : '' }}>Siang</option>
+                            <option value="Sore" {{ request('shift') == 'Sore' ? 'selected' : '' }}>Sore</option>
+                            <option value="Malam" {{ request('shift') == 'Malam' ? 'selected' : '' }}>Malam</option>
+                            <option value="Fleksibel" {{ request('shift') == 'Fleksibel' ? 'selected' : '' }}>Fleksibel</option>
+                        </x-select>
+                    </div>
                 </div>
                 
                 <div class="mt-6 pt-6 border-t border-border-color">
@@ -91,7 +68,7 @@
             <!-- Search & Sort -->
             <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
                 <div class="w-full sm:w-96 flex gap-2">
-                    <x-search-input name="search" value="{{ request('search') }}" placeholder="Cari posisi atau nama tempat kerja..." />
+                    <x-search-input name="keyword" value="{{ request('keyword') }}" placeholder="Cari posisi atau nama tempat kerja..." />
                     <x-button type="submit" class="hidden sm:inline-flex px-3 shrink-0"><i class="fa-solid fa-search"></i></x-button>
                 </div>
                 <div class="w-full sm:w-auto flex items-center gap-2">

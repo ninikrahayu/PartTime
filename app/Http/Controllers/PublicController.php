@@ -28,45 +28,23 @@ class PublicController extends Controller
     {
         $query = Lowongan::with('penyedia.profile')->where('status', 'aktif')->latest();
 
-        if ($request->filled('search')) {
+        if ($request->filled('keyword')) {
             $query->where(function($q) use ($request) {
-                $q->where('judul', 'LIKE', '%' . $request->search . '%')
-                  ->orWhereHas('penyedia', function($pQuery) use ($request) {
-                      $pQuery->where('name', 'LIKE', '%' . $request->search . '%');
-                  });
+                $q->where('judul', 'like', '%' . $request->keyword . '%')
+                  ->orWhere('deskripsi', 'like', '%' . $request->keyword . '%');
             });
         }
 
         if ($request->filled('category')) {
-            $query->whereIn('category', (array) $request->category);
+            $query->where('category', $request->category);
         }
 
-        if ($request->filled('location')) {
-            $query->where(function ($q) use ($request) {
-                foreach ((array) $request->location as $loc) {
-                    $q->orWhere('lokasi', 'LIKE', '%' . $loc . '%');
-                }
-            });
+        if ($request->filled('shift')) {
+            $query->where('shift', $request->shift);
         }
 
-        if ($request->filled('schedule')) {
-            $query->where(function ($q) use ($request) {
-                foreach ((array) $request->schedule as $sch) {
-                    if ($sch === 'Weekend') {
-                        $q->orWhere('shift', 'LIKE', '%Sabtu%')
-                          ->orWhere('shift', 'LIKE', '%Minggu%')
-                          ->orWhere('shift', 'LIKE', '%Weekend%');
-                    } elseif ($sch === 'Shift Malam') {
-                        $q->orWhere('shift', 'LIKE', '%Malam%');
-                    } else {
-                        $q->orWhere('shift', 'LIKE', '%' . $sch . '%');
-                    }
-                }
-            });
-        }
-
-        if ($request->filled('min_salary')) {
-            $query->where('gaji', '>=', $request->min_salary);
+        if ($request->filled('gaji_min')) {
+            $query->where('gaji', '>=', $request->gaji_min);
         }
 
         if ($request->filled('sort')) {

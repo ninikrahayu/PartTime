@@ -1,11 +1,16 @@
 @extends('layouts.public')
 
-@section('title', $job['title'] . ' di ' . $job['provider_name'])
+@section('title', $job->judul . ' di ' . ($job->penyedia->name ?? 'Penyedia'))
 
 @php
     // Fetch provider reviews explicitly within the view
-    $reviews = App\Services\DummyData::getCollection('reviews', 'provider_id', $job['provider_id'])->where('review_type', 'for_provider');
+    $reviews = \App\Models\Review::with('reviewer')->where('reviewee_id', $job->penyedia_id)->get();
     $avgRating = $reviews->count() > 0 ? $reviews->avg('rating') : 0;
+    
+    $providerName = $job->penyedia->name ?? 'Penyedia';
+    $providerLogo = ($job->penyedia && $job->penyedia->profile && !empty($job->penyedia->profile->logo_path)) 
+        ? Storage::url($job->penyedia->profile->logo_path) 
+        : asset('images/dummy/default-logo.png');
 @endphp
 
 @section('content')
@@ -14,16 +19,16 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
         <div class="flex flex-col md:flex-row md:items-center gap-6">
             <!-- Provider Logo -->
-            <img src="{{ asset($job['provider_logo'] ?? 'images/dummy/default-logo.png') }}" alt="{{ $job['provider_name'] }}" class="w-20 h-20 md:w-24 md:h-24 rounded-md object-cover border border-border-color shadow-sm" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($job['provider_name']) }}&background=F9FAFB'">
+            <img src="{{ $providerLogo }}" alt="{{ $providerName }}" class="w-20 h-20 md:w-24 md:h-24 rounded-md object-cover border border-border-color shadow-sm" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($providerName) }}&background=F9FAFB'">
             
             <div class="flex-1">
                 <div class="flex flex-wrap gap-2 mb-3">
-                    <x-badge color="info">{{ $job['category'] }}</x-badge>
-                    <x-status-badge :status="$job['status']" />
+                    <x-badge color="info">{{ $job->category }}</x-badge>
+                    <x-status-badge :status="$job->status" />
                 </div>
-                <h1 class="text-2xl md:text-3xl font-bold text-text-dark mb-2">{{ $job['title'] }}</h1>
+                <h1 class="text-2xl md:text-3xl font-bold text-text-dark mb-2">{{ $job->judul }}</h1>
                 <p class="text-lg text-text-gray font-medium flex items-center gap-2">
-                    {{ $job['provider_name'] }}
+                    {{ $providerName }}
                     @if($avgRating > 0)
                         <span class="text-sm bg-secondary/20 text-text-dark px-2 py-0.5 rounded-full flex items-center gap-1">
                             <i class="fa-solid fa-star text-secondary text-xs"></i> {{ number_format($avgRating, 1) }} ({{ $reviews->count() }} Review)
@@ -54,7 +59,7 @@
             <section class="bg-white p-6 md:p-8 rounded-md border border-border-color">
                 <h2 class="text-xl font-bold text-text-dark mb-4">Deskripsi Pekerjaan</h2>
                 <div class="prose prose-sm max-w-none text-text-gray">
-                    {!! nl2br(e($job['description'])) !!}
+                    {!! nl2br(e($job->deskripsi)) !!}
                 </div>
             </section>
 
@@ -62,11 +67,16 @@
             <section class="bg-white p-6 md:p-8 rounded-md border border-border-color">
                 <h2 class="text-xl font-bold text-text-dark mb-4">Persyaratan</h2>
                 <ul class="space-y-3">
-                    @foreach($job['requirements'] ?? [] as $req)
+                    @php
+                        $requirements = is_string($job->kriteria) ? explode("\n", $job->kriteria) : ($job->kriteria ?? []);
+                    @endphp
+                    @foreach($requirements as $req)
+                        @if(trim($req))
                         <li class="flex items-start gap-3">
                             <i class="fa-solid fa-check text-success mt-1"></i>
-                            <span class="text-text-gray">{{ $req }}</span>
+                            <span class="text-text-gray">{{ trim($req) }}</span>
                         </li>
+                        @endif
                     @endforeach
                 </ul>
             </section>
@@ -82,20 +92,20 @@
                                 <div class="flex items-start justify-between mb-2">
                                     <div class="flex items-center gap-3">
                                         <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold">
-                                            M
+                                            {{ strtoupper(substr($review->reviewer->name ?? 'M', 0, 1)) }}
                                         </div>
                                         <div>
-                                            <p class="font-semibold text-text-dark text-sm">Mahasiswa Partimeku</p>
-                                            <p class="text-xs text-text-gray">{{ \Carbon\Carbon::parse($review['created_at'])->format('d M Y') }}</p>
+                                            <p class="font-semibold text-text-dark text-sm">{{ $review->reviewer->name ?? 'Pengguna' }}</p>
+                                            <p class="text-xs text-text-gray">{{ \Carbon\Carbon::parse($review->created_at)->format('d M Y') }}</p>
                                         </div>
                                     </div>
                                     <div class="flex text-secondary text-sm">
                                         @for($i=1; $i<=5; $i++)
-                                            <i class="fa-{{ $i <= $review['rating'] ? 'solid' : 'regular' }} fa-star"></i>
+                                            <i class="fa-{{ $i <= $review->rating ? 'solid' : 'regular' }} fa-star"></i>
                                         @endfor
                                     </div>
                                 </div>
-                                <p class="text-sm text-text-gray mt-3">{{ $review['comment'] }}</p>
+                                <p class="text-sm text-text-gray mt-3">{{ $review->comment }}</p>
                             </div>
                         @endforeach
                     </div>
@@ -122,7 +132,7 @@
                             </div>
                             <div>
                                 <p class="text-xs text-text-gray mb-1">Gaji yang Ditawarkan</p>
-                                <p class="font-semibold text-text-dark">Rp {{ number_format($job['salary'], 0, ',', '.') }} <span class="font-normal text-sm text-text-gray">/ {{ str_replace('Per ', '', $job['salary_type']) }}</span></p>
+                                <p class="font-semibold text-text-dark">Rp {{ number_format($job->gaji, 0, ',', '.') }} <span class="font-normal text-sm text-text-gray">/ {{ str_replace('Per ', '', $job->salary_type) }}</span></p>
                             </div>
                         </div>
                         <div class="flex items-start gap-3">
@@ -131,7 +141,7 @@
                             </div>
                             <div>
                                 <p class="text-xs text-text-gray mb-1">Jadwal Kerja</p>
-                                <p class="font-semibold text-text-dark">{{ $job['schedule'] }}</p>
+                                <p class="font-semibold text-text-dark">{{ $job->shift }}</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-3">
@@ -140,7 +150,7 @@
                             </div>
                             <div>
                                 <p class="text-xs text-text-gray mb-1">Lokasi</p>
-                                <p class="font-semibold text-text-dark">{{ $job['location'] }}</p>
+                                <p class="font-semibold text-text-dark">{{ $job->lokasi }}</p>
                             </div>
                         </div>
                         <div class="flex items-start gap-3">
@@ -149,7 +159,7 @@
                             </div>
                             <div>
                                 <p class="text-xs text-text-gray mb-1">Dipublikasikan</p>
-                                <p class="font-semibold text-text-dark">{{ \Carbon\Carbon::parse($job['created_at'])->format('d M Y') }}</p>
+                                <p class="font-semibold text-text-dark">{{ \Carbon\Carbon::parse($job->created_at)->format('d M Y') }}</p>
                             </div>
                         </div>
                     </div>
@@ -157,8 +167,8 @@
 
                 <!-- Provider Info -->
                 <div class="bg-surface rounded-md border border-border-color p-5 text-center">
-                    <img src="{{ asset($job['provider_logo'] ?? 'images/dummy/default-logo.png') }}" alt="{{ $job['provider_name'] }}" class="w-16 h-16 mx-auto rounded-full object-cover border border-border-color shadow-sm mb-3" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($job['provider_name']) }}&background=1E3A8A&color=fff'">
-                    <h3 class="font-bold text-text-dark">{{ $job['provider_name'] }}</h3>
+                    <img src="{{ $providerLogo }}" alt="{{ $providerName }}" class="w-16 h-16 mx-auto rounded-full object-cover border border-border-color shadow-sm mb-3" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($providerName) }}&background=1E3A8A&color=fff'">
+                    <h3 class="font-bold text-text-dark">{{ $providerName }}</h3>
                     <p class="text-xs text-text-gray mt-1">Penyedia Part Time Terverifikasi <i class="fa-solid fa-circle-check text-success ml-1"></i></p>
                     <div class="mt-4 pt-4 border-t border-border-color">
                         <a href="#" class="text-primary hover:underline text-sm font-medium">Lihat Profil Lengkap</a>
@@ -186,26 +196,32 @@
     <div class="mt-16 pt-8 border-t border-border-color">
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-text-dark">Lowongan Serupa</h2>
-            <a href="{{ url('/lowongan?category='.$job['category_id']) }}" class="text-primary hover:underline text-sm font-medium">Lihat Kategori Ini</a>
+            <a href="{{ url('/lowongan?category[]='.urlencode($job->category)) }}" class="text-primary hover:underline text-sm font-medium">Lihat Kategori Ini</a>
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             @foreach($similarJobs as $simJob)
-                <x-card class="hover:shadow-md transition-shadow group flex flex-col h-full cursor-pointer" onclick="window.location.href='{{ url('/lowongan/'.$simJob['id']) }}'">
+                @php
+                    $simProviderName = $simJob->penyedia->name ?? 'Penyedia';
+                    $simProviderLogo = ($simJob->penyedia && $simJob->penyedia->profile && !empty($simJob->penyedia->profile->logo_path)) 
+                        ? Storage::url($simJob->penyedia->profile->logo_path) 
+                        : asset('images/dummy/default-logo.png');
+                @endphp
+                <x-card class="hover:shadow-md transition-shadow group flex flex-col h-full cursor-pointer" onclick="window.location.href='{{ url('/lowongan/'.$simJob->id) }}'">
                     <div class="flex items-start gap-3 mb-3">
-                        <img src="{{ asset($simJob['provider_logo'] ?? 'images/dummy/default-logo.png') }}" alt="{{ $simJob['provider_name'] }}" class="w-10 h-10 rounded-md object-cover border border-border-color" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($simJob['provider_name']) }}&background=F9FAFB'">
+                        <img src="{{ $simProviderLogo }}" alt="{{ $simProviderName }}" class="w-10 h-10 rounded-md object-cover border border-border-color" onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($simProviderName) }}&background=F9FAFB'">
                         <div class="flex-1">
-                            <h3 class="font-bold text-text-dark group-hover:text-primary transition-colors line-clamp-1"><a href="{{ url('/lowongan/'.$simJob['id']) }}">{{ $simJob['title'] }}</a></h3>
-                            <p class="text-xs text-text-gray">{{ $simJob['provider_name'] }}</p>
+                            <h3 class="font-bold text-text-dark group-hover:text-primary transition-colors line-clamp-1"><a href="{{ url('/lowongan/'.$simJob->id) }}">{{ $simJob->judul }}</a></h3>
+                            <p class="text-xs text-text-gray">{{ $simProviderName }}</p>
                         </div>
                     </div>
                     
                     <div class="space-y-1.5 mb-4 flex-grow">
                         <div class="flex items-center text-xs text-text-gray">
-                            <i class="fa-solid fa-location-dot w-4 text-center text-primary/70"></i> {{ $simJob['location'] }}
+                            <i class="fa-solid fa-location-dot w-4 text-center text-primary/70"></i> {{ $simJob->lokasi }}
                         </div>
                         <div class="flex items-center text-xs text-text-gray">
-                            <i class="fa-solid fa-money-bill-wave w-4 text-center text-primary/70"></i> Rp {{ number_format($simJob['salary'], 0, ',', '.') }}
+                            <i class="fa-solid fa-money-bill-wave w-4 text-center text-primary/70"></i> Rp {{ number_format($simJob->gaji, 0, ',', '.') }}
                         </div>
                     </div>
                 </x-card>
