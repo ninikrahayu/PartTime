@@ -10,7 +10,12 @@ use Illuminate\Support\Facades\Auth;
 class MessageController extends Controller
 {
     /**
-     * Show the chat thread for a lamaran (works for both penyedia and pelamar).
+     * Menampilkan riwayat percakapan chat (thread) berdasarkan ID Lamaran.
+     * Dapat diakses baik oleh Mahasiswa maupun Penyedia yang terhubung.
+     * Pesan masuk yang belum dibaca dari lawan bicara akan ditandai terbaca (read_at).
+     *
+     * @param int $lamaran_id
+     * @return \Illuminate\View\View
      */
     public function show($lamaran_id)
     {
@@ -46,7 +51,12 @@ class MessageController extends Controller
     }
 
     /**
-     * Send a message.
+     * Mengirimkan pesan baru ke dalam thread chat lamaran.
+     * Memvalidasi format dan panjang isi pesan sebelum disimpan ke tabel messages.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $lamaran_id
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function store(Request $request, $lamaran_id)
     {

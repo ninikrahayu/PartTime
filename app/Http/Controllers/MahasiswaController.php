@@ -12,6 +12,12 @@ use Illuminate\Support\Facades\Auth;
 
 class MahasiswaController extends Controller
 {
+    /**
+     * Menampilkan halaman dashboard utama Mahasiswa.
+     * Mengambil data lamaran, rata-rata rating review, jumlah wishlist, dan lowongan aktif.
+     *
+     * @return \Illuminate\View\View
+     */
     public function dashboard()
     {
         $user = Auth::user();
@@ -33,6 +39,13 @@ class MahasiswaController extends Controller
         return view('mahasiswa.dashboard', compact('user', 'stats', 'last_application', 'recent_reviews', 'recent_jobs'));
     }
 
+    /**
+     * Memfilter katalog pencarian lowongan pekerjaan berdasarkan keyword, shift, gaji minimal, dan kategori.
+     * Digunakan oleh Mahasiswa untuk mencari lowongan aktif.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\View\View
+     */
     public function cariLowongan(Request $request)
     {
         $query = Lowongan::with('penyedia.profile')->where('status', 'aktif');
@@ -61,6 +74,14 @@ class MahasiswaController extends Controller
         return view('mahasiswa.jobs.index', compact('jobs', 'categories'));
     }
 
+    /**
+     * Mengirimkan lamaran pekerjaan mahasiswa untuk lowongan tertentu.
+     * Memvalidasi apakah profil pelamar sudah memiliki CV dan belum pernah melamar sebelumnya.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $lowongan_id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function lamarPekerjaan(Request $request, $lowongan_id)
     {
         $pelamar_id = Auth::id();
@@ -88,6 +109,11 @@ class MahasiswaController extends Controller
         return redirect()->route('mahasiswa.lamaran.status')->with('success', 'Lamaran berhasil dikirim ke penyedia!');
     }
 
+    /**
+     * Menampilkan riwayat/status seluruh lamaran yang diajukan oleh Mahasiswa.
+     *
+     * @return \Illuminate\View\View
+     */
     public function statusLamaran()
     {
         $applications = Lamaran::with(['lowongan.penyedia.profile'])
@@ -98,6 +124,11 @@ class MahasiswaController extends Controller
         return view('mahasiswa.applications.index', compact('applications'));
     }
 
+    /**
+     * Menampilkan daftar semua lowongan aktif (katalog umum untuk mahasiswa).
+     *
+     * @return \Illuminate\View\View
+     */
     public function jobs()
     {
         $jobs = Lowongan::with('penyedia.profile')->where('status', 'aktif')->latest()->paginate(10);
@@ -105,12 +136,23 @@ class MahasiswaController extends Controller
         return view('mahasiswa.jobs.index', compact('jobs', 'categories'));
     }
 
+    /**
+     * Menampilkan detail informasi lowongan tertentu beserta penyedia dan review-nya.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
+     */
     public function jobDetail($id)
     {
         $job = Lowongan::with('penyedia.profile')->where('status', 'aktif')->findOrFail($id);
         return view('mahasiswa.jobs.detail', compact('job'));
     }
 
+    /**
+     * Menampilkan daftar lowongan favorit / wishlist yang disimpan oleh Mahasiswa.
+     *
+     * @return \Illuminate\View\View
+     */
     public function favorites()
     {
         $favorites = Favorite::with('lowongan.penyedia.profile')
@@ -121,6 +163,13 @@ class MahasiswaController extends Controller
         return view('mahasiswa.favorites.index', compact('favorites'));
     }
 
+    /**
+     * Menambahkan atau menghapus (toggle) lowongan dari daftar wishlist/favorit mahasiswa.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $lowongan_id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function toggleFavorite(Request $request, $lowongan_id)
     {
         $user_id = Auth::id();
@@ -138,6 +187,11 @@ class MahasiswaController extends Controller
         }
     }
 
+    /**
+     * Menampilkan daftar seluruh lamaran pekerjaan mahasiswa (alternatif rute).
+     *
+     * @return \Illuminate\View\View
+     */
     public function applications()
     {
         $applications = Lamaran::with(['lowongan.penyedia.profile'])
@@ -147,6 +201,12 @@ class MahasiswaController extends Controller
         return view('mahasiswa.applications.index', compact('applications'));
     }
 
+    /**
+     * Menampilkan rincian pelacakan status lamaran (timeline) serta ulasan dua arah.
+     *
+     * @param int $id
+     * @return \Illuminate\View\View
+     */
     public function applicationDetail($id)
     {
         $application = Lamaran::with(['lowongan.penyedia.profile'])
@@ -166,6 +226,13 @@ class MahasiswaController extends Controller
         return view('mahasiswa.applications.detail', compact('application', 'mahasiswaReview', 'penyediaReview'));
     }
 
+    /**
+     * Menyimpan ulasan (rating & komentar) mahasiswa terhadap penyedia kerja.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int $lamaran_id
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function storeReview(Request $request, $lamaran_id)
     {
         $request->validate([
@@ -190,12 +257,22 @@ class MahasiswaController extends Controller
         return back()->with('success', 'Review berhasil dikirim.');
     }
 
+    /**
+     * Menampilkan daftar review/ulasan yang diterima mahasiswa dari penyedia kerja.
+     *
+     * @return \Illuminate\View\View
+     */
     public function reviews()
     {
         $reviews = \App\Models\Review::where('reviewee_id', Auth::id())->with(['reviewer', 'lamaran.lowongan'])->latest()->paginate(10);
         return view('mahasiswa.reviews.index', compact('reviews'));
     }
 
+    /**
+     * Menampilkan profil mahasiswa.
+     *
+     * @return \Illuminate\View\View
+     */
     public function profile()
     {
         $user = Auth::user();

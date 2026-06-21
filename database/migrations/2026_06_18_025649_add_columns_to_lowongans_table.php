@@ -11,15 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('lowongans', function (Blueprint $table) {
-            $table->string('category')->nullable()->after('judul');
-            $table->string('salary_type')->nullable()->after('gaji');
-            $table->date('start_date')->nullable()->after('status');
-            $table->date('end_date')->nullable()->after('start_date');
-            $table->integer('quota')->nullable()->after('end_date');
-            $table->date('deadline')->nullable()->after('quota');
-            $table->string('contact')->nullable()->after('deadline');
-        });
+        // Kolom-kolom ini sudah ditambahkan di migrasi sebelumnya (2026_06_17_033822_add_extra_columns_to_lowongans_table.php)
     }
 
     /**
@@ -27,8 +19,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('lowongans', function (Blueprint $table) {
-            $table->dropColumn(['category', 'salary_type', 'start_date', 'end_date', 'quota', 'deadline', 'contact']);
-        });
+        //
     }
 };
