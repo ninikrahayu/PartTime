@@ -11,7 +11,9 @@
         <h2 class="text-2xl font-bold text-text-dark">Edit Kategori</h2>
     </div>
 
-    <form data-dummy-submit data-success-message="Kategori berhasil diperbarui." data-redirect-url="{{ url('/admin/categories') }}" class="space-y-6">
+    <form method="POST" action="{{ route('admin.categories.update', $category->id ?? 1) }}" class="space-y-6">
+        @csrf
+        @method('PUT')
         <x-card>
             <div class="space-y-4">
                 <label class="block text-sm font-medium text-text-dark">

@@ -9,7 +9,7 @@
         <div>
             <p class="text-sm font-medium text-primary">Akun Admin</p>
             <h2 class="mt-1 text-2xl font-semibold text-text-dark">Profil Admin</h2>
-            <p class="mt-1 text-sm text-text-gray">Kelola informasi akun administrator Partimeku secara frontend dummy.</p>
+            <p class="mt-1 text-sm text-text-gray">Kelola informasi akun dan pengaturan keamanan administrator Partimeku.</p>
         </div>
         <button type="button" onclick="openModal('admin-logout-modal')" class="inline-flex items-center justify-center rounded-md border border-danger bg-white px-4 py-2 text-sm font-medium text-danger hover:bg-danger/10">
             <i class="fa-solid fa-right-from-bracket mr-2"></i>Logout
@@ -19,34 +19,36 @@
     <div class="grid gap-6 lg:grid-cols-[320px_1fr]">
         <x-card>
             <div class="flex flex-col items-center text-center">
-                <img src="https://ui-avatars.com/api/?name={{ urlencode($admin['name'] ?? 'Admin') }}&background=1E3A8A&color=fff" alt="{{ $admin['name'] ?? 'Admin' }}" class="h-24 w-24 rounded-full border border-border-color object-cover">
-                <h3 class="mt-4 text-lg font-semibold text-text-dark">{{ $admin['name'] ?? 'Admin Utama' }}</h3>
-                <p class="mt-1 text-sm text-text-gray">{{ $admin['email'] ?? 'admin@parttime.test' }}</p>
+                <img src="https://ui-avatars.com/api/?name={{ urlencode($admin->name ?? 'Admin') }}&background=1E3A8A&color=fff" alt="{{ $admin->name ?? 'Admin' }}" class="h-24 w-24 rounded-full border border-border-color object-cover">
+                <h3 class="mt-4 text-lg font-semibold text-text-dark">{{ $admin->name ?? 'Admin Utama' }}</h3>
+                <p class="mt-1 text-sm text-text-gray">{{ $admin->email ?? 'admin@parttime.test' }}</p>
                 <div class="mt-4 flex flex-wrap justify-center gap-2">
-                    <x-status-badge :status="$admin['account_status'] ?? 'aktif'" />
-                    <x-status-badge :status="$admin['verification_status'] ?? 'terverifikasi'" />
+                    <x-status-badge :status="$admin->status ?? 'aktif'" />
+                    <x-status-badge :status="'terverifikasi'" />
                 </div>
             </div>
         </x-card>
 
         <div class="space-y-6">
             <x-profile-section-card title="Data Profil" description="Edit nama, email, dan username admin.">
-                <form data-admin-form class="grid gap-4 sm:grid-cols-2">
+                @if(session('success') && !request()->has('current_password'))
+                    <div class="mb-4 rounded-md bg-green-50 p-4 border border-green-200">
+                        <p class="text-sm font-medium text-green-800"><i class="fa-solid fa-circle-check mr-2"></i>{{ session('success') }}</p>
+                    </div>
+                @endif
+                <form method="POST" action="{{ route('admin.profile.update') }}" class="grid gap-4 sm:grid-cols-2">
+                    @csrf
                     <label class="block text-sm font-medium text-text-dark">
                         Nama
-                        <x-input name="name" type="text" class="mt-2" :value="$admin['name'] ?? 'Admin Utama'" />
+                        <x-input name="name" type="text" class="mt-2" :value="$admin->name ?? ''" required />
                     </label>
                     <label class="block text-sm font-medium text-text-dark">
                         Email
-                        <x-input name="email" type="email" class="mt-2" :value="$admin['email'] ?? 'admin@parttime.test'" />
+                        <x-input name="email" type="email" class="mt-2" :value="$admin->email ?? ''" required />
                     </label>
-                    <label class="block text-sm font-medium text-text-dark">
-                        Username
-                        <x-input name="username" type="text" class="mt-2" :value="$admin['username'] ?? 'admin'" />
-                    </label>
-                    <label class="block text-sm font-medium text-text-dark">
+                    <label class="block text-sm font-medium text-text-dark sm:col-span-2">
                         Nomor telepon
-                        <x-input name="phone" type="tel" class="mt-2" :value="$admin['phone'] ?? ''" />
+                        <x-input name="phone" type="tel" class="mt-2" :value="$admin->no_hp ?? ''" />
                     </label>
                     <div class="sm:col-span-2">
                         <button type="submit" class="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-blue-900">
@@ -56,19 +58,35 @@
                 </form>
             </x-profile-section-card>
 
-            <x-profile-section-card title="Ubah Password" description="Form dummy untuk mengganti password admin.">
-                <form data-admin-form class="grid gap-4 sm:grid-cols-2">
+            <x-profile-section-card title="Ubah Password" description="Ubah password akun admin.">
+                @if(session('success') && request()->has('current_password'))
+                    <div class="mb-4 rounded-md bg-green-50 p-4 border border-green-200">
+                        <p class="text-sm font-medium text-green-800"><i class="fa-solid fa-circle-check mr-2"></i>{{ session('success') }}</p>
+                    </div>
+                @endif
+                @if($errors->any())
+                    <div class="mb-4 rounded-md bg-red-50 p-4 border border-red-200">
+                        <p class="text-sm font-medium text-red-800"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Terjadi kesalahan:</p>
+                        <ul class="list-disc pl-5 mt-1 text-sm text-red-700">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                <form method="POST" action="{{ route('admin.profile.update') }}" class="grid gap-4 sm:grid-cols-2">
+                    @csrf
                     <label class="block text-sm font-medium text-text-dark">
                         Password lama
-                        <x-input name="current_password" type="password" class="mt-2" placeholder="Password lama" />
+                        <x-input name="current_password" type="password" class="mt-2" placeholder="Password lama" required />
                     </label>
                     <label class="block text-sm font-medium text-text-dark">
                         Password baru
-                        <x-input name="password" type="password" class="mt-2" placeholder="Password baru" />
+                        <x-input name="password" type="password" class="mt-2" placeholder="Password baru" required />
                     </label>
                     <label class="block text-sm font-medium text-text-dark sm:col-span-2">
                         Konfirmasi password baru
-                        <x-input name="password_confirmation" type="password" class="mt-2" placeholder="Ulangi password baru" />
+                        <x-input name="password_confirmation" type="password" class="mt-2" placeholder="Ulangi password baru" required />
                     </label>
                     <div class="sm:col-span-2">
                         <button type="submit" class="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-blue-900">
@@ -86,19 +104,11 @@
         <p class="text-sm text-text-gray">Keluar dari dashboard admin dan kembali ke halaman login?</p>
         <div class="flex justify-end gap-2">
             <button type="button" onclick="closeModal('admin-logout-modal')" class="rounded-md border border-border-color bg-white px-4 py-2 text-sm font-medium text-text-dark hover:bg-surface">Batal</button>
-            <a href="{{ url('/admin/login') }}" class="rounded-md bg-danger px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Logout</a>
+            <form method="POST" action="{{ route('logout') }}" class="inline">
+                @csrf
+                <button type="submit" class="rounded-md bg-danger px-4 py-2 text-sm font-medium text-white hover:bg-red-700">Logout</button>
+            </form>
         </div>
     </div>
 </x-modal>
 @endsection
-
-@push('scripts')
-<script>
-    document.querySelectorAll('[data-admin-form]').forEach((form) => {
-        form.addEventListener('submit', function(event) {
-            event.preventDefault();
-            showToast('Data admin berhasil disimpan.', 'success');
-        });
-    });
-</script>
-@endpush

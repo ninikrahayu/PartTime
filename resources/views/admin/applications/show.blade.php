@@ -5,6 +5,12 @@
 @section('content')
 <div class="space-y-6 max-w-7xl mx-auto">
 
+    @if(session('success'))
+        <div class="rounded-md bg-green-50 p-4 border border-green-200 mb-6">
+            <p class="text-sm font-medium text-green-800"><i class="fa-solid fa-circle-check mr-2"></i>{{ session('success') }}</p>
+        </div>
+    @endif
+
     <!-- Header Halaman -->
 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div class="flex items-center gap-3">
@@ -44,15 +50,23 @@
                 </p>
 
                 <div class="flex items-center justify-center sm:justify-start gap-2 mt-3">
+                    @if($ratingData['total'] > 0)
                     <div class="flex text-warning text-sm">
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star"></i>
-                        <i class="fa-solid fa-star-half-stroke"></i>
+                        @for($i = 1; $i <= 5; $i++)
+                            @if($i <= floor($ratingData['average']))
+                                <i class="fa-solid fa-star"></i>
+                            @elseif($i == ceil($ratingData['average']) && $ratingData['average'] - floor($ratingData['average']) > 0)
+                                <i class="fa-solid fa-star-half-stroke"></i>
+                            @else
+                                <i class="fa-regular fa-star"></i>
+                            @endif
+                        @endfor
                     </div>
-                    <span class="text-sm font-bold text-text-dark">4.6</span>
-                    <span class="text-sm text-text-gray">(12 review)</span>
+                    <span class="text-sm font-bold text-text-dark">{{ $ratingData['average'] }}</span>
+                    <span class="text-sm text-text-gray">({{ $ratingData['total'] }} review)</span>
+                    @else
+                    <span class="text-sm text-text-gray">Belum ada review</span>
+                    @endif
                 </div>
 
                 @php
@@ -246,10 +260,18 @@
                     Preview
                 </button>
 
-                <button onclick="showToast('Mengunduh KTM...', 'success')" class="flex-1 sm:flex-none px-4 py-2 bg-primary rounded text-xs font-bold text-white hover:brightness-90 transition-all">
+                @if(!empty($studentProfile['ktm_path']))
+                @php $ktmExt = pathinfo($studentProfile['ktm_path'], PATHINFO_EXTENSION); @endphp
+                <a href="{{ Storage::url($studentProfile['ktm_path']) }}" download="KTM_{{ $application['student_name'] ?? 'Pelamar' }}.{{ $ktmExt }}" class="flex-1 sm:flex-none px-4 py-2 bg-primary rounded text-xs font-bold text-white hover:brightness-90 transition-all text-center">
+                    <i class="fa-solid fa-download mr-1.5"></i>
+                    Unduh
+                </a>
+                @else
+                <button disabled class="flex-1 sm:flex-none px-4 py-2 bg-gray-300 rounded text-xs font-bold text-white cursor-not-allowed">
                     <i class="fa-solid fa-download mr-1.5"></i>
                     Unduh
                 </button>
+                @endif
             </div>
         </div>
 
@@ -263,7 +285,7 @@
 
                 <div>
                     <h5 class="font-bold text-sm text-text-dark">Curriculum Vitae (CV)</h5>
-                    <p class="text-xs text-text-gray mt-1">Format: PDF • 1.2 MB</p>
+                    <p class="text-xs text-text-gray mt-1">Format: PDF</p>
                 </div>
             </div>
 
@@ -273,10 +295,18 @@
                     Preview
                 </button>
 
-                <button onclick="showToast('Mengunduh CV...', 'success')" class="flex-1 sm:flex-none px-4 py-2 bg-primary rounded text-xs font-bold text-white hover:brightness-90 transition-all">
+                @if(!empty($studentProfile['cv_path']))
+                @php $cvExt = pathinfo($studentProfile['cv_path'], PATHINFO_EXTENSION); @endphp
+                <a href="{{ Storage::url($studentProfile['cv_path']) }}" download="CV_{{ $application['student_name'] ?? 'Pelamar' }}.{{ $cvExt }}" class="flex-1 sm:flex-none px-4 py-2 bg-primary rounded text-xs font-bold text-white hover:brightness-90 transition-all text-center">
+                    <i class="fa-solid fa-download mr-1.5"></i>
+                    Unduh
+                </a>
+                @else
+                <button disabled class="flex-1 sm:flex-none px-4 py-2 bg-gray-300 rounded text-xs font-bold text-white cursor-not-allowed">
                     <i class="fa-solid fa-download mr-1.5"></i>
                     Unduh
                 </button>
+                @endif
             </div>
         </div>
     </div>
@@ -290,130 +320,138 @@
     </h4>
 
     <div class="flex flex-col lg:flex-row gap-8">
+        @if($ratingData['total'] > 0)
         <!-- Rating Total -->
         <div class="flex flex-col items-center justify-center text-center lg:px-8 lg:border-r border-border-color shrink-0">
-            <h2 class="text-6xl font-bold text-text-dark">4.6</h2>
+            <h2 class="text-6xl font-bold text-text-dark">{{ $ratingData['average'] }}</h2>
 
             <div class="flex text-warning text-lg mt-3 gap-1">
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star"></i>
-                <i class="fa-solid fa-star-half-stroke"></i>
+                @for($i = 1; $i <= 5; $i++)
+                    @if($i <= floor($ratingData['average']))
+                        <i class="fa-solid fa-star"></i>
+                    @elseif($i == ceil($ratingData['average']) && $ratingData['average'] - floor($ratingData['average']) > 0)
+                        <i class="fa-solid fa-star-half-stroke"></i>
+                    @else
+                        <i class="fa-regular fa-star"></i>
+                    @endif
+                @endfor
             </div>
 
             <p class="text-sm text-text-gray mt-2 font-medium">
-                Berdasarkan 12 review
+                Berdasarkan {{ $ratingData['total'] }} review
             </p>
         </div>
 
         <!-- Progress Rating -->
         <div class="w-full lg:w-1/3 flex flex-col justify-center space-y-3 lg:border-r border-border-color lg:pr-8 shrink-0">
-            <div class="flex items-center gap-3 text-xs text-text-gray font-medium">
-                <span class="w-5">5 <i class="fa-solid fa-star text-warning text-[10px]"></i></span>
-                <div class="flex-1 h-2 bg-surface rounded-full overflow-hidden">
-                    <div class="h-full bg-warning w-[67%] rounded-full"></div>
+            @for($i = 5; $i >= 1; $i--)
+                @php
+                    $count = $ratingData['counts'][$i];
+                    $percent = $ratingData['total'] > 0 ? round(($count / $ratingData['total']) * 100) : 0;
+                @endphp
+                <div class="flex items-center gap-3 text-xs text-text-gray font-medium">
+                    <span class="w-5">{{ $i }} <i class="fa-solid fa-star text-warning text-[10px]"></i></span>
+                    <div class="flex-1 h-2 bg-surface rounded-full overflow-hidden">
+                        <div class="h-full bg-warning rounded-full" style="width: {{ $percent }}%"></div>
+                    </div>
+                    <span class="w-14 text-right">{{ $count }} ({{ $percent }}%)</span>
                 </div>
-                <span class="w-14 text-right">8 (67%)</span>
-            </div>
-
-            <div class="flex items-center gap-3 text-xs text-text-gray font-medium">
-                <span class="w-5">4 <i class="fa-solid fa-star text-warning text-[10px]"></i></span>
-                <div class="flex-1 h-2 bg-surface rounded-full overflow-hidden">
-                    <div class="h-full bg-warning w-[25%] rounded-full"></div>
-                </div>
-                <span class="w-14 text-right">3 (25%)</span>
-            </div>
-
-            <div class="flex items-center gap-3 text-xs text-text-gray font-medium">
-                <span class="w-5">3 <i class="fa-solid fa-star text-warning text-[10px]"></i></span>
-                <div class="flex-1 h-2 bg-surface rounded-full overflow-hidden">
-                    <div class="h-full bg-warning w-[8%] rounded-full"></div>
-                </div>
-                <span class="w-14 text-right">1 (8%)</span>
-            </div>
-
-            <div class="flex items-center gap-3 text-xs text-text-gray font-medium">
-                <span class="w-5">2 <i class="fa-solid fa-star text-warning text-[10px]"></i></span>
-                <div class="flex-1 h-2 bg-surface rounded-full overflow-hidden">
-                    <div class="h-full bg-warning w-0 rounded-full"></div>
-                </div>
-                <span class="w-14 text-right">0 (0%)</span>
-            </div>
-
-            <div class="flex items-center gap-3 text-xs text-text-gray font-medium">
-                <span class="w-5">1 <i class="fa-solid fa-star text-warning text-[10px]"></i></span>
-                <div class="flex-1 h-2 bg-surface rounded-full overflow-hidden">
-                    <div class="h-full bg-warning w-0 rounded-full"></div>
-                </div>
-                <span class="w-14 text-right">0 (0%)</span>
-            </div>
+            @endfor
         </div>
 
         <!-- Review -->
-        <div class="flex-1">
+        <div class="flex-1 space-y-4">
+            @foreach($ratingData['reviews']->take(3) as $review)
             <div class="border border-border-color rounded-lg p-5">
                 <div class="flex justify-between items-start">
                     <div class="flex items-center gap-4">
                         <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm shrink-0 border border-primary/20">
-                            AD
+                            {{ substr(strtoupper($review->reviewer->name ?? 'U'), 0, 2) }}
                         </div>
 
                         <div>
-                            <h5 class="font-bold text-sm text-text-dark">Andi Darmawan</h5>
-                            <p class="text-xs text-text-gray mt-0.5">Supervisor Event</p>
+                            <h5 class="font-bold text-sm text-text-dark">{{ $review->reviewer->name ?? 'Pengguna' }}</h5>
+                            <p class="text-xs text-text-gray mt-0.5">{{ ucfirst($review->reviewer->role ?? '') }}</p>
 
                             <div class="flex items-center gap-2 mt-1">
                                 <div class="flex text-warning text-[10px]">
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
-                                    <i class="fa-solid fa-star"></i>
+                                    @for($i = 1; $i <= 5; $i++)
+                                        @if($i <= $review->rating)
+                                            <i class="fa-solid fa-star"></i>
+                                        @else
+                                            <i class="fa-regular fa-star"></i>
+                                        @endif
+                                    @endfor
                                 </div>
-                                <span class="text-xs font-bold text-text-dark">5.0</span>
+                                <span class="text-xs font-bold text-text-dark">{{ number_format($review->rating, 1) }}</span>
                             </div>
                         </div>
                     </div>
 
                     <span class="text-[11px] text-text-gray font-medium">
-                        10 May 2026
+                        {{ \Carbon\Carbon::parse($review->created_at)->format('d M Y') }}
                     </span>
                 </div>
 
                 <p class="text-sm text-text-gray mt-4 leading-relaxed font-medium">
-                    Pelamar sangat komunikatif, disiplin, dan cepat memahami instruksi.
-                    Sikap kerja juga sangat baik selama event berlangsung.
+                    {{ $review->comment }}
                 </p>
             </div>
+            @endforeach
         </div>
+        @else
+        <div class="w-full text-center py-8 text-text-gray">
+            <i class="fa-regular fa-star text-4xl mb-3"></i>
+            <p>Belum ada ulasan untuk pelamar ini.</p>
+        </div>
+        @endif
     </div>
 </x-card>
 
 <!-- Modal Ubah Status Lamaran -->
 <x-modal id="modal-status" title="Ubah Status Lamaran">
-    <div class="space-y-4">
-        <p class="text-sm text-text-gray">Anda dapat memperbarui status lamaran ini. Biasanya status diatur oleh penyedia pekerjaan, tapi admin berhak melakukan intervensi.</p>
-        <x-select>
-            <option value="menunggu" {{ ($application['status'] ?? '') == 'menunggu' ? 'selected' : '' }}>Menunggu (Pending)</option>
-            <option value="diterima" {{ ($application['status'] ?? '') == 'diterima' ? 'selected' : '' }}>Diterima (Approved)</option>
-            <option value="ditolak" {{ ($application['status'] ?? '') == 'ditolak' ? 'selected' : '' }}>Ditolak (Rejected)</option>
-        </x-select>
-    </div>
-    <x-slot name="footer">
-        <x-button onclick="closeModal('modal-status'); showToast('Status lamaran diperbarui', 'success')">Simpan Perubahan</x-button>
-        <button type="button" class="ml-2 inline-flex justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-text-dark shadow-sm ring-1 ring-inset ring-border-color hover:bg-surface" onclick="closeModal('modal-status')">Batal</button>
-    </x-slot>
+    <form method="POST" action="{{ route('admin.applications.status', $application['id'] ?? 1) }}">
+        @csrf @method('PUT')
+        <div class="space-y-4">
+            <p class="text-sm text-text-gray">Anda dapat memperbarui status lamaran ini. Biasanya status diatur oleh penyedia pekerjaan, tapi admin berhak melakukan intervensi.</p>
+            <x-select name="status">
+                <option value="pending" {{ ($application['status'] ?? '') == 'pending' ? 'selected' : '' }}>Menunggu (Pending)</option>
+                <option value="diproses" {{ ($application['status'] ?? '') == 'diproses' ? 'selected' : '' }}>Diproses (In Review)</option>
+                <option value="diterima" {{ ($application['status'] ?? '') == 'diterima' ? 'selected' : '' }}>Diterima (Approved)</option>
+                <option value="ditolak" {{ ($application['status'] ?? '') == 'ditolak' ? 'selected' : '' }}>Ditolak (Rejected)</option>
+            </x-select>
+        </div>
+        <div class="mt-5 flex justify-end gap-2">
+            <button type="button" class="inline-flex justify-center rounded-md bg-white px-4 py-2 text-sm font-semibold text-text-dark shadow-sm ring-1 ring-inset ring-border-color hover:bg-surface" onclick="closeModal('modal-status')">Batal</button>
+            <x-button type="submit">Simpan Perubahan</x-button>
+        </div>
+    </form>
 </x-modal>
 
 <!-- Modal Preview KTM -->
 <x-modal id="modal-preview-ktm" title="Preview Kartu Tanda Mahasiswa">
-    <div class="flex justify-center items-center bg-gray-100 rounded-lg p-4 overflow-hidden h-64">
-        <div class="text-center text-text-gray">
-            <i class="fa-solid fa-image text-5xl mb-3 text-gray-400"></i>
-            <p>Mockup Preview Gambar KTM.jpg</p>
-        </div>
+    <div class="flex justify-center items-center bg-gray-100 rounded-lg p-4 overflow-hidden min-h-48">
+        @if(!empty($studentProfile['ktm_path']))
+            @php $ktmUrl = Storage::url($studentProfile['ktm_path']); @endphp
+            @if(Str::endsWith(strtolower($studentProfile['ktm_path']), ['.jpg', '.jpeg', '.png']))
+                <img src="{{ $ktmUrl }}" alt="KTM" class="max-h-80 max-w-full object-contain rounded">
+            @else
+                <iframe src="{{ $ktmUrl }}" class="w-full h-80 rounded" frameborder="0"></iframe>
+            @endif
+        @else
+            <div class="text-center text-text-gray">
+                <i class="fa-solid fa-image text-5xl mb-3 text-gray-400"></i>
+                <p>KTM belum diunggah</p>
+            </div>
+        @endif
     </div>
+    @if(!empty($studentProfile['ktm_path']))
+    <div class="mt-3 flex justify-end">
+        <a href="{{ Storage::url($studentProfile['ktm_path']) }}" download class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm rounded font-bold hover:brightness-90">
+            <i class="fa-solid fa-download"></i> Unduh KTM
+        </a>
+    </div>
+    @endif
     <x-slot name="footer">
         <button type="button" class="inline-flex justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:brightness-90 transition-all" onclick="closeModal('modal-preview-ktm')">Tutup</button>
     </x-slot>
@@ -421,13 +459,23 @@
 
 <!-- Modal Preview CV -->
 <x-modal id="modal-preview-cv" title="Preview Curriculum Vitae">
-    <div class="flex justify-center items-center bg-gray-100 rounded-lg p-4 overflow-hidden h-96">
-        <div class="text-center text-text-gray">
-            <i class="fa-solid fa-file-pdf text-5xl mb-3 text-danger/50"></i>
-            <p>Mockup Preview Dokumen CV.pdf</p>
-            <p class="text-xs mt-2">Menampilkan halaman 1 dari 2</p>
-        </div>
+    <div class="flex justify-center items-center bg-gray-100 rounded-lg p-4 overflow-hidden min-h-64">
+        @if(!empty($studentProfile['cv_path']))
+            <iframe src="{{ Storage::url($studentProfile['cv_path']) }}" class="w-full h-96 rounded" frameborder="0"></iframe>
+        @else
+            <div class="text-center text-text-gray">
+                <i class="fa-solid fa-file-pdf text-5xl mb-3 text-danger/50"></i>
+                <p>CV belum diunggah</p>
+            </div>
+        @endif
     </div>
+    @if(!empty($studentProfile['cv_path']))
+    <div class="mt-3 flex justify-end">
+        <a href="{{ Storage::url($studentProfile['cv_path']) }}" download class="inline-flex items-center gap-2 px-4 py-2 bg-primary text-white text-sm rounded font-bold hover:brightness-90">
+            <i class="fa-solid fa-download"></i> Unduh CV
+        </a>
+    </div>
+    @endif
     <x-slot name="footer">
         <button type="button" class="inline-flex justify-center rounded-md bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm hover:brightness-90 transition-all" onclick="closeModal('modal-preview-cv')">Tutup</button>
     </x-slot>

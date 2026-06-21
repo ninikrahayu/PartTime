@@ -64,15 +64,35 @@
                         
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             @if($user['role'] === 'mahasiswa')
+                                <div><p class="text-sm text-text-gray">NIM</p><p class="font-medium text-text-dark">{{ $profile['nim'] ?? '-' }}</p></div>
                                 <div><p class="text-sm text-text-gray">Kampus</p><p class="font-medium text-text-dark">{{ $profile['campus'] ?? '-' }}</p></div>
                                 <div><p class="text-sm text-text-gray">Jurusan</p><p class="font-medium text-text-dark">{{ $profile['major'] ?? '-' }}</p></div>
                                 <div><p class="text-sm text-text-gray">Semester</p><p class="font-medium text-text-dark">{{ $profile['semester'] ?? '-' }}</p></div>
-                                <div><p class="text-sm text-text-gray">File KTM</p><p class="font-medium text-primary hover:underline cursor-pointer"><i class="fa-solid fa-file-pdf mr-1"></i>{{ $profile['ktm_file'] ?? '-' }}</p></div>
+                                <div><p class="text-sm text-text-gray">IPK</p><p class="font-medium text-text-dark">{{ $profile['gpa'] ?? '-' }}</p></div>
+                                <div class="sm:col-span-2">
+                                    <p class="text-sm text-text-gray">File KTM</p>
+                                    @if(!empty($profile['ktm_path']))
+                                        <a href="{{ Storage::url($profile['ktm_path']) }}" target="_blank" class="inline-flex items-center gap-2 font-medium text-primary hover:underline">
+                                            <i class="fa-solid fa-id-card-clip"></i> Lihat KTM
+                                        </a>
+                                    @else
+                                        <p class="font-medium text-text-gray">Belum ada KTM</p>
+                                    @endif
+                                </div>
                             @elseif($user['role'] === 'penyedia')
                                 <div><p class="text-sm text-text-gray">Nama Usaha / Instansi</p><p class="font-medium text-text-dark">{{ $profile['company_name'] ?? '-' }}</p></div>
                                 <div><p class="text-sm text-text-gray">Jenis Usaha</p><p class="font-medium text-text-dark">{{ $profile['company_type'] ?? '-' }}</p></div>
                                 <div class="sm:col-span-2"><p class="text-sm text-text-gray">Alamat</p><p class="font-medium text-text-dark">{{ $profile['address'] ?? '-' }}</p></div>
-                                <div><p class="text-sm text-text-gray">Dokumen Legalitas</p><p class="font-medium text-primary hover:underline cursor-pointer"><i class="fa-solid fa-file-pdf mr-1"></i>{{ $profile['verification_document'] ?? '-' }}</p></div>
+                                <div class="sm:col-span-2">
+                                    <p class="text-sm text-text-gray">Dokumen Legalitas</p>
+                                    @if(!empty($profile['verification_document']))
+                                        <a href="{{ Storage::url($profile['verification_document']) }}" target="_blank" class="inline-flex items-center gap-2 font-medium text-primary hover:underline">
+                                            <i class="fa-solid fa-file-pdf mr-1"></i> Lihat Dokumen
+                                        </a>
+                                    @else
+                                        <p class="font-medium text-text-gray">Belum ada dokumen</p>
+                                    @endif
+                                </div>
                             @endif
                         </div>
                     </div>

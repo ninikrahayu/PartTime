@@ -33,7 +33,17 @@
         <div id="review-panel-received" class="p-5">
             <div class="grid gap-4 lg:grid-cols-2">
                 @forelse($receivedReviews as $review)
-                    <x-review-card :review="$review" />
+                    @php
+                        $data = [
+                            'reviewer_name' => $review->reviewer->name ?? 'Mahasiswa',
+                            'job_title' => optional(optional($review->lamaran)->lowongan)->judul ?? '-',
+                            'rating' => $review->rating,
+                            'comment' => $review->comment,
+                            'reviewer_role' => 'Mahasiswa',
+                            'created_at' => $review->created_at->format('d M Y, H:i')
+                        ];
+                    @endphp
+                    <x-review-card :review="$data" />
                 @empty
                     <div class="lg:col-span-2">
                         <x-empty-state title="Belum ada review diterima" description="Review dari mahasiswa akan tampil setelah pekerjaan selesai." />
@@ -48,19 +58,19 @@
                     <article class="rounded-md border border-border-color bg-white p-5 shadow-sm">
                         <div class="flex items-start justify-between gap-4">
                             <div class="min-w-0">
-                                <h3 class="text-base font-semibold text-text-dark">{{ $review['reviewed_name'] ?? 'Mahasiswa' }}</h3>
-                                <p class="mt-1 text-sm text-text-gray">{{ $review['job_title'] ?? '-' }}</p>
+                                <h3 class="text-base font-semibold text-text-dark">{{ $review->reviewee->name ?? 'Mahasiswa' }}</h3>
+                                <p class="mt-1 text-sm text-text-gray">{{ optional(optional($review->lamaran)->lowongan)->judul ?? '-' }}</p>
                             </div>
                             <div class="flex shrink-0 items-center gap-1 text-secondary">
                                 @for($i = 1; $i <= 5; $i++)
-                                    <i class="{{ $i <= ($review['rating'] ?? 0) ? 'fa-solid' : 'fa-regular' }} fa-star text-sm"></i>
+                                    <i class="{{ $i <= $review->rating ? 'fa-solid' : 'fa-regular' }} fa-star text-sm"></i>
                                 @endfor
                             </div>
                         </div>
-                        <p class="mt-4 text-sm leading-6 text-text-gray">{{ $review['comment'] ?? '-' }}</p>
+                        <p class="mt-4 text-sm leading-6 text-text-gray">{{ $review->comment ?? '-' }}</p>
                         <div class="mt-4 flex flex-wrap items-center gap-2 text-xs text-text-gray">
-                            <x-badge color="gray">Diberikan ke {{ ucfirst($review['reviewed_role'] ?? 'mahasiswa') }}</x-badge>
-                            <span>{{ $review['created_at'] ?? '-' }}</span>
+                            <x-badge color="gray">Diberikan ke Mahasiswa</x-badge>
+                            <span>{{ $review->created_at->format('d M Y, H:i') }}</span>
                         </div>
                     </article>
                 @empty

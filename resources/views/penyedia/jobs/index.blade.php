@@ -16,31 +16,40 @@
         </a>
     </div>
 
+    @if(session('success'))
+        <div class="rounded-md bg-green-50 p-4 border border-green-200">
+            <p class="text-sm font-medium text-green-800"><i class="fa-solid fa-circle-check mr-2"></i>{{ session('success') }}</p>
+        </div>
+    @endif
+
     <x-card>
-        <div class="grid gap-3 lg:grid-cols-[1fr_220px_220px]">
+        <form method="GET" action="{{ route('penyedia.jobs.index') }}" class="grid gap-3 lg:grid-cols-[1fr_220px_220px_auto]">
             <label class="block text-sm font-medium text-text-dark">
                 Search lowongan
-                <x-input type="search" class="mt-2" placeholder="Cari judul, lokasi, atau jadwal" />
+                <x-input name="search" type="search" class="mt-2" placeholder="Cari judul, lokasi, atau jadwal" value="{{ request('search') }}" />
             </label>
             <label class="block text-sm font-medium text-text-dark">
                 Filter status
-                <x-select class="mt-2">
+                <x-select name="status" class="mt-2">
                     <option value="">Semua status</option>
                     @foreach($jobStatuses as $status)
-                        <option value="{{ $status['value'] }}">{{ $status['label'] }}</option>
+                        <option value="{{ $status['value'] }}" {{ request('status') == $status['value'] ? 'selected' : '' }}>{{ $status['label'] }}</option>
                     @endforeach
                 </x-select>
             </label>
             <label class="block text-sm font-medium text-text-dark">
                 Filter kategori
-                <x-select class="mt-2">
+                <x-select name="kategori" class="mt-2">
                     <option value="">Semua kategori</option>
                     @foreach($categories as $category)
-                        <option value="{{ $category['id'] }}">{{ $category['name'] }}</option>
+                        <option value="{{ $category->name }}" {{ request('kategori') == $category->name ? 'selected' : '' }}>{{ $category->name }}</option>
                     @endforeach
                 </x-select>
             </label>
-        </div>
+            <div class="flex items-end">
+                <x-button type="submit" class="w-full h-[42px]">Filter</x-button>
+            </div>
+        </form>
     </x-card>
 
     <x-card>
@@ -60,30 +69,31 @@
             </x-slot:thead>
             @forelse($jobs as $job)
                 <tr>
-                    <td class="font-medium text-text-dark">{{ $job['title'] }}</td>
-                    <td><x-badge color="secondary">{{ $job['category'] }}</x-badge></td>
-                    <td>{{ $job['location'] }}</td>
+                    <td class="font-medium text-text-dark">{{ $job->judul }}</td>
+                    <td><x-badge color="secondary">{{ $job->category ?? 'Umum' }}</x-badge></td>
+                    <td>{{ $job->lokasi }}</td>
                     <td>
-                        Rp {{ number_format($job['salary'], 0, ',', '.') }}
-                        <div class="text-xs text-text-gray">{{ $job['salary_type'] }}</div>
+                        @if($job->gaji)
+                            Rp {{ number_format($job->gaji, 0, ',', '.') }}
+                            <div class="text-xs text-text-gray">{{ $job->salary_type ?? $job->shift }}</div>
+                        @else
+                            <span class="text-text-gray text-sm">-</span>
+                        @endif
                     </td>
-                    <td>{{ $job['quota'] }}</td>
-                    <td>{{ $job['applicants_count'] }}</td>
-                    <td><x-status-badge :status="$job['status']" /></td>
-                    <td>{{ $job['created_at'] }}</td>
+                    <td>{{ $job->quota ?? '-' }}</td>
+                    <td>{{ $job->lamarans_count }}</td>
+                    <td><x-status-badge :status="$job->status" /></td>
+                    <td>{{ $job->created_at->format('d M Y') }}</td>
                     <td>
                         <div class="flex justify-end gap-2">
-                            <a href="{{ url('/penyedia/jobs/'.$job['id']) }}" class="text-text-gray hover:text-primary" title="Detail">
+                            <a href="{{ url('/penyedia/jobs/'.$job->id) }}" class="text-text-gray hover:text-primary" title="Detail">
                                 <i class="fa-solid fa-eye"></i>
                             </a>
-                            <a href="{{ url('/penyedia/jobs/'.$job['id'].'/edit') }}" class="text-text-gray hover:text-info" title="Edit">
+                            <a href="{{ url('/penyedia/jobs/'.$job->id.'/edit') }}" class="text-text-gray hover:text-info" title="Edit">
                                 <i class="fa-solid fa-pen-to-square"></i>
                             </a>
-                            <button type="button" onclick="openModal('close-job-{{ $job['id'] }}')" class="text-text-gray hover:text-warning" title="Tutup">
+                            <button type="button" onclick="openModal('close-job-{{ $job->id }}')" class="text-text-gray hover:text-warning" title="Tutup">
                                 <i class="fa-solid fa-lock"></i>
-                            </button>
-                            <button type="button" onclick="openModal('delete-job-{{ $job['id'] }}')" class="text-text-gray hover:text-danger" title="Hapus">
-                                <i class="fa-solid fa-trash"></i>
                             </button>
                         </div>
                     </td>
@@ -97,25 +107,20 @@
             @endforelse
         </x-table>
         <div class="mt-4">
-            <x-pagination />
+            <div class="p-4 border-t border-border-color">
+                {{ $jobs->links() }}
+            </div>
         </div>
     </x-card>
 </div>
 
 @foreach($jobs as $job)
     <x-confirm-modal
-        id="close-job-{{ $job['id'] }}"
+        id="close-job-{{ $job->id }}"
         title="Tutup Lowongan"
-        message="Tutup lowongan {{ $job['title'] }}? Lowongan tidak akan menerima pelamar baru."
+        message="Tutup lowongan {{ $job->judul }}? Lowongan tidak akan menerima pelamar baru."
         confirmText="Tutup Lowongan"
         type="primary"
-    />
-    <x-confirm-modal
-        id="delete-job-{{ $job['id'] }}"
-        title="Hapus Lowongan"
-        message="Hapus lowongan {{ $job['title'] }} dari daftar dummy?"
-        confirmText="Hapus"
-        type="danger"
     />
 @endforeach
 @endsection

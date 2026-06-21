@@ -9,33 +9,43 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->rememberToken();
-            $table->timestamps();
-        });
+    Schema::create('users', function (Blueprint $table) {
+        $table->id();
+        $table->string('name');
+        $table->string('username')->unique(); // Tambahan untuk username
+        $table->string('email')->unique();
+        $table->string('no_hp')->nullable(); // Tambahan nomor HP
+        $table->timestamp('email_verified_at')->nullable();
+        $table->string('password');
+            
+        // Role pengguna: admin, penyedia, mahasiswa
+        $table->enum('role', ['admin', 'penyedia', 'mahasiswa'])->default('mahasiswa');
+        
+        // Status verifikasi: pending, verified, rejected
+        $table->enum('status', ['pending', 'verified', 'rejected'])->default('pending');
+            
+        $table->rememberToken();
+        $table->timestamps();
+    });
 
-        Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
-            $table->string('token');
-            $table->timestamp('created_at')->nullable();
-        });
+    // ... (Schema password_reset_tokens dan sessions biarkan seperti aslinya)    
+    Schema::create('password_reset_tokens', function (Blueprint $table) {
+        $table->string('email')->primary();
+        $table->string('token');
+        $table->timestamp('created_at')->nullable();
+    });
 
-        Schema::create('sessions', function (Blueprint $table) {
-            $table->string('id')->primary();
-            $table->foreignId('user_id')->nullable()->index();
-            $table->string('ip_address', 45)->nullable();
-            $table->text('user_agent')->nullable();
-            $table->longText('payload');
-            $table->integer('last_activity')->index();
-        });
-    }
+    Schema::create('sessions', function (Blueprint $table) {
+        $table->string('id')->primary();
+        $table->foreignId('user_id')->nullable()->index();
+        $table->string('ip_address', 45)->nullable();
+        $table->text('user_agent')->nullable();
+        $table->longText('payload');
+        $table->integer('last_activity')->index();
+    });
+}
 
     /**
      * Reverse the migrations.

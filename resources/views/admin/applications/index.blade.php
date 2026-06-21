@@ -5,17 +5,36 @@
 @section('content')
 <div class="space-y-6">
     <!-- Action Bar -->
-    <div class="flex flex-col sm:flex-row justify-between gap-4">
-        <div class="flex flex-col sm:flex-row gap-4 flex-1">
-            <x-search-input placeholder="Cari nama pelamar..." class="w-full sm:w-64" />
-            <x-select class="w-full sm:w-40">
+    <form method="GET" action="{{ route('admin.applications.index') }}" class="flex flex-col sm:flex-row justify-between gap-4">
+        <div class="flex flex-col sm:flex-row gap-4 flex-1 items-center">
+            <x-search-input name="search" value="{{ request('search') }}" placeholder="Cari nama pelamar..." class="w-full sm:w-64" />
+            <x-select name="status" class="w-full sm:w-40" onchange="this.form.submit()">
                 <option value="">Status</option>
-                <option value="menunggu">Menunggu</option>
-                <option value="diterima">Diterima</option>
-                <option value="ditolak">Ditolak</option>
+                <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Menunggu</option>
+                <option value="diterima" {{ request('status') == 'diterima' ? 'selected' : '' }}>Diterima</option>
+                <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
             </x-select>
-            <x-input type="date" class="w-full sm:w-40" />
+            <x-input name="date" type="date" value="{{ request('date') }}" class="w-full sm:w-40" onchange="this.form.submit()" />
+            
+            @if(request()->hasAny(['search', 'status', 'date']) && (request('search') != '' || request('status') != '' || request('date') != ''))
+                <a href="{{ route('admin.applications.index') }}" class="text-sm text-danger hover:underline whitespace-nowrap">
+                    <i class="fa-solid fa-xmark mr-1"></i> Reset Filter
+                </a>
+            @endif
         </div>
+        <div class="flex gap-2">
+            <button type="submit" class="hidden">Search</button>
+            <a href="{{ route('admin.applications.export.xls') }}" class="inline-flex items-center rounded-md bg-success border border-transparent px-4 py-2 text-sm font-medium text-white shadow-md hover:bg-green-700 focus:ring-2 focus:ring-success/50 transition-all">
+                <i class="fa-solid fa-file-excel mr-2"></i> Export XLS
+            </a>
+            <a href="{{ route('admin.applications.export.pdf') }}" class="inline-flex items-center rounded-md bg-danger border border-transparent px-4 py-2 text-sm font-medium text-white shadow-md hover:bg-red-700 focus:ring-2 focus:ring-danger/50 transition-all">
+                <i class="fa-solid fa-file-pdf mr-2"></i> Export PDF
+            </a>
+        </div>
+    </form>
+    
+    <div class="text-sm text-text-gray">
+        Menampilkan {{ $applications->firstItem() ?? 0 }} - {{ $applications->lastItem() ?? 0 }} dari {{ $applications->total() }} data
     </div>
 
     <!-- Table -->
@@ -60,7 +79,9 @@
             </tr>
             @endforeach
         </x-table>
-        <x-pagination />
+        <div class="p-4 border-t border-border-color">
+            {{ $applications->appends(request()->query())->links() }}
+        </div>
     </x-card>
 </div>
 

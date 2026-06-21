@@ -20,7 +20,7 @@
     @php
         $menus = [
             ['url' => 'mahasiswa/dashboard', 'icon' => 'fa-solid fa-house', 'title' => 'Beranda'],
-            ['url' => 'mahasiswa/jobs', 'icon' => 'fa-solid fa-magnifying-glass', 'title' => 'Lowongan'],
+            ['url' => 'mahasiswa/lowongan', 'icon' => 'fa-solid fa-magnifying-glass', 'title' => 'Lowongan'],
             ['url' => 'mahasiswa/favorites', 'icon' => 'fa-solid fa-heart', 'title' => 'Favorit'],
             ['url' => 'mahasiswa/applications', 'icon' => 'fa-solid fa-file-lines', 'title' => 'Lamaran'],
             ['url' => 'mahasiswa/reviews', 'icon' => 'fa-solid fa-star', 'title' => 'Review'],
@@ -77,16 +77,19 @@
             <!-- Sidebar Footer (Profile & Logout) -->
             <div class="p-4 border-t border-border-color">
                 <div class="flex items-center gap-3 mb-4 px-2">
-                    <img src="https://ui-avatars.com/api/?name=Mahasiswa&background=1E3A8A&color=fff" alt="User" class="w-10 h-10 rounded-full object-cover">
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name ?? 'Mahasiswa') }}&background=1E3A8A&color=fff" alt="User" class="w-10 h-10 rounded-full object-cover">
                     <div class="text-sm overflow-hidden">
-                        <p class="font-semibold text-text-dark truncate">Raka Pratama</p>
+                        <p class="font-semibold text-text-dark truncate">{{ Auth::user()->name ?? 'Raka Pratama' }}</p>
                         <p class="text-text-gray text-xs truncate">Mahasiswa</p>
                     </div>
                 </div>
-                <a href="{{ url('/login') }}" class="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-danger hover:bg-danger/10 transition-colors">
-                    <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
-                    Logout
-                </a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-danger hover:bg-danger/10 transition-colors">
+                        <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
+                        Logout
+                    </button>
+                </form>
             </div>
         </aside>
 
@@ -97,10 +100,6 @@
             <header class="h-16 bg-white border-b border-border-color flex items-center justify-between px-6 sticky top-0 z-30">
                 <h1 class="text-lg font-semibold text-text-dark truncate">@yield('page_title', 'Dashboard')</h1>
                 <div class="flex items-center gap-4">
-                    <button class="text-text-gray hover:text-primary relative p-1">
-                        <i class="fa-regular fa-bell text-xl"></i>
-                        <span class="absolute top-0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-danger text-[10px] text-white">1</span>
-                    </button>
                 </div>
             </header>
 

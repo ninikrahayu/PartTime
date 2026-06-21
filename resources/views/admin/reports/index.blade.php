@@ -9,68 +9,61 @@
         <div>
             <p class="text-sm font-medium text-primary">Laporan Admin</p>
             <h2 class="mt-1 text-2xl font-semibold text-text-dark">Ringkasan Data Platform</h2>
-            <p class="mt-1 text-sm text-text-gray">Pantau mahasiswa, penyedia, lowongan, lamaran, verifikasi, dan review dari dummy data.</p>
+            <p class="mt-1 text-sm text-text-gray">Pantau statistik mahasiswa, penyedia, lowongan, lamaran, dan status verifikasi secara real-time.</p>
         </div>
         <div class="flex flex-wrap gap-2">
-            <button type="button" onclick="showToast('Export PDF berhasil diproses.', 'success')" class="inline-flex items-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-blue-900">
+            <a href="{{ route('admin.reports.export.pdf') }}" class="inline-flex items-center rounded-md bg-danger border border-transparent px-4 py-2 text-sm font-medium text-white shadow-md hover:bg-red-700 focus:ring-2 focus:ring-danger/50 transition-all">
                 <i class="fa-solid fa-file-pdf mr-2"></i>Export PDF
-            </button>
-            <button type="button" onclick="showToast('Export Excel berhasil diproses.', 'success')" class="inline-flex items-center rounded-md border border-border-color bg-white px-4 py-2 text-sm font-medium text-text-dark hover:bg-surface">
-                <i class="fa-solid fa-file-excel mr-2 text-success"></i>Export Excel
-            </button>
+            </a>
+            <a href="{{ route('admin.reports.export.xls') }}" class="inline-flex items-center rounded-md bg-success border border-transparent px-4 py-2 text-sm font-medium text-white shadow-md hover:bg-green-700 focus:ring-2 focus:ring-success/50 transition-all">
+                <i class="fa-solid fa-file-excel mr-2 text-white"></i>Export Excel
+            </a>
         </div>
     </div>
 
-    <x-card>
+    <form method="GET" action="{{ route('admin.reports') }}">
+        <x-card>
         <div class="grid gap-3 md:grid-cols-2 xl:grid-cols-4">
             <label class="block text-sm font-medium text-text-dark">
                 Tanggal mulai
-                <x-input type="date" class="mt-2" value="2026-05-01" />
+                <x-input name="start_date" type="date" class="mt-2" value="{{ request('start_date') }}" />
             </label>
             <label class="block text-sm font-medium text-text-dark">
                 Tanggal akhir
-                <x-input type="date" class="mt-2" value="2026-05-31" />
+                <x-input name="end_date" type="date" class="mt-2" value="{{ request('end_date') }}" />
             </label>
+            <!-- Role filter removed because the table only shows Jobs -->
             <label class="block text-sm font-medium text-text-dark">
-                Role
-                <x-select class="mt-2">
-                    <option>Semua role</option>
-                    <option>Admin</option>
-                    <option>Mahasiswa</option>
-                    <option>Penyedia</option>
-                </x-select>
-            </label>
-            <label class="block text-sm font-medium text-text-dark">
-                Status
-                <x-select class="mt-2">
-                    <option>Semua status</option>
-                    @foreach(($statusOptions['verification'] ?? []) as $status)
-                        <option>{{ $status['label'] }}</option>
-                    @endforeach
+                Status Lowongan
+                <x-select name="status" class="mt-2">
+                    <option value="">Semua status</option>
                     @foreach(($statusOptions['job'] ?? []) as $status)
-                        <option>{{ $status['label'] }}</option>
-                    @endforeach
-                    @foreach(($statusOptions['application'] ?? []) as $status)
-                        <option>{{ $status['label'] }}</option>
+                        <option value="{{ strtolower(str_replace(' ', '_', $status['label'])) }}" {{ request('status') == strtolower(str_replace(' ', '_', $status['label'])) ? 'selected' : '' }}>{{ $status['label'] }}</option>
                     @endforeach
                 </x-select>
             </label>
             <label class="block text-sm font-medium text-text-dark md:col-span-2 xl:col-span-1">
                 Kategori
-                <x-select class="mt-2">
-                    <option>Semua kategori</option>
+                <x-select name="category" class="mt-2">
+                    <option value="">Semua kategori</option>
                     @foreach($categories as $category)
-                        <option>{{ $category['name'] }}</option>
+                        <option value="{{ $category['name'] }}" {{ request('category') == $category['name'] ? 'selected' : '' }}>{{ $category['name'] }}</option>
                     @endforeach
                 </x-select>
             </label>
             <div class="flex items-end md:col-span-2 xl:col-span-3">
-                <button type="button" onclick="showToast('Filter laporan berhasil diterapkan.', 'success')" class="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-blue-900 sm:w-auto">
+                <button type="submit" class="inline-flex w-full items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-blue-900 sm:w-auto">
                     <i class="fa-solid fa-filter mr-2"></i>Terapkan Filter
                 </button>
+                @if(request()->hasAny(['start_date', 'end_date', 'role', 'status', 'category']))
+                    <a href="{{ route('admin.reports') }}" class="ml-4 inline-flex items-center text-sm font-medium text-danger hover:underline">
+                        <i class="fa-solid fa-xmark mr-1"></i> Reset Filter
+                    </a>
+                @endif
             </div>
         </div>
-    </x-card>
+        </x-card>
+    </form>
 
     <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <x-dashboard-summary-card label="Data Mahasiswa" :value="$summary['students']" icon="fa-user-graduate" />
@@ -190,7 +183,7 @@
                     <th>Dibuat</th>
                 </tr>
             </x-slot:thead>
-            @foreach($jobs->whereIn('status', ['aktif', 'selesai'])->take(8) as $job)
+            @foreach($jobs as $job)
                 <tr>
                     <td class="font-medium text-text-dark">{{ $job['title'] }}</td>
                     <td>{{ $job['provider_name'] }}</td>
@@ -201,6 +194,9 @@
                 </tr>
             @endforeach
         </x-table>
+        <div class="p-4 border-t border-border-color">
+            {{ $jobs->appends(request()->query())->links() }}
+        </div>
     </x-card>
 </div>
 @endsection

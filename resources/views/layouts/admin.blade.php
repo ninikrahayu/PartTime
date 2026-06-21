@@ -58,10 +58,13 @@
 
             <!-- Sidebar Footer (Logout) -->
             <div class="p-4 border-t border-border-color">
-                <a href="{{ url('/admin/login') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-danger hover:bg-danger/10 transition-colors">
-                    <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
-                    Logout
-                </a>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-md text-sm font-medium text-danger hover:bg-danger/10 transition-colors">
+                        <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
+                        Logout
+                    </button>
+                </form>
             </div>
         </aside>
 
@@ -78,20 +81,14 @@
                 </div>
 
                 <div class="flex items-center gap-4">
-                    <!-- Notification Bell (Dummy) -->
-                    <button class="text-text-gray hover:text-primary relative">
-                        <i class="fa-regular fa-bell text-xl"></i>
-                        <span class="absolute top-0 right-0 -mt-1 -mr-1 flex h-4 w-4 items-center justify-center rounded-full bg-danger text-[10px] text-white">3</span>
-                    </button>
-
-                    <!-- User Profile Dropdown (Dummy) -->
-                    <div class="flex items-center gap-2 cursor-pointer border-l border-border-color pl-4">
-                        <img src="https://ui-avatars.com/api/?name=Admin+Utama&background=1E3A8A&color=fff" alt="Admin" class="w-8 h-8 rounded-full object-cover">
-                        <div class="hidden sm:block text-sm">
-                            <p class="font-semibold text-text-dark leading-none">Admin Utama</p>
-                            <p class="text-text-gray text-xs mt-1">Administrator</p>
-                        </div>
+                    <!-- User Profile -->
+                <div class="flex items-center gap-2 cursor-pointer border-l border-border-color pl-4">
+                    <img src="https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name ?? 'Admin') }}&background=1E3A8A&color=fff" alt="Admin" class="w-8 h-8 rounded-full object-cover">
+                    <div class="hidden sm:block text-sm">
+                        <p class="font-semibold text-text-dark leading-none">{{ Auth::user()->name ?? 'Admin' }}</p>
+                        <p class="text-text-gray text-xs mt-1">Administrator</p>
                     </div>
+                </div>
                 </div>
             </header>
 

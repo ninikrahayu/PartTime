@@ -5,29 +5,26 @@
 @section('content')
 <div class="space-y-6">
     <!-- Action Bar -->
-    <div class="flex flex-col sm:flex-row justify-between gap-4">
+    <form action="{{ route('penyedia.applications.index') }}" method="GET" class="flex flex-col sm:flex-row justify-between gap-4">
         <div class="flex flex-col sm:flex-row gap-4 flex-1">
-            <x-search-input placeholder="Cari nama mahasiswa..." class="w-full sm:w-64" />
-            <x-select class="w-full sm:w-48">
-                <option value="">Semua Lowongan</option>
-                @php
-                    $uniqueJobs = collect($applications)->pluck('job_title')->unique();
-                @endphp
-                @foreach($uniqueJobs as $jobTitle)
-                    <option value="{{ $jobTitle }}">{{ $jobTitle }}</option>
-                @endforeach
-            </x-select>
-            <x-select class="w-full sm:w-40">
+            <x-input name="search" value="{{ request('search') }}" placeholder="Cari nama mahasiswa atau judul..." class="w-full sm:w-64" />
+            <x-select name="status" class="w-full sm:w-40" onchange="this.form.submit()">
                 <option value="">Semua Status</option>
-                <option value="menunggu">Menunggu</option>
-                <option value="diproses">Diproses</option>
-                <option value="diterima">Diterima</option>
-                <option value="ditolak">Ditolak</option>
-                <option value="selesai">Selesai</option>
+                <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Menunggu</option>
+                <option value="diproses" {{ request('status') == 'diproses' ? 'selected' : '' }}>Diproses</option>
+                <option value="diterima" {{ request('status') == 'diterima' ? 'selected' : '' }}>Diterima</option>
+                <option value="ditolak" {{ request('status') == 'ditolak' ? 'selected' : '' }}>Ditolak</option>
+                <option value="selesai" {{ request('status') == 'selesai' ? 'selected' : '' }}>Selesai</option>
             </x-select>
-            <x-input type="date" class="w-full sm:w-40" />
+            <x-button type="submit" class="bg-primary hover:bg-blue-900 text-white"><i class="fa-solid fa-search mr-2"></i>Cari</x-button>
         </div>
-    </div>
+    </form>
+
+    @if(session('success'))
+        <div class="rounded-md bg-green-50 p-4 border border-green-200">
+            <p class="text-sm font-medium text-green-800"><i class="fa-solid fa-circle-check mr-2"></i>{{ session('success') }}</p>
+        </div>
+    @endif
 
     <!-- Table -->
     <x-card class="p-0 border-none shadow-sm overflow-hidden">
@@ -45,28 +42,30 @@
             <tr class="bg-white border-b border-border-color hover:bg-surface">
                 <td class="px-6 py-4">
                     <div class="flex items-center gap-3">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode($app['student_name']) }}&background=random&color=fff" class="w-8 h-8 rounded-full">
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode($app->pelamar->name ?? 'User') }}&background=random&color=fff" class="w-8 h-8 rounded-full">
                         <div>
-                            <div class="font-medium text-text-dark">{{ $app['student_name'] }}</div>
+                            <div class="font-medium text-text-dark">{{ $app->pelamar->name ?? '-' }}</div>
                             <div class="text-xs text-text-gray">Mahasiswa</div>
                         </div>
                     </div>
                 </td>
                 <td class="px-6 py-4">
-                    <div class="font-medium text-text-dark text-sm line-clamp-1 max-w-[200px]" title="{{ $app['job_title'] }}">{{ $app['job_title'] }}</div>
+                    <div class="font-medium text-text-dark text-sm line-clamp-1 max-w-[200px]" title="{{ $app->lowongan->judul ?? '' }}">
+                        {{ $app->lowongan->judul ?? '-' }}
+                    </div>
                 </td>
                 <td class="px-6 py-4 text-sm text-text-gray">
-                    {{ \Carbon\Carbon::parse($app['applied_at'])->format('d M Y') }}
+                    {{ $app->created_at->format('d M Y') }}
                 </td>
                 <td class="px-6 py-4">
-                    <x-status-badge :status="$app['status']" />
+                    <x-status-badge :status="$app->status" />
                 </td>
                 <td class="px-6 py-4 text-right">
                     <div class="flex justify-end gap-2">
-                        <a href="{{ url('/penyedia/applications/'.$app['id']) }}" class="text-text-gray hover:text-primary transition-colors p-1" title="Detail Lamaran">
+                        <a href="{{ url('/penyedia/applications/'.$app->id) }}" class="text-text-gray hover:text-primary transition-colors p-1" title="Detail Lamaran">
                             <i class="fa-solid fa-file-invoice"></i>
                         </a>
-                        <button onclick="openModal('modal-status')" class="text-text-gray hover:text-warning transition-colors p-1" title="Ubah Status">
+                        <button onclick="openStatusModal({{ $app->id }}, '{{ $app->status }}')" class="text-text-gray hover:text-warning transition-colors p-1" title="Ubah Status">
                             <i class="fa-solid fa-rotate"></i>
                         </button>
                     </div>
@@ -81,22 +80,27 @@
             </tr>
             @endforelse
         </x-table>
-        <x-pagination />
+        <div class="p-4 border-t border-border-color">
+            {{ $applications->links() }}
+        </div>
     </x-card>
 </div>
 
-<!-- Modal Ubah Status Cepat -->
+<!-- Modal Ubah Status -->
 <x-modal id="modal-status" title="Update Status Lamaran">
-    <div class="space-y-4">
-        <x-select>
-            <option value="diproses">Tandai Sedang Diproses</option>
-            <option value="diterima">Terima Pelamar</option>
-            <option value="ditolak">Tolak Pelamar</option>
-        </x-select>
-        <x-textarea placeholder="Catatan untuk pelamar (opsional)..." rows="3"></x-textarea>
-    </div>
+    <form id="form-ubah-status" method="POST">
+        @csrf
+        @method('PUT')
+        <div class="space-y-4">
+            <x-select name="status">
+                <option value="diproses">Tandai Sedang Diproses</option>
+                <option value="diterima">Terima Pelamar</option>
+                <option value="ditolak">Tolak Pelamar</option>
+            </x-select>
+        </div>
+    </form>
     <x-slot name="footer">
-        <x-button onclick="closeModal('modal-status'); showToast('Status lamaran diperbarui', 'success')">Simpan</x-button>
+        <button type="submit" form="form-ubah-status" class="inline-flex justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-900">Simpan</button>
         <button type="button" class="ml-2 inline-flex justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-text-dark shadow-sm ring-1 ring-inset ring-border-color hover:bg-surface" onclick="closeModal('modal-status')">Batal</button>
     </x-slot>
 </x-modal>
@@ -115,6 +119,14 @@
 <script>
     function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
     function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    function openStatusModal(lamaranId, currentStatus) {
+        const form = document.getElementById('form-ubah-status');
+        form.action = `/penyedia/lamaran/${lamaranId}/status`;
+        const select = form.querySelector('select[name="status"]');
+        if (select) select.value = currentStatus;
+        openModal('modal-status');
+    }
 </script>
 @endpush
 @endsection

@@ -19,26 +19,52 @@
         
         <!-- Left Side: Form -->
         <div class="w-full md:w-1/2 p-10 md:p-16 flex flex-col justify-center relative">
-            <!-- Logo -->
-            <a href="{{ url('/') }}" class="absolute top-8 left-10 md:left-16 flex items-center gap-2 font-bold text-lg text-primary hover:opacity-80 transition-opacity">
-                <i class="fa-solid fa-briefcase text-secondary"></i> Partimeku
+            <!-- Header Actions (Logo & Back) -->
+            <div class="absolute top-8 left-10 md:left-16 flex items-center gap-6">
+                <a href="{{ url('/') }}" class="flex items-center gap-2 font-bold text-lg text-primary hover:opacity-80 transition-opacity">
+                    <i class="fa-solid fa-briefcase text-secondary"></i> Partimeku
+                </a>
+                <a href="{{ url('/') }}" class="hidden sm:flex items-center gap-2 text-sm font-medium text-text-gray hover:text-primary transition-colors">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda
+                </a>
+            </div>
+            <!-- Mobile Back Button (Absolute Top Right for small screens) -->
+            <a href="{{ url('/') }}" class="sm:hidden absolute top-8 right-10 flex items-center justify-center w-8 h-8 rounded-full bg-surface text-text-gray hover:text-primary transition-colors border border-border-color">
+                <i class="fa-solid fa-house text-sm"></i>
             </a>
 
             <div class="mt-12 md:mt-0 w-full mx-auto">
                 <h1 class="text-3xl md:text-4xl font-bold text-text-dark mb-10 tracking-tight">Masuk ke akun Anda</h1>
                 
+            @if(session('success'))
+                <div class="m-5 rounded-md bg-green-50 p-4 border border-green-200">
+                    <p class="text-sm font-medium text-green-800"><i class="fa-solid fa-circle-check mr-2"></i>{{ session('success') }}</p>
+                </div>
+            @endif
 
-                <form data-dummy-submit data-success-message="Berhasil masuk ke dashboard." class="space-y-6">
+            @if($errors->any())
+                <div class="m-5 rounded-md bg-red-50 p-4 border border-red-200">
+                    <p class="text-sm font-bold text-red-800 mb-2"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Pendaftaran Gagal:</p>
+                    <ul class="list-disc pl-5 text-sm font-medium text-red-800 space-y-1">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+                <form action="{{ route('login.post') }}" method="POST" class="space-y-6">
+                    @csrf
                     <div>
                         <label class="block text-sm font-semibold text-text-dark mb-2">Email</label>
-                        <x-input name="login" type="text" placeholder="Masukkan email Anda" class="w-full py-3.5 px-4 bg-surface border-border-color rounded-xl" required />
+                        <x-input name="email" type="email" placeholder="Masukkan email Anda" class="w-full py-3.5 px-4 bg-surface border-border-color rounded-xl" required />
                     </div>
                     
                     <div>
                         <label class="block text-sm font-semibold text-text-dark mb-2">Password</label>
                         <div class="relative">
                             <x-input name="password" type="password" placeholder="Masukkan password yang kuat" class="w-full py-3.5 px-4 pr-12 bg-surface border-border-color rounded-xl" required />
-                            <button type="button" class="absolute inset-y-0 right-0 px-4 flex items-center text-text-gray hover:text-text-dark transition-colors">
+                            <button type="button" onclick="togglePassword(this)" class="absolute inset-y-0 right-0 px-4 flex items-center text-text-gray hover:text-text-dark transition-colors">
                                 <i class="fa-solid fa-eye"></i>
                             </button>
                         </div>
@@ -51,13 +77,15 @@
                         <a href="{{ url('/forgot-password') }}" class="font-medium text-primary hover:text-blue-900 hover:underline">Lupa password?</a>
                     </div>
 
-                    <div class="flex flex-col items-center gap-4 mt-8 pt-2">
+                        <div class="flex flex-col items-center gap-4 mt-8 pt-2">
                         <button type="submit" class="w-full bg-primary hover:bg-blue-900 text-white font-semibold py-3.5 px-8 rounded-xl shadow-md transition-colors">
                             Masuk Sekarang!
                         </button>
-                        <span class="text-sm font-medium text-text-gray"> Belum punya akun? <a href="{{ url('/register') }}" class="text-sm font-medium text-text-gray hover:text-primary hover:underline underline-offset-4 decoration-2 transition-all">
-                            Daftar
-                        </a>
+                        
+                        <span class="text-sm font-medium text-text-gray"> Belum punya akun? 
+                            <a href="{{ url('/register') }}" class="text-sm font-medium text-text-gray hover:text-primary hover:underline underline-offset-4 decoration-2 transition-all">
+                                Daftar
+                            </a>
                         </span>
                     </div>
                 </form>
@@ -74,5 +102,23 @@
     </div>
     
     @stack('scripts')
+    <script>
+    function togglePassword(button) {
+        // Mengambil elemen input password yang ada di sebelah tombol
+        const input = button.previousElementSibling;
+        const icon = button.querySelector('i');
+
+        // Mengubah tipe input dan ikon mata
+        if (input.type === 'password') {
+            input.type = 'text';
+            icon.classList.remove('fa-eye');
+            icon.classList.add('fa-eye-slash'); // Ikon mata dicoret
+        } else {
+            input.type = 'password';
+            icon.classList.remove('fa-eye-slash');
+            icon.classList.add('fa-eye'); // Ikon mata terbuka
+        }
+    }
+</script>
 </body>
 </html>

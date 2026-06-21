@@ -17,6 +17,11 @@
         'sudah_direview' => 'success',
         'terverifikasi' => 'success',
         'suspend' => 'danger',
+        'pending' => 'warning',
+        'verified' => 'success',
+        'rejected' => 'danger',
+        'aktif' => 'success',
+        'nonaktif' => 'danger',
     ];
     
     // Normalize status string for matching (lowercase, replace spaces with underscores)
@@ -25,6 +30,14 @@
     
     // Format label for display (ucwords, replace underscores with spaces)
     $label = ucwords(str_replace('_', ' ', $status));
+    
+    // Translation map for common english statuses
+    $translations = [
+        'Pending' => 'Menunggu Verifikasi',
+        'Verified' => 'Terverifikasi',
+        'Rejected' => 'Ditolak',
+    ];
+    $label = $translations[$label] ?? $label;
 @endphp
 <x-badge :color="$color" {{ $attributes }}>
     {{ $label }}

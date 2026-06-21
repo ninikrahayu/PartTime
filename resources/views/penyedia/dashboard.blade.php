@@ -4,7 +4,7 @@
 
 @section('content')
 
-@if($user['verification_status'] === 'menunggu_verifikasi')
+@if($user->status === 'pending')
 <div class="bg-warning/10 border-l-4 border-warning p-4 rounded-md mb-6 flex items-start gap-3">
     <i class="fa-solid fa-triangle-exclamation text-warning mt-0.5"></i>
     <div>
@@ -67,18 +67,6 @@
         </x-card>
     </div>
 
-    <!-- Quick Actions -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <a href="{{ url('/penyedia/jobs/create') }}" class="flex items-center justify-center gap-2 p-4 bg-primary text-white rounded-md font-semibold hover:bg-blue-900 transition-colors shadow-sm">
-            <i class="fa-solid fa-plus"></i> Pasang Lowongan Baru
-        </a>
-        <a href="{{ url('/penyedia/applications') }}" class="flex items-center justify-center gap-2 p-4 bg-white border border-border-color text-text-dark rounded-md font-semibold hover:bg-surface transition-colors shadow-sm">
-            <i class="fa-solid fa-list-check text-primary"></i> Kelola Lamaran Masuk
-        </a>
-        <a href="{{ url('/penyedia/profil-usaha') }}" class="flex items-center justify-center gap-2 p-4 bg-white border border-border-color text-text-dark rounded-md font-semibold hover:bg-surface transition-colors shadow-sm">
-            <i class="fa-solid fa-store text-secondary"></i> Lengkapi Profil Usaha
-        </a>
-    </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         
@@ -101,11 +89,11 @@
                     @forelse($recent_jobs as $job)
                         <tr class="border-b border-border-color last:border-0 hover:bg-surface">
                             <td class="px-4 py-3">
-                                <div class="font-medium text-sm text-text-dark line-clamp-1"><a href="{{ url('/penyedia/jobs/'.$job['id']) }}" class="hover:text-primary">{{ $job['title'] }}</a></div>
-                                <div class="text-xs text-text-gray">{{ \Carbon\Carbon::parse($job['created_at'])->diffForHumans() }}</div>
+                                <div class="font-medium text-sm text-text-dark line-clamp-1"><a href="{{ url('/penyedia/jobs/'.$job->id) }}" class="hover:text-primary">{{ $job->judul }}</a></div>
+                                <div class="text-xs text-text-gray">{{ $job->created_at->diffForHumans() }}</div>
                             </td>
                             <td class="px-4 py-3 text-center">
-                                <x-status-badge :status="$job['status']" />
+                                <x-status-badge :status="$job->status" />
                             </td>
                         </tr>
                     @empty
@@ -137,13 +125,13 @@
                     @forelse($recent_applications as $app)
                         <tr class="border-b border-border-color last:border-0 hover:bg-surface">
                             <td class="px-4 py-3">
-                                <div class="font-medium text-sm text-text-dark">{{ $app['student_name'] }}</div>
+                                <div class="font-medium text-sm text-text-dark">{{ $app->pelamar->name ?? '-' }}</div>
                             </td>
                             <td class="px-4 py-3">
-                                <div class="text-xs text-text-gray line-clamp-1">{{ $app['job_title'] }}</div>
+                                <div class="text-xs text-text-gray line-clamp-1">{{ $app->lowongan->judul ?? '-' }}</div>
                             </td>
                             <td class="px-4 py-3 text-center">
-                                <x-status-badge :status="$app['status']" />
+                                <x-status-badge :status="$app->status" />
                             </td>
                         </tr>
                     @empty
@@ -165,13 +153,13 @@
         <div class="p-6">
             <div class="flex items-end justify-between h-48 gap-2">
                 <!-- Bar Dummy -->
-                @foreach([12, 19, 15, 25, 22, 30] as $idx => $height)
+                @foreach($chartData as $data)
                     <div class="flex flex-col items-center flex-1 group">
                         <div class="w-full bg-primary/20 rounded-t-md relative flex items-end justify-center group-hover:bg-primary/30 transition-colors" style="height: 100%;">
-                            <div class="w-full bg-primary rounded-t-md transition-all duration-500" style="height: {{ $height * 3 }}%;"></div>
-                            <span class="absolute -top-6 text-xs font-bold text-text-dark opacity-0 group-hover:opacity-100 transition-opacity">{{ $height }}</span>
+                            <div class="w-full bg-primary rounded-t-md transition-all duration-500" style="height: {{ $data['height'] }}%;"></div>
+                            <span class="absolute -top-6 text-xs font-bold text-text-dark opacity-0 group-hover:opacity-100 transition-opacity">{{ $data['count'] }}</span>
                         </div>
-                        <span class="text-xs text-text-gray mt-2">{{ \Carbon\Carbon::now()->subMonths(5 - $idx)->format('M') }}</span>
+                        <span class="text-xs text-text-gray mt-2">{{ $data['month'] }}</span>
                     </div>
                 @endforeach
             </div>
