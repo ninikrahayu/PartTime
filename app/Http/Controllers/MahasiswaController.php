@@ -85,24 +85,7 @@ class MahasiswaController extends Controller
             'status' => 'pending',
         ]);
 
-        return redirect()->route('mahasiswa.lamaran.status')->with('success', 'Lamaran berhasil dikirim ke penyedia!');
-    }
-
-    public function statusLamaran()
-    {
-        $applications = Lamaran::with(['lowongan.penyedia.profile'])
-                               ->where('pelamar_id', Auth::id())
-                               ->latest()
-                               ->paginate(10);
-                           
-        return view('mahasiswa.applications.index', compact('applications'));
-    }
-
-    public function jobs()
-    {
-        $jobs = Lowongan::with('penyedia.profile')->where('status', 'aktif')->latest()->paginate(10);
-        $categories = \App\Models\Category::all(); 
-        return view('mahasiswa.jobs.index', compact('jobs', 'categories'));
+        return redirect()->route('mahasiswa.applications.index')->with('success', 'Lamaran berhasil dikirim ke penyedia!');
     }
 
     public function jobDetail($id)

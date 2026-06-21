@@ -61,7 +61,7 @@
                 <div class="mt-4 pt-3 border-t border-border-color flex items-center justify-between text-xs">
                     <span class="text-text-gray">Posisi: {{ $review->lamaran->lowongan->judul ?? '-' }}</span>
                     @if($review->lamaran && $review->lamaran->lowongan)
-                        <a href="{{ url('/mahasiswa/jobs/'.$review->lamaran->lowongan->id) }}" class="text-primary hover:underline font-medium">Lihat Lowongan</a>
+                        <a href="{{ url('/mahasiswa/lowongan/'.$review->lamaran->lowongan->id) }}" class="text-primary hover:underline font-medium">Lihat Lowongan</a>
                     @endif
                 </div>
             </x-card>

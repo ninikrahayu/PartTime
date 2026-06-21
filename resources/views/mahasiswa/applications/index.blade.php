@@ -58,7 +58,7 @@
     @else
         <x-empty-state icon="fa-paper-plane" title="Belum Ada Lamaran" description="Anda belum mengirimkan lamaran apapun. Mulai eksplorasi lowongan yang tersedia.">
             <x-slot name="action">
-                <a href="{{ url('/mahasiswa/jobs') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md text-white bg-primary hover:bg-blue-900 shadow-sm transition-colors text-sm"><i class="fa-solid fa-search mr-2"></i> Cari Lowongan</a>
+                <a href="{{ url('/mahasiswa/lowongan') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md text-white bg-primary hover:bg-blue-900 shadow-sm transition-colors text-sm"><i class="fa-solid fa-search mr-2"></i> Cari Lowongan</a>
             </x-slot>
         </x-empty-state>
     @endif

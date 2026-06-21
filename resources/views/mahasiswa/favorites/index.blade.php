@@ -13,7 +13,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             @foreach($favorites as $favorite)
                 @php $job = $favorite->lowongan; @endphp
-                <x-card class="hover:shadow-md transition-shadow group flex flex-col h-full cursor-pointer relative border-border-color shadow-sm" onclick="window.location.href='{{ url('/mahasiswa/jobs/'.$job->id) }}'">
+                <x-card class="hover:shadow-md transition-shadow group flex flex-col h-full cursor-pointer relative border-border-color shadow-sm" onclick="window.location.href='{{ url('/mahasiswa/lowongan/'.$job->id) }}'">
                     
                     <!-- Remove Favorit Button -->
                     <form method="POST" action="{{ route('mahasiswa.lowongan.favorite', $job->id) }}" class="absolute top-3 right-3 z-20">
@@ -42,7 +42,7 @@
                     
                     <div class="mt-auto pt-3 border-t border-border-color flex justify-between items-center">
                         <x-badge color="info">{{ !empty($job->category) ? $job->category : 'Umum' }}</x-badge>
-                        <x-button class="py-1 px-3 text-xs" onclick="event.stopPropagation(); window.location.href='{{ url('/mahasiswa/jobs/'.$job->id) }}'">Lamar</x-button>
+                        <x-button class="py-1 px-3 text-xs" onclick="event.stopPropagation(); window.location.href='{{ url('/mahasiswa/lowongan/'.$job->id) }}'">Lamar</x-button>
                     </div>
                 </x-card>
             @endforeach
@@ -50,7 +50,7 @@
     @else
         <x-empty-state icon="fa-heart" title="Belum Ada Favorit" description="Anda belum menyimpan lowongan apapun. Mulai cari dan simpan lowongan yang Anda sukai!">
             <x-slot name="action">
-                <a href="{{ url('/mahasiswa/jobs') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md text-white bg-primary hover:bg-blue-900 shadow-sm transition-colors text-sm"><i class="fa-solid fa-search mr-2"></i> Cari Lowongan</a>
+                <a href="{{ url('/mahasiswa/lowongan') }}" class="inline-flex items-center justify-center px-4 py-2 border border-transparent font-medium rounded-md text-white bg-primary hover:bg-blue-900 shadow-sm transition-colors text-sm"><i class="fa-solid fa-search mr-2"></i> Cari Lowongan</a>
             </x-slot>
         </x-empty-state>
     @endif

@@ -142,12 +142,12 @@
         <div class="lg:col-span-2">
             <div class="flex justify-between items-center mb-4">
                 <h3 class="font-bold text-lg text-text-dark">Rekomendasi Lowongan</h3>
-                <a href="{{ url('/mahasiswa/jobs') }}" class="text-sm text-primary font-medium hover:underline">Lihat Semua</a>
+                <a href="{{ url('/mahasiswa/lowongan') }}" class="text-sm text-primary font-medium hover:underline">Lihat Semua</a>
             </div>
             
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 @foreach($recent_jobs as $job)
-                <x-card class="hover:shadow-md transition-shadow group flex flex-col  cursor-pointer relative" onclick="window.location.href='{{ url('/mahasiswa/jobs/'.$job->id) }}'">
+                <x-card class="hover:shadow-md transition-shadow group flex flex-col  cursor-pointer relative" onclick="window.location.href='{{ url('/mahasiswa/lowongan/'.$job->id) }}'">
                     <!-- Favorit Button Overlay -->
                     <form method="POST" action="{{ route('mahasiswa.lowongan.favorite', $job->id) }}" class="absolute top-3 right-3 z-20">
                         @csrf

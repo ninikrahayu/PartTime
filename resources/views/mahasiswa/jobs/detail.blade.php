@@ -12,7 +12,7 @@
 <div class="max-w-4xl mx-auto space-y-4 md:space-y-6 pb-20 md:pb-6">
 
     <!-- Nav Back -->
-    <a href="{{ url('/mahasiswa/jobs') }}" class="inline-flex items-center text-sm font-medium text-text-gray hover:text-primary transition-colors">
+    <a href="{{ url('/mahasiswa/lowongan') }}" class="inline-flex items-center text-sm font-medium text-text-gray hover:text-primary transition-colors">
         <i class="fa-solid fa-arrow-left mr-2"></i> Kembali ke daftar lowongan
     </a>
 

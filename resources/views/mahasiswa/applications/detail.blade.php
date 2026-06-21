@@ -26,7 +26,7 @@
             </div>
             
             <div class="w-full md:w-auto flex flex-col gap-2 mt-4 md:mt-0 pt-4 md:pt-0 border-t md:border-t-0 border-border-color">
-                <a href="{{ url('/mahasiswa/jobs/' . $application->lowongan_id) }}" class="w-full justify-center inline-flex items-center px-4 py-2 bg-white border border-border-color text-text-dark text-sm font-medium rounded-md hover:bg-surface transition-colors shadow-sm"><i class="fa-solid fa-eye mr-2"></i> Lihat Lowongan</a>
+                <a href="{{ url('/mahasiswa/lowongan/' . $application->lowongan_id) }}" class="w-full justify-center inline-flex items-center px-4 py-2 bg-white border border-border-color text-text-dark text-sm font-medium rounded-md hover:bg-surface transition-colors shadow-sm"><i class="fa-solid fa-eye mr-2"></i> Lihat Lowongan</a>
                 @if(in_array($application->status, ['diterima', 'diproses', 'selesai']))
                     <a href="{{ route('chat.show', $application->id) }}" class="w-full justify-center inline-flex items-center rounded-md border border-primary text-primary bg-primary/5 px-4 py-2 text-sm font-medium hover:bg-primary/10 transition-colors">
                         <i class="fa-solid fa-comments mr-2"></i> Chat Penyedia

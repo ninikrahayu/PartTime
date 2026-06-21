@@ -20,7 +20,7 @@
     @php
         $menus = [
             ['url' => 'mahasiswa/dashboard', 'icon' => 'fa-solid fa-house', 'title' => 'Beranda'],
-            ['url' => 'mahasiswa/jobs', 'icon' => 'fa-solid fa-magnifying-glass', 'title' => 'Lowongan'],
+            ['url' => 'mahasiswa/lowongan', 'icon' => 'fa-solid fa-magnifying-glass', 'title' => 'Lowongan'],
             ['url' => 'mahasiswa/favorites', 'icon' => 'fa-solid fa-heart', 'title' => 'Favorit'],
             ['url' => 'mahasiswa/applications', 'icon' => 'fa-solid fa-file-lines', 'title' => 'Lamaran'],
             ['url' => 'mahasiswa/reviews', 'icon' => 'fa-solid fa-star', 'title' => 'Review'],
