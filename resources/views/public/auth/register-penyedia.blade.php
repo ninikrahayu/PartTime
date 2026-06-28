@@ -28,19 +28,41 @@
                         @endforeach
                     </ul>
                 </div>
+                
+                @php
+                    $showStep2 = false;
+                    if ($errors->any()) {
+                        $step2Errors = ['company_name', 'company_type', 'business_address', 'business_description', 'verification_document'];
+                        foreach ($step2Errors as $err) {
+                            if ($errors->has($err)) {
+                                $showStep2 = true;
+                                break;
+                            }
+                        }
+                        $step1Errors = ['name', 'email', 'username', 'phone', 'password'];
+                        foreach ($step1Errors as $err) {
+                            if ($errors->has($err)) {
+                                $showStep2 = false;
+                                break;
+                            }
+                        }
+                    }
+                @endphp
+            @else
+                @php $showStep2 = false; @endphp
             @endif
 
             <form action="{{ route('register.post') }}" method="POST" enctype="multipart/form-data" class="p-5 sm:p-6">
                 @csrf
                 <input type="hidden" name="role" value="penyedia">
                 <!-- Step 1: Data Penanggung Jawab -->
-                <div id="step-1-content" class="space-y-6">
+                <div id="step-1-content" class="{{ $showStep2 ? 'hidden' : '' }} space-y-6">
                     <h2 class="text-lg font-semibold text-text-dark border-b border-border-color pb-2">Data Penanggung Jawab</h2>
                     <div class="grid gap-4 sm:grid-cols-2">
-                        <label class="block text-sm font-medium text-text-dark">Nama penanggung jawab<x-input name="name" type="text" class="mt-2" placeholder="Nama lengkap" required /></label>
-                        <label class="block text-sm font-medium text-text-dark">Email<x-input name="email" type="email" class="mt-2" placeholder="nama@usaha.com" required /></label>
-                        <label class="block text-sm font-medium text-text-dark">Username<x-input name="username" type="text" class="mt-2" placeholder="username" required /></label>
-                        <label class="block text-sm font-medium text-text-dark">Nomor telepon<x-input name="phone" type="tel" class="mt-2" placeholder="08xxxxxxxxxx" required /></label>
+                        <label class="block text-sm font-medium text-text-dark">Nama penanggung jawab<x-input name="name" type="text" class="mt-2" placeholder="Nama lengkap" value="{{ old('name') }}" required /></label>
+                        <label class="block text-sm font-medium text-text-dark">Email<x-input name="email" type="email" class="mt-2" placeholder="nama@usaha.com" value="{{ old('email') }}" required /></label>
+                        <label class="block text-sm font-medium text-text-dark">Username<x-input name="username" type="text" class="mt-2" placeholder="username" value="{{ old('username') }}" required /></label>
+                        <label class="block text-sm font-medium text-text-dark">Nomor telepon<x-input name="phone" type="tel" class="mt-2" placeholder="08xxxxxxxxxx" value="{{ old('phone') }}" required /></label>
                         <div>
                      <label class="block text-sm font-medium text-text-dark mb-1">Password</label>
                      <div class="relative mt-2">
@@ -67,13 +89,13 @@
                 </div>
 
                 <!-- Step 2: Data Usaha atau Instansi -->
-                <div id="step-2-content" class="hidden space-y-6">
+                <div id="step-2-content" class="{{ $showStep2 ? '' : 'hidden' }} space-y-6">
                     <h2 class="text-lg font-semibold text-text-dark border-b border-border-color pb-2">Data Usaha atau Instansi</h2>
                     <div class="grid gap-4 sm:grid-cols-2">
-                        <label class="block text-sm font-medium text-text-dark">Nama usaha / instansi<x-input name="company_name" type="text" class="mt-2" placeholder="Nama usaha" required /></label>
-                        <label class="block text-sm font-medium text-text-dark">Jenis usaha / instansi<x-select name="company_type" class="mt-2" required><option value="">Pilih jenis</option><option>UMKM</option><option>Cafe</option><option>Retail</option><option>Event Organizer</option><option>Perusahaan</option><option>Instansi</option><option>Studio Kreatif</option><option>Lainnya</option></x-select></label>
-                        <label class="block text-sm font-medium text-text-dark sm:col-span-2">Alamat usaha / instansi<x-textarea name="business_address" rows="3" class="mt-2" placeholder="Alamat usaha" required></x-textarea></label>
-                        <label class="block text-sm font-medium text-text-dark sm:col-span-2">Deskripsi usaha / instansi<x-textarea name="business_description" rows="4" class="mt-2" placeholder="Deskripsikan usaha atau instansi" required></x-textarea></label>
+                        <label class="block text-sm font-medium text-text-dark">Nama usaha / instansi<x-input name="company_name" type="text" class="mt-2" placeholder="Nama usaha" value="{{ old('company_name') }}" required /></label>
+                        <label class="block text-sm font-medium text-text-dark">Jenis usaha / instansi<x-select name="company_type" class="mt-2" required><option value="">Pilih jenis</option>@foreach(['UMKM', 'Cafe', 'Retail', 'Event Organizer', 'Perusahaan', 'Instansi', 'Studio Kreatif', 'Lainnya'] as $type)<option value="{{ $type }}" {{ old('company_type') == $type ? 'selected' : '' }}>{{ $type }}</option>@endforeach</x-select></label>
+                        <label class="block text-sm font-medium text-text-dark sm:col-span-2">Alamat usaha / instansi<x-textarea name="business_address" rows="3" class="mt-2" placeholder="Alamat usaha" required>{{ old('business_address') }}</x-textarea></label>
+                        <label class="block text-sm font-medium text-text-dark sm:col-span-2">Deskripsi usaha / instansi<x-textarea name="business_description" rows="4" class="mt-2" placeholder="Deskripsikan usaha atau instansi" required>{{ old('business_description') }}</x-textarea></label>
                     </div>
                     
                     <div class="mt-6">

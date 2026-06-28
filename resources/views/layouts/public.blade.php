@@ -32,20 +32,18 @@
 
                 <!-- Desktop Menu -->
                 <nav class="hidden md:flex space-x-8 items-center">
-                    <a href="{{ url('/') }}" class="{{ Request::is('/') ? 'text-primary font-bold' : 'text-text-gray font-medium' }} hover:text-primary transition-colors">Beranda</a>
-                    <a href="{{ url('/lowongan') }}" class="{{ Request::is('lowongan*') ? 'text-primary font-bold' : 'text-text-gray font-medium' }} hover:text-primary transition-colors">Lowongan</a>
-                    <a href="{{ url('/#cara-kerja') }}" class="text-text-gray hover:text-primary font-medium transition-colors">Cara Kerja</a>
-                    <a href="{{ url('/login') }}" class="{{ Request::is('login') ? 'text-primary font-bold' : 'text-text-gray font-medium' }} hover:text-primary transition-colors">Masuk</a>
-                    <a href="{{ url('/register') }}" class="{{ Request::is('register*') ? 'text-primary font-bold' : 'text-text-gray font-medium' }} hover:text-primary transition-colors">Daftar</a>
+                    <a href="{{ url('/') }}" class="nav-link {{ Request::is('/') ? 'text-primary font-bold active' : 'text-text-gray font-medium' }} hover:text-primary transition-colors" data-target="home">Beranda</a>
+                    <a href="{{ url('/lowongan') }}" class="nav-link {{ Request::is('lowongan*') ? 'text-primary font-bold active' : 'text-text-gray font-medium' }} hover:text-primary transition-colors" data-target="lowongan">Lowongan</a>
+                    <a href="{{ url('/#cara-kerja') }}" class="nav-link text-text-gray hover:text-primary font-medium transition-colors" data-target="cara-kerja">Cara Kerja</a>
                 </nav>
 
                 <!-- Desktop CTA Buttons -->
                 <div class="hidden md:flex items-center space-x-4">
-                    <a href="{{ url('/lowongan') }}" class="bg-surface border border-border-color text-text-dark hover:bg-gray-100 px-4 py-2 rounded-md font-medium transition-colors">
-                        <i class="fa-solid fa-search mr-1"></i> Cari Lowongan
+                    <a href="{{ url('/login') }}" class="text-primary bg-white border border-primary hover:bg-primary/5 px-4 py-2 rounded-md font-medium transition-colors">
+                        Masuk
                     </a>
-                    <a href="{{ url('/register/penyedia') }}" class="bg-primary text-white hover:bg-blue-900 px-4 py-2 rounded-md font-medium transition-colors shadow-sm">
-                        <i class="fa-solid fa-plus mr-1"></i> Pasang Lowongan
+                    <a href="{{ url('/register') }}" class="bg-primary text-white hover:bg-blue-900 px-4 py-2 rounded-md font-medium transition-colors shadow-sm">
+                        Daftar
                     </a>
                 </div>
 
@@ -62,18 +60,16 @@
         <!-- Mobile Menu Panel (Hidden by default) -->
         <div id="mobile-menu" class="hidden md:hidden border-t border-border-color bg-white">
             <div class="px-4 pt-2 pb-4 space-y-1">
-                <a href="{{ url('/') }}" class="block px-3 py-2 rounded-md text-base {{ Request::is('/') ? 'font-bold text-primary bg-primary/5' : 'font-medium text-text-gray' }} hover:text-primary hover:bg-surface">Beranda</a>
-                <a href="{{ url('/lowongan') }}" class="block px-3 py-2 rounded-md text-base {{ Request::is('lowongan*') ? 'font-bold text-primary bg-primary/5' : 'font-medium text-text-gray' }} hover:text-primary hover:bg-surface">Lowongan</a>
-                <a href="{{ url('/#cara-kerja') }}" class="block px-3 py-2 rounded-md text-base font-medium text-text-gray hover:text-primary hover:bg-surface">Cara Kerja</a>
-                <a href="{{ url('/login') }}" class="block px-3 py-2 rounded-md text-base {{ Request::is('login') ? 'font-bold text-primary bg-primary/5' : 'font-medium text-text-gray' }} hover:text-primary hover:bg-surface">Masuk</a>
-                <a href="{{ url('/register') }}" class="block px-3 py-2 rounded-md text-base {{ Request::is('register*') ? 'font-bold text-primary bg-primary/5' : 'font-medium text-text-gray' }} hover:text-primary hover:bg-surface">Daftar</a>
+                <a href="{{ url('/') }}" class="mobile-nav-link block px-3 py-2 rounded-md text-base {{ Request::is('/') ? 'font-bold text-primary bg-primary/5 active' : 'font-medium text-text-gray' }} hover:text-primary hover:bg-surface" data-target="home">Beranda</a>
+                <a href="{{ url('/lowongan') }}" class="mobile-nav-link block px-3 py-2 rounded-md text-base {{ Request::is('lowongan*') ? 'font-bold text-primary bg-primary/5 active' : 'font-medium text-text-gray' }} hover:text-primary hover:bg-surface" data-target="lowongan">Lowongan</a>
+                <a href="{{ url('/#cara-kerja') }}" class="mobile-nav-link block px-3 py-2 rounded-md text-base font-medium text-text-gray hover:text-primary hover:bg-surface" data-target="cara-kerja">Cara Kerja</a>
                 
                 <div class="pt-4 flex flex-col gap-2">
-                    <a href="{{ url('/lowongan') }}" class="w-full text-center bg-surface border border-border-color text-text-dark hover:bg-gray-100 px-4 py-2 rounded-md font-medium transition-colors">
-                        <i class="fa-solid fa-search mr-1"></i> Cari Lowongan
+                    <a href="{{ url('/login') }}" class="w-full text-center text-primary bg-white border border-primary hover:bg-primary/5 px-4 py-2 rounded-md font-medium transition-colors">
+                        Masuk
                     </a>
-                    <a href="{{ url('/register/penyedia') }}" class="w-full text-center bg-primary text-white hover:bg-blue-900 px-4 py-2 rounded-md font-medium transition-colors shadow-sm">
-                        <i class="fa-solid fa-plus mr-1"></i> Pasang Lowongan
+                    <a href="{{ url('/register') }}" class="w-full text-center bg-primary text-white hover:bg-blue-900 px-4 py-2 rounded-md font-medium transition-colors shadow-sm">
+                        Daftar
                     </a>
                 </div>
             </div>
@@ -130,7 +126,7 @@
         </div>
     </footer>
 
-    <!-- Script for Mobile Menu Toggle -->
+    <!-- Script for Mobile Menu Toggle and Scrollspy -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const btn = document.getElementById('mobile-menu-btn');
@@ -146,6 +142,79 @@
                     icon.classList.remove('fa-bars');
                     icon.classList.add('fa-xmark');
                 }
+            });
+
+            // Scrollspy / Active Link Management
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.nav-link, .mobile-nav-link');
+            
+            function setActiveLink(targetId) {
+                navLinks.forEach(link => {
+                    const isMobile = link.classList.contains('mobile-nav-link');
+                    const linkTarget = link.getAttribute('data-target');
+                    
+                    if (isMobile) {
+                        link.classList.remove('font-bold', 'text-primary', 'bg-primary/5', 'active');
+                        link.classList.add('font-medium', 'text-text-gray');
+                    } else {
+                        link.classList.remove('font-bold', 'text-primary', 'active');
+                        link.classList.add('font-medium', 'text-text-gray');
+                    }
+                    
+                    if (linkTarget === targetId) {
+                        if (isMobile) {
+                            link.classList.remove('font-medium', 'text-text-gray');
+                            link.classList.add('font-bold', 'text-primary', 'bg-primary/5', 'active');
+                        } else {
+                            link.classList.remove('font-medium', 'text-text-gray');
+                            link.classList.add('font-bold', 'text-primary', 'active');
+                        }
+                    }
+                });
+            }
+
+            if (currentPath === '/' || currentPath === '') {
+                window.addEventListener('scroll', () => {
+                    let current = 'home';
+                    const scrollY = window.scrollY;
+                    const caraKerja = document.getElementById('cara-kerja');
+                    
+                    if (caraKerja && scrollY >= caraKerja.offsetTop - 150) {
+                        current = 'cara-kerja';
+                    }
+                    
+                    setActiveLink(current);
+                });
+
+                if (window.location.hash === '#cara-kerja') {
+                    setActiveLink('cara-kerja');
+                    setTimeout(() => {
+                        const el = document.getElementById('cara-kerja');
+                        if (el) {
+                            window.scrollTo({
+                                top: el.offsetTop - 80,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }, 100);
+                }
+            }
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const target = this.getAttribute('data-target');
+                    const href = this.getAttribute('href');
+                    
+                    if (href.includes('#') && (currentPath === '/' || currentPath === '')) {
+                        setActiveLink(target);
+                        
+                        if (!menu.classList.contains('hidden')) {
+                            menu.classList.add('hidden');
+                            icon.classList.remove('fa-xmark');
+                            icon.classList.add('fa-bars');
+                        }
+                    }
+                });
             });
         });
     </script>
